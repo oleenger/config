@@ -2,12 +2,16 @@ vim.cmd [[set mouse=a]]
 vim.g.mapleader = " "
 vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
 
+vim.cmd.colorscheme(color)
 
+vim.cmd.colorscheme(color)
 vim.opt.guicursor = ""
 
 vim.opt.nu = true
 vim.opt.relativenumber = true
-
+vim.o.ignorecase = true
+vim.o.smartcase = true
+vim.o.completeopt = 'menuone,noselect'
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
