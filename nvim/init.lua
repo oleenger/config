@@ -2,10 +2,12 @@ vim.cmd [[set mouse=a]]
 vim.g.mapleader = " "
 vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
 
-vim.cmd.colorscheme(color)
+vim.keymap.set("n", "<leader>tt", vim.cmd.NvimTreeToggle)
+vim.keymap.set("n", "<leader>to", vim.cmd.NvimTreeOpen)
+vim.keymap.set("n", "<leader>tc", vim.cmd.NvimTreeClose)
 
-vim.cmd.colorscheme(color)
 vim.opt.guicursor = ""
+vim.cmd([[colorscheme everforest]])
 
 vim.opt.nu = true
 vim.opt.relativenumber = true
@@ -36,4 +38,3 @@ vim.opt.signcolumn = "yes"
 vim.opt.isfname:append("@-@")
 
 vim.opt.updatetime = 50
-
