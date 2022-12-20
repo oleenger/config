@@ -21,12 +21,18 @@ use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blan
 use 'numToStr/Comment.nvim' -- "gc" to comment visual regions/lines
 use 'tpope/vim-sleuth' -- Detect tabstop and shiftwidth automatically
 
-require('lualine').setup {
+require("lualine").setup({
   options = {
-    icons_enabled = false,
-    component_separators = '|',
-    section_separators = '',
-  },
+    theme = "auto", -- Can also be "auto" to detect automatically.
+  }
+})
+
+
+require('Comment').setup()
+
+require('indent_blankline').setup {
+  char = '┊',
+  show_trailing_blankline_indent = false,
 }
 
 use({
@@ -39,23 +45,13 @@ use({
 
 require("everforest").setup({
   background = "hard",
-  transparent_background_level = 0,
-})
-require("lualine").setup({
-  options = {
-    theme = "auto", -- Can also be "auto" to detect automatically.
-  }
+  transparent_background_level = 2,
 })
 
-require('Comment').setup()
-
-require('indent_blankline').setup {
-  char = '┊',
-  show_trailing_blankline_indent = false,
-}
 
 use {
   'nvim-tree/nvim-tree.lua',
+  tag = 'nightly' -- optional, updated every week. (see issue #1193)
 }
 
 

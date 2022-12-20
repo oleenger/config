@@ -7,8 +7,6 @@ vim.keymap.set("n", "<leader>to", vim.cmd.NvimTreeOpen)
 vim.keymap.set("n", "<leader>tc", vim.cmd.NvimTreeClose)
 
 vim.opt.guicursor = ""
-vim.cmd([[colorscheme everforest]])
-
 vim.opt.nu = true
 vim.opt.relativenumber = true
 vim.o.ignorecase = true
@@ -36,5 +34,7 @@ vim.opt.termguicolors = true
 vim.opt.scrolloff = 8
 vim.opt.signcolumn = "yes"
 vim.opt.isfname:append("@-@")
+
+vim.cmd([[colorscheme everforest]])
 
 vim.opt.updatetime = 50
