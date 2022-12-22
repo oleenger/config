@@ -38,10 +38,10 @@ return require('packer').startup(function(use)
 
   
 
+require('opts')
+require('remaps')
+require('cmd')
 
-
-vim.cmd([[colorscheme everforest]])
-vim.cmd [[set mouse=a]]
 
 
 
