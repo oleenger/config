@@ -16,6 +16,13 @@ return require('packer').startup(function(use)
   -- My plugins here
   -- use 'foo1/bar1.nvim'
   -- use 'foo2/bar2.nvim'
+    use({
+	    "neanias/everforest-nvim",
+	    -- Optional; default configuration will be used if setup isn't called.
+	    config = function()
+		    require("everforest").setup()
+	    end,
+    })
 
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
@@ -32,13 +39,6 @@ return require('packer').startup(function(use)
 	    background = "hard",
     })
 
-    use({
-	    "neanias/everforest-nvim",
-	    -- Optional; default configuration will be used if setup isn't called.
-	    config = function()
-		    require("everforest").setup()
-	    end,
-    })
   end
 
   end)
