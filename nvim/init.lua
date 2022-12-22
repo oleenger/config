@@ -25,6 +25,9 @@ return require('packer').startup(function(use)
 
 
 
+require("everforest").setup({
+  background = "hard",
+})
 
 use({
   "neanias/everforest-nvim",
@@ -34,9 +37,6 @@ use({
   end,
 })
 
-require("everforest").setup({
-  background = "hard",
-})
 
 
   end)
