@@ -22,21 +22,23 @@ return require('packer').startup(function(use)
 
 
 
-require("everforest").setup({
-  background = "hard",
-})
 
-use({
-  "neanias/everforest-nvim",
-  -- Optional; default configuration will be used if setup isn't called.
-  config = function()
-    require("everforest").setup()
-  end,
-})
 
 
   if packer_bootstrap then
     require('packer').sync()
+   
+    require("everforest").setup({
+	    background = "hard",
+    })
+
+    use({
+	    "neanias/everforest-nvim",
+	    -- Optional; default configuration will be used if setup isn't called.
+	    config = function()
+		    require("everforest").setup()
+	    end,
+    })
   end
 
   end)
