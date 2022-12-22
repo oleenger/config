@@ -34,14 +34,14 @@ return require('packer').startup(function(use)
 	  require("everforest").setup({
 		  background = "hard",
 	  })
-	 
-
   end
 
   
 
 
 
+vim.cmd([[colorscheme everforest]])
+vim.cmd [[set mouse=a]]
 
 
 
