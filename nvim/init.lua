@@ -12,38 +12,47 @@ end
 local packer_bootstrap = ensure_packer()
 
 return require('packer').startup(function(use)
-  use 'wbthomason/packer.nvim'
+    use 'wbthomason/packer.nvim'
 
-  use({
-	  "neanias/everforest-nvim",
-	  -- Optional; default configuration will be used if setup isn't called.
-	  config = function()
-		  require("everforest").setup()
-	  end,
-  })
-
+    use({"neanias/everforest-nvim", config = function() require("everforest").setup() end, })
     use('theprimeagen/harpoon')
-  
+    use { 'nvim-telescope/telescope.nvim', tag = '0.1.0', requires = { {'nvim-lua/plenary.nvim'} } }
+    use 'nvim-lualine/lualine.nvim' -- Fancier statusline
+    use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
+    use 'numToStr/Comment.nvim' -- "gc" to comment visual regions/lines
+    use 'tpope/vim-sleuth' -- Detect tabstop and shiftwidth automatically
 
-    -- Automatically set up your configuration after cloning packer.nvim
-  -- Put this at the end after all plugins
+    use {
+        'nvim-tree/nvim-tree.lua',
+        tag = 'nightly' -- optional, updated every week. (see issue #1193)
+    }
 
-  if packer_bootstrap then
-	  require('packer').sync()
+    -- Put this at the end after all plugins
 
-	  require("everforest").setup({
-		  background = "hard",
-	  })
-  end
+    if packer_bootstrap then
+        require('packer').sync()
 
-  
+        require("everforest").setup({ background = "hard" })
 
-require('opts')
-require('remaps')
-require('cmd')
+        require("lualine").setup({
+            options = {
+                theme = "auto", -- Can also be "auto" to detect automatically.
+            }
+        })
+
+        require('Comment').setup()
+
+        require('indent_blankline').setup {
+            char = '┊',
+            show_trailing_blankline_indent = false,
+        }
+    end
+
+    require('opts')
+    require('remaps')
+    require('cmd')
+    require('plugins.nvim-tree')
+    require('plugins.telescope')
+end)
 
 
-
-
-
-  end)
