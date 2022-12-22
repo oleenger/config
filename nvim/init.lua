@@ -22,7 +22,10 @@ return require('packer').startup(function(use)
 	  end,
   })
 
-  -- Automatically set up your configuration after cloning packer.nvim
+    use('theprimeagen/harpoon')
+  
+
+    -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
 
   if packer_bootstrap then
@@ -31,7 +34,6 @@ return require('packer').startup(function(use)
 	  require("everforest").setup({
 		  background = "hard",
 	  })
-
 	 
 
   end
