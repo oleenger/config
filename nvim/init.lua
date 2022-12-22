@@ -22,6 +22,8 @@ return require('packer').startup(function(use)
   if packer_bootstrap then
     require('packer').sync()
   end
-end)
 
 use('theprimeagen/harpoon')
+
+
+end)
