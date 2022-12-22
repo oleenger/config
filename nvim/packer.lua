@@ -35,6 +35,7 @@ require('indent_blankline').setup {
   show_trailing_blankline_indent = false,
 }
 
+
 use({
   "neanias/everforest-nvim",
   -- Optional; default configuration will be used if setup isn't called.
@@ -45,7 +46,6 @@ use({
 
 require("everforest").setup({
   background = "hard",
-  transparent_background_level = 2,
 })
 
 
