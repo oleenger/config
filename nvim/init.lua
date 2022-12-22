@@ -39,7 +39,6 @@ return require('packer').startup(function(use)
   end
 
   
-  end)
 
 vim.g.mapleader = " "
 vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
@@ -106,3 +105,4 @@ vim.keymap.set("i", "<C-Y>", "<C-O><C-R>")
 -- delete word and insert
 vim.keymap.set("n", "<leader>r", "ciw")
 
+  end)
