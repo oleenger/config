@@ -23,6 +23,11 @@ return require('packer').startup(function(use)
     use 'nanozuki/tabby.nvim'
     use 'tpope/vim-commentary'
     
+    --Data Science
+    use 'preservim/vimux'
+    use 'greghor/vim-pyShell'
+    use 'julienr/vim-cellmode'
+    
     use {
         'nvim-tree/nvim-tree.lua',
         requires = {
@@ -56,6 +61,6 @@ return require('packer').startup(function(use)
     require('plugins.nvim-tree')
     require('plugins.telescope')
     require('plugins.tabby')
-end)
 
+end)
 
