@@ -19,14 +19,17 @@ return require('packer').startup(function(use)
     use { 'nvim-telescope/telescope.nvim', tag = '0.1.0', requires = { {'nvim-lua/plenary.nvim'} } }
     use 'nvim-lualine/lualine.nvim' -- Fancier statusline
     use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
-    use 'numToStr/Comment.nvim' -- "gc" to comment visual regions/lines
     use 'tpope/vim-sleuth' -- Detect tabstop and shiftwidth automatically
+    use 'nanozuki/tabby.nvim'
+    use 'tpope/vim-commentary'
+    
     use {
         'nvim-tree/nvim-tree.lua',
+        requires = {
+            'nvim-tree/nvim-web-devicons', -- optional, for file icons
+        },
         tag = 'nightly' -- optional, updated every week. (see issue #1193)
     }
-    use 'nanozuki/tabby.nvim'
-
 
     -- Put this at the end after all plugins
 
@@ -40,8 +43,6 @@ return require('packer').startup(function(use)
                 theme = "auto", -- Can also be "auto" to detect automatically.
             }
         })
-
-        require('Comment').setup()
 
         require('indent_blankline').setup {
             char = '┊',
