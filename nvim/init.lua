@@ -57,22 +57,16 @@ return require('packer').startup(function(use)
         'nvim-tree/nvim-tree.lua',
         tag = 'nightly' -- optional, updated every week. (see issue #1193)
     }
-    
+
     use {
-      'nvim-lualine/lualine.nvim',
-      requires = { 'kyazdani42/nvim-web-devicons', opt = true }
+        'nvim-lualine/lualine.nvim',
+        requires = { 'kyazdani42/nvim-web-devicons', opt = true }
     }
 
     if packer_bootstrap then
         require('packer').sync()
 
         require("everforest").setup({ background = "hard" })
-
-
-        require('indent_blankline').setup {
-            char = '┊',
-            show_trailing_blankline_indent = false,
-        }
 
         require("nvim-autopairs").setup({
             disable_filetype = { "TelescopePrompt" },
@@ -90,6 +84,7 @@ return require('packer').startup(function(use)
     require('plugins.tabby')
     require('plugins.treesitter')
     require('plugins.lualine')
+    require('plugins.indent_blanklines')
 
 end)
 
