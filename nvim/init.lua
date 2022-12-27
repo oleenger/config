@@ -33,7 +33,6 @@ return require('packer').startup(function(use)
     use("hrsh7th/cmp-path")
     use("hrsh7th/nvim-cmp")
 
-    use("akinsho/bufferline.nvim")
     use("tpope/vim-fugitive")
 
     -- Snippets 
@@ -63,8 +62,6 @@ return require('packer').startup(function(use)
         tag = 'nightly' -- optional, updated every week. (see issue #1193)
     }
 
-    -- Put this at the end after all plugins
-
     if packer_bootstrap then
         require('packer').sync()
 
@@ -87,7 +84,6 @@ return require('packer').startup(function(use)
         })
         require("colorizer").setup()
         require("gitsigns").setup()
-        require("bufferline").setup()
 
 
     end
