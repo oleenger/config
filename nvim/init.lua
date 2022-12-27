@@ -22,12 +22,33 @@ return require('packer').startup(function(use)
     use 'tpope/vim-sleuth' -- Detect tabstop and shiftwidth automatically
     use 'nanozuki/tabby.nvim'
     use 'tpope/vim-commentary'
-    
+
+    -- Syntax parser
+    use("nvim-treesitter/nvim-treesitter")
+
+    -- Completion
+    use("hrsh7th/cmp-buffer")
+    use("hrsh7th/cmp-cmdline")
+    use("hrsh7th/cmp-nvim-lsp")
+    use("hrsh7th/cmp-path")
+    use("hrsh7th/nvim-cmp")
+
+    use("akinsho/bufferline.nvim")
+
+    -- Snippets 
+    use("L3MON4D3/LuaSnip")
+    use("saadparwaiz1/cmp_luasnip")
+    -- Formatting
+    use("jose-elias-alvarez/null-ls.nvim")
+    -- Language server
+    use("neovim/nvim-lspconfig")
+    use("williamboman/nvim-lsp-installer")
+
     --Data Science
     use 'preservim/vimux'
     use 'greghor/vim-pyShell'
     use 'julienr/vim-cellmode'
-    
+
     use {
         'nvim-tree/nvim-tree.lua',
         requires = {
@@ -53,6 +74,16 @@ return require('packer').startup(function(use)
             char = '┊',
             show_trailing_blankline_indent = false,
         }
+
+
+        require("nvim-autopairs").setup({
+            disable_filetype = { "TelescopePrompt" },
+        })
+        require("colorizer").setup()
+        require("gitsigns").setup()
+        require("bufferline").setup()
+
+
     end
 
     require('opts')
@@ -61,6 +92,7 @@ return require('packer').startup(function(use)
     require('plugins.nvim-tree')
     require('plugins.telescope')
     require('plugins.tabby')
+    require('plugins.treesitter')
 
 end)
 
