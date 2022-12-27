@@ -34,6 +34,7 @@ return require('packer').startup(function(use)
     use("hrsh7th/nvim-cmp")
 
     use("akinsho/bufferline.nvim")
+    use("tpope/vim-fugitive")
 
     -- Snippets 
     use("L3MON4D3/LuaSnip")
@@ -43,6 +44,11 @@ return require('packer').startup(function(use)
     -- Language server
     use("neovim/nvim-lspconfig")
     use("williamboman/nvim-lsp-installer")
+
+    -- Utilities
+    use("windwp/nvim-autopairs")
+    use("norcalli/nvim-colorizer.lua")
+    use("lewis6991/gitsigns.nvim")
 
     --Data Science
     use 'preservim/vimux'
