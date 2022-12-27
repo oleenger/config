@@ -1,32 +1,53 @@
-vim.opt.guicursor = ""
-vim.opt.nu = true
-vim.opt.relativenumber = true
-vim.o.ignorecase = true
-vim.o.smartcase = true
-vim.o.completeopt = 'menuone,noselect'
-vim.opt.tabstop = 4
-vim.opt.softtabstop = 4
-vim.opt.shiftwidth = 4
-vim.opt.expandtab = true
+local set = vim.opt
 
-vim.opt.smartindent = true
+set.guicursor = ""
+set.nu = true
+set.relativenumber = true
+set.ignorecase = true
+set.smartcase = true
+set.completeopt = 'menuone,noselect'
+set.tabstop = 4
+set.softtabstop = 4
+set.shiftwidth = 4
+set.expandtab = true
 
-vim.opt.wrap = false
+set.smartindent = true
 
-vim.opt.swapfile = false
-vim.opt.backup = false
-vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
-vim.opt.undofile = true
+set.wrap = false
 
-vim.opt.hlsearch = false
-vim.opt.incsearch = true
+set.swapfile = false
+set.backup = false
+set.undodir = os.getenv("HOME") .. "/.vim/undodir"
+set.undofile = true
 
-vim.opt.termguicolors = true
+set.hlsearch = false
+set.incsearch = true
 
-vim.opt.scrolloff = 8
-vim.opt.signcolumn = "yes"
-vim.opt.isfname:append("@-@")
-vim.opt.updatetime = 50
+set.termguicolors = true
+
+set.scrolloff = 8
+set.signcolumn = "yes"
+set.isfname:append("@-@")
+set.updatetime = 50
 
 vim.g.cellmode_use_tmux=1
 vim.g.cellmode_tmux_panenumber=1
+
+set.background = "dark"
+set.completeopt = "noinsert,menuone,noselect"
+set.cursorline = true
+
+set.foldexpr = "nvim_treesitter#foldexpr()"
+set.foldmethod = "manual"
+set.hidden = true
+set.inccommand = "split"
+
+set.smarttab = true
+set.splitbelow = true
+set.splitright = true
+
+set.termguicolors = true
+set.title = true
+set.ttimeoutlen = 0
+set.updatetime = 250
+set.wildmenu = true
