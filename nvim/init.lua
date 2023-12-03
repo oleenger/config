@@ -13,11 +13,15 @@ local packer_bootstrap = ensure_packer()
 
 return require('packer').startup(function(use)
     use 'wbthomason/packer.nvim'
-
+use "nvim-lua/plenary.nvim" -- don't forget to add this one if you don't have it yet!
+use {
+    "ThePrimeagen/harpoon",
+    branch = "harpoon2",
+    requires = { {"nvim-lua/plenary.nvim"} }
+}
     use({"neanias/everforest-nvim", config = function() require("everforest").setup() end, })
-    use('theprimeagen/harpoon')
     use { 'nvim-telescope/telescope.nvim', tag = '0.1.0', requires = { {'nvim-lua/plenary.nvim'} } }
-    use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
+--    use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
     use 'tpope/vim-sleuth' -- Detect tabstop and shiftwidth automatically
     use 'nanozuki/tabby.nvim'
     use 'tpope/vim-commentary'
@@ -84,7 +88,7 @@ return require('packer').startup(function(use)
     require('plugins.tabby')
     require('plugins.treesitter')
     require('plugins.lualine')
-    require('plugins.indent_blanklines')
+--    require('plugins.indent_blanklines')
 
 end)
 
