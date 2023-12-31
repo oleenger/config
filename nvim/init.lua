@@ -20,7 +20,7 @@ use {
     requires = { {"nvim-lua/plenary.nvim"} }
 }
     use({"neanias/everforest-nvim", config = function() require("everforest").setup() end, })
-    use { 'nvim-telescope/telescope.nvim', tag = '0.1.0', requires = { {'nvim-lua/plenary.nvim'} } }
+    use { 'nvim-telescope/telescope.nvim', tag = '0.1.5', requires = { {'nvim-lua/plenary.nvim'} } }
 --    use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
     use 'tpope/vim-sleuth' -- Detect tabstop and shiftwidth automatically
     use 'nanozuki/tabby.nvim'

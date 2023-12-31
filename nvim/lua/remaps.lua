@@ -17,6 +17,10 @@ vim.keymap.set("v", "<leader>d", "\"_d")
 -- This is going to get me cancelled
 vim.keymap.set("i", "<C-c>", "<Esc>")
 
+-- splits
+vim.keymap.set("n", "<leader>-", vim.cmd.split)
+vim.keymap.set("n", "<leader><Bar>", vim.cmd.vsplit)
+
 -- Undo and redo
 vim.keymap.set("n", "<C-Z>", "u")
 vim.keymap.set("n", "<C-Y>", "<C-R>")
