@@ -17,11 +17,16 @@ use "nvim-lua/plenary.nvim" -- don't forget to add this one if you don't have it
 use {
     "ThePrimeagen/harpoon",
     branch = "harpoon2",
-    requires = { {"nvim-lua/plenary.nvim"} }
+    requires = { {"nvim-lua/plenary.nvim"} },
 }
     use({"neanias/everforest-nvim", config = function() require("everforest").setup() end, })
-    use { 'nvim-telescope/telescope.nvim', tag = '0.1.5', requires = { {'nvim-lua/plenary.nvim'} } }
+    use { 'nvim-telescope/telescope.nvim',
+        tag = '0.1.5', 
+        requires = { {'nvim-lua/plenary.nvim'} } 
+    }
+
 --    use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
+    --
     use 'tpope/vim-sleuth' -- Detect tabstop and shiftwidth automatically
     use 'nanozuki/tabby.nvim'
 
@@ -30,7 +35,8 @@ use {
     config = function()
         require('Comment').setup()
     end
-}
+    }
+
 
     -- Syntax parser
     use("nvim-treesitter/nvim-treesitter")
@@ -60,7 +66,7 @@ use {
 
     --Data Science
     use 'preservim/vimux'
-    use 'greghor/vim-pyShell'
+    -- use 'greghor/vim-pyShell'
     use 'julienr/vim-cellmode'
 
     use {
@@ -87,14 +93,15 @@ use {
     end
 
     require('opts')
-    require('remaps')
     require('cmd')
     require('plugins.nvim-tree')
     require('plugins.telescope')
     require('plugins.tabby')
     require('plugins.treesitter')
     require('plugins.lualine')
+    require('plugins.harpoon')
 --    require('plugins.indent_blanklines')
 
+    require('remaps')
 end)
 
