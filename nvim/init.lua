@@ -24,7 +24,13 @@ use {
 --    use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
     use 'tpope/vim-sleuth' -- Detect tabstop and shiftwidth automatically
     use 'nanozuki/tabby.nvim'
-    use 'tpope/vim-commentary'
+
+    use {
+    'numToStr/Comment.nvim',
+    config = function()
+        require('Comment').setup()
+    end
+}
 
     -- Syntax parser
     use("nvim-treesitter/nvim-treesitter")
