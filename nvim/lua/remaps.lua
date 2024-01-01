@@ -27,3 +27,4 @@ vim.keymap.set("n", "<leader>r", "ciw")
 --Search replace
 vim.api.nvim_set_keymap('n', '<leader>s', ':%s/<c-r><c-w>//g<left><left>', {})
 
+vim.api.nvim_set_keymap("n", "<leader>f", ":Format<CR>", {})

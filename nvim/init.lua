@@ -1,107 +1,125 @@
 local ensure_packer = function()
-    local fn = vim.fn
-    local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
-    if fn.empty(fn.glob(install_path)) > 0 then
-        fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
-        vim.cmd [[packadd packer.nvim]]
-        return true
-    end
-    return false
+  local fn = vim.fn
+  local install_path = fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
+  if fn.empty(fn.glob(install_path)) > 0 then
+    fn.system({
+      "git",
+      "clone",
+      "--depth",
+      "1",
+      "https://github.com/wbthomason/packer.nvim",
+      install_path,
+    })
+    vim.cmd([[packadd packer.nvim]])
+    return true
+  end
+  return false
 end
 
 local packer_bootstrap = ensure_packer()
 
-return require('packer').startup(function(use)
-    use 'wbthomason/packer.nvim'
-use "nvim-lua/plenary.nvim" -- don't forget to add this one if you don't have it yet!
-use {
+return require("packer").startup(function(use)
+  use("wbthomason/packer.nvim")
+  use("nvim-lua/plenary.nvim") -- don't forget to add this one if you don't have it yet!
+  use({
     "ThePrimeagen/harpoon",
     branch = "harpoon2",
-    requires = { {"nvim-lua/plenary.nvim"} },
-}
-    use({"neanias/everforest-nvim", config = function() require("everforest").setup() end, })
-    use { 'nvim-telescope/telescope.nvim',
-        tag = '0.1.5', 
-        requires = { {'nvim-lua/plenary.nvim'} } 
-    }
-
---    use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
-    --
-    use 'tpope/vim-sleuth' -- Detect tabstop and shiftwidth automatically
-    use 'nanozuki/tabby.nvim'
-
-    use {
-    'numToStr/Comment.nvim',
+    requires = { { "nvim-lua/plenary.nvim" } },
+  })
+  use({
+    "neanias/everforest-nvim",
     config = function()
-        require('Comment').setup()
-    end
-    }
+      require("everforest").setup()
+    end,
+  })
+  use({
+    "nvim-telescope/telescope.nvim",
+    tag = "0.1.5",
+    requires = { { "nvim-lua/plenary.nvim" } },
+  })
 
+  --    use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
+  --
+  use("tpope/vim-sleuth") -- Detect tabstop and shiftwidth automatically
+  use("nanozuki/tabby.nvim")
 
-    -- Syntax parser
-    use("nvim-treesitter/nvim-treesitter")
+  use({
+    "numToStr/Comment.nvim",
+    config = function()
+      require("Comment").setup()
+    end,
+  })
 
-    -- Completion
-    use("hrsh7th/cmp-buffer")
-    use("hrsh7th/cmp-cmdline")
-    use("hrsh7th/cmp-nvim-lsp")
-    use("hrsh7th/cmp-path")
-    use("hrsh7th/nvim-cmp")
+  use({
+    "stevearc/conform.nvim",
+    config = function()
+      require("conform").setup()
+    end,
+  })
 
-    use("tpope/vim-fugitive")
+  -- Syntax parser
+  use("nvim-treesitter/nvim-treesitter")
 
-    -- Snippets 
-    use("L3MON4D3/LuaSnip")
-    use("saadparwaiz1/cmp_luasnip")
-    -- Formatting
-    use("jose-elias-alvarez/null-ls.nvim")
-    -- Language server
-    use("neovim/nvim-lspconfig")
-    use("williamboman/nvim-lsp-installer")
+  -- Completion
+  use("hrsh7th/cmp-buffer")
+  use("hrsh7th/cmp-cmdline")
+  use("hrsh7th/cmp-nvim-lsp")
+  use("hrsh7th/cmp-path")
+  use("hrsh7th/nvim-cmp")
 
-    -- Utilities
-    use("windwp/nvim-autopairs")
-    use("norcalli/nvim-colorizer.lua")
-    use("lewis6991/gitsigns.nvim")
+  use("tpope/vim-fugitive")
 
-    --Data Science
-    use 'preservim/vimux'
-    -- use 'greghor/vim-pyShell'
-    use 'julienr/vim-cellmode'
+  -- Snippets
+  use("L3MON4D3/LuaSnip")
+  use("saadparwaiz1/cmp_luasnip")
+  -- Formatting
+  use("jose-elias-alvarez/null-ls.nvim")
+  -- Language server
+  use("neovim/nvim-lspconfig")
+  use("williamboman/nvim-lsp-installer")
 
-    use {
-        'nvim-tree/nvim-tree.lua',
-        tag = 'nightly' -- optional, updated every week. (see issue #1193)
-    }
+  -- Utilities
+  use("windwp/nvim-autopairs")
+  use("norcalli/nvim-colorizer.lua")
+  use("lewis6991/gitsigns.nvim")
 
-    use {
-        'nvim-lualine/lualine.nvim',
-        requires = { 'kyazdani42/nvim-web-devicons', opt = true }
-    }
+  --Data Science
+  use("preservim/vimux")
+  -- use 'greghor/vim-pyShell'
+  use("julienr/vim-cellmode")
 
-    if packer_bootstrap then
-        require('packer').sync()
+  use({
+    "nvim-tree/nvim-tree.lua",
+    tag = "nightly", -- optional, updated every week. (see issue #1193)
+  })
 
-        require("everforest").setup({ background = "hard" })
+  use({
+    "nvim-lualine/lualine.nvim",
+    requires = { "kyazdani42/nvim-web-devicons", opt = true },
+  })
 
-        require("nvim-autopairs").setup({
-            disable_filetype = { "TelescopePrompt" },
-        })
-        require("colorizer").setup()
-        require("gitsigns").setup()
+  if packer_bootstrap then
+    require("packer").sync()
 
-    end
+    require("everforest").setup({ background = "hard" })
 
-    require('opts')
-    require('cmd')
-    require('plugins.nvim-tree')
-    require('plugins.telescope')
-    require('plugins.tabby')
-    require('plugins.treesitter')
-    require('plugins.lualine')
-    require('plugins.harpoon')
---    require('plugins.indent_blanklines')
+    require("nvim-autopairs").setup({
+      disable_filetype = { "TelescopePrompt" },
+    })
+    require("colorizer").setup()
+    require("gitsigns").setup()
+  end
 
-    require('remaps')
+  require("opts")
+  require("cmd")
+  require("plugins.nvim-tree")
+  require("plugins.telescope")
+  require("plugins.tabby")
+  require("plugins.treesitter")
+  require("plugins.lualine")
+  require("plugins.harpoon")
+  require("plugins.conform")
+  --    require('plugins.indent_blanklines')
+
+  require("remaps")
 end)
-
