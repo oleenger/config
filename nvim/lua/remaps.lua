@@ -23,8 +23,9 @@ vim.keymap.set("n", "<leader>pc", "gcip", { remap = true }) -- paragraph
 -- delete word and insert
 vim.keymap.set("n", "<leader>r", "ciw")
 
-
 --Search replace
 vim.api.nvim_set_keymap('n', '<leader>s', ':%s/<c-r><c-w>//g<left><left>', {})
+vim.api.nvim_set_keymap('n', '<leader>xml', ':%s/<<c-r><c-w>>//g<left><left>', {})
 
+-- Format code
 vim.api.nvim_set_keymap("n", "<leader>f", ":Format<CR>", {})
