@@ -24,6 +24,10 @@ return require("packer").startup(function(use)
     use("williamboman/mason.nvim")
     require("mason").setup()
 
+    -- vim-ansible
+    use("chase/vim-ansible-yaml")
+
+
     -- Harpoon
     use({
         "ThePrimeagen/harpoon",
@@ -128,13 +132,13 @@ return require("packer").startup(function(use)
     require("plugins.tabby")
     require("plugins.treesitter")
     require("plugins.lualine")
-    require("plugins.harpoon")
     require("plugins.nvim-lint")
     require("plugins.conform")
-    require("plugins.ansible-vim")
     -- require("plugins.mason")
+    require("remaps")
+    require("plugins.harpoon")
+    require("plugins.vim-ansible-yaml")
 
     --    require('plugins.indent_blanklines')
 
-    require("remaps")
 end)
