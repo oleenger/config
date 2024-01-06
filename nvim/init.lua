@@ -25,7 +25,7 @@ return require("packer").startup(function(use)
     require("mason").setup()
 
     -- vim-ansible
-    -- use("chase/vim-ansible-yaml")
+    use("chase/vim-ansible-yaml")
     use("mfussenegger/nvim-lint")
 
     -- Harpoon
