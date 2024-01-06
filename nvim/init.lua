@@ -25,8 +25,8 @@ return require("packer").startup(function(use)
     require("mason").setup()
 
     -- vim-ansible
-    use("chase/vim-ansible-yaml")
-
+    -- use("chase/vim-ansible-yaml")
+    use("mfussenegger/nvim-lint")
 
     -- Harpoon
     use({
@@ -54,7 +54,6 @@ return require("packer").startup(function(use)
     --
     use("tpope/vim-sleuth") -- Detect tabstop and shiftwidth automatically
     use("nanozuki/tabby.nvim")
-    use("mfussenegger/nvim-lint")
 
     -- Commenting
     use({
