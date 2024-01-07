@@ -1,3 +1,4 @@
+require("remaps")
 local ensure_packer = function()
     local fn = vim.fn
     local install_path = fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
@@ -19,8 +20,11 @@ end
 local packer_bootstrap = ensure_packer()
 
 return require("packer").startup(function(use)
-    use("wbthomason/packer.nvim")
-    use("nvim-lua/plenary.nvim")
+    use({
+        "wbthomason/packer.nvim",
+        "nvim-lua/plenary.nvim",
+        "neanias/everforest-nvim",
+    })
 
     -- LSP
     use({
@@ -41,9 +45,27 @@ return require("packer").startup(function(use)
         },
     })
 
-    -- vim-ansible
-    use("chase/vim-ansible-yaml")
-    use("mfussenegger/nvim-lint")
+    use({
+        "hrsh7th/cmp-buffer",
+        "hrsh7th/cmp-cmdline",
+        "hrsh7th/cmp-nvim-lsp",
+        "hrsh7th/cmp-path",
+        "hrsh7th/nvim-cmp",
+        "chase/vim-ansible-yaml",
+        "mfussenegger/nvim-lint",
+        "tpope/vim-sleuth", -- Detect tabstop and shiftwidth automatically
+        "nanozuki/tabby.nvim",
+        "nvim-treesitter/nvim-treesitter",
+        "tpope/vim-fugitive",
+        "L3MON4D3/LuaSnip",
+        "saadparwaiz1/cmp_luasnip",
+        -- "jose-elias-alvarez/null-ls.nvim",
+        "windwp/nvim-autopairs",
+        "norcalli/nvim-colorizer.lua",
+        "ewis6991/gitsigns.nvim",
+        "preservim/vimux", -- Data Science
+        "julienr/vim-cellmode", -- Jupyter
+    })
 
     -- Harpoon
     use({
@@ -52,25 +74,12 @@ return require("packer").startup(function(use)
         requires = { { "nvim-lua/plenary.nvim" } },
     })
 
-    -- Colorscheme
-    use({
-        "neanias/everforest-nvim",
-        config = function()
-            require("everforest").setup()
-        end,
-    })
-
     -- Telescope
     use({
         "nvim-telescope/telescope.nvim",
         tag = "0.1.5",
         requires = { { "nvim-lua/plenary.nvim" } },
     })
-
-    --    use 'lukas-reineke/indent-blankline.nvim' -- Add indentation guides even on blank lines
-    --
-    use("tpope/vim-sleuth") -- Detect tabstop and shiftwidth automatically
-    use("nanozuki/tabby.nvim")
 
     -- Commenting
     use({
@@ -88,34 +97,6 @@ return require("packer").startup(function(use)
         end,
     })
 
-    -- Syntax parser
-    use("nvim-treesitter/nvim-treesitter")
-
-    -- Completion
-    use("hrsh7th/cmp-buffer")
-    use("hrsh7th/cmp-cmdline")
-    use("hrsh7th/cmp-nvim-lsp")
-    use("hrsh7th/cmp-path")
-    use("hrsh7th/nvim-cmp")
-
-    use("tpope/vim-fugitive")
-
-    -- Snippets
-    use("L3MON4D3/LuaSnip")
-    use("saadparwaiz1/cmp_luasnip")
-    -- Formatting
-    use("jose-elias-alvarez/null-ls.nvim")
-
-    -- Utilities
-    use("windwp/nvim-autopairs")
-    use("norcalli/nvim-colorizer.lua")
-    use("lewis6991/gitsigns.nvim")
-
-    --Data Science
-    use("preservim/vimux")
-    -- use 'greghor/vim-pyShell'
-    use("julienr/vim-cellmode")
-
     use({
         "nvim-tree/nvim-tree.lua",
         tag = "nightly", -- optional, updated every week. (see issue #1193)
@@ -128,9 +109,9 @@ return require("packer").startup(function(use)
 
     if packer_bootstrap then
         require("packer").sync()
-
-        require("everforest").setup({ background = "hard" })
-
+        require("everforest").setup({
+            background = "hard",
+        })
         require("nvim-autopairs").setup({
             disable_filetype = { "TelescopePrompt" },
         })
@@ -140,7 +121,6 @@ return require("packer").startup(function(use)
 
     require("opts")
     require("cmd")
-    -- require("plugins.mason")
     require("plugins.nvim-tree")
     require("plugins.nvim-cmp")
     require("plugins.telescope")
@@ -152,6 +132,4 @@ return require("packer").startup(function(use)
     require("remaps")
     require("plugins.harpoon")
     require("plugins.vim-ansible-yaml")
-
-    --    require('plugins.indent_blanklines')
 end)
