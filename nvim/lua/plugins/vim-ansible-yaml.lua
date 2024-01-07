@@ -6,7 +6,7 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
 
 vim.cmd[[
         highlight PreProc guifg=orange
-        highlight Boolean guifg=darkorange
-        highlight ansibleRepeat guifg=darkyellow
+        highlight Boolean guifg=#dfaf87
+        highlight ansibleRepeat guifg=#af875f
 ]]
 
