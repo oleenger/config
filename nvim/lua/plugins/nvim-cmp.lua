@@ -13,7 +13,7 @@ end
 -- load VSCode-like snippets from plugins (e.g., friendly-snippets)
 
 
-require("luasnip/loaders/from_vscode").lazy_load()
+-- require("luasnip/loaders/from_vscode").lazy_load()
 
 vim.opt.completeopt = "menu,menuone,noselect"
 
@@ -23,6 +23,10 @@ cmp.setup({
       luasnip.lsp_expand(args.body)
     end,
   },
+      window = {
+      -- completion = cmp.config.window.bordered(),
+      -- documentation = cmp.config.window.bordered(),
+    },
   mapping = cmp.mapping.preset.insert({
     ["<C-k>"] = cmp.mapping.select_prev_item(), -- previous suggestion
     ["<C-j>"] = cmp.mapping.select_next_item(), -- next suggestion
