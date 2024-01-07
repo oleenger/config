@@ -1,9 +1,15 @@
-require("remaps")
 local ensure_packer = function()
     local fn = vim.fn
     local install_path = fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
     if fn.empty(fn.glob(install_path)) > 0 then
-        fn.system({ "git", "clone", "--depth", "1", "https://github.com/wbthomason/packer.nvim", install_path, })
+        fn.system({
+            "git",
+            "clone",
+            "--depth",
+            "1",
+            "https://github.com/wbthomason/packer.nvim",
+            install_path,
+        })
         vim.cmd([[packadd packer.nvim]])
         return true
     end
@@ -19,26 +25,13 @@ return require("packer").startup(function(use)
         "neanias/everforest-nvim",
     })
 
-    -- LSP
     use({
+        -- LSP
         "williamboman/mason.nvim",
         "williamboman/mason-lspconfig.nvim",
         "neovim/nvim-lspconfig",
-    })
 
-    require("mason").setup()
-
-    require("mason-lspconfig").setup({
-        ensure_installed = { "lua_ls", "ansiblels" },
-    })
-    require("lspconfig").ansiblels.setup({
-        cmd = { "ansible-language-server", "--stdio" },
-        settings = {
-            filetypes = { "ansible" },
-        },
-    })
-
-    use({
+        -- Autocomplete
         "hrsh7th/cmp-buffer",
         "hrsh7th/cmp-cmdline",
         "hrsh7th/cmp-nvim-lsp",
@@ -58,46 +51,45 @@ return require("packer").startup(function(use)
         "ewis6991/gitsigns.nvim",
         "preservim/vimux", -- Data Science
         "julienr/vim-cellmode", -- Jupyter
-    })
 
-    -- Harpoon
-    use({
-        "ThePrimeagen/harpoon",
-        branch = "harpoon2",
-        requires = { { "nvim-lua/plenary.nvim" } },
-    })
+        -- Harpoon
+        use({
+            "ThePrimeagen/harpoon",
+            branch = "harpoon2",
+            requires = { { "nvim-lua/plenary.nvim" } },
+        }),
+        -- Telescope
+        {
+            "nvim-telescope/telescope.nvim",
+            tag = "0.1.5",
+            requires = { { "nvim-lua/plenary.nvim" } },
+        },
 
-    -- Telescope
-    use({
-        "nvim-telescope/telescope.nvim",
-        tag = "0.1.5",
-        requires = { { "nvim-lua/plenary.nvim" } },
-    })
+        -- Commenting
+        {
+            "numToStr/Comment.nvim",
+            config = function()
+                require("Comment").setup()
+            end,
+        },
 
-    -- Commenting
-    use({
-        "numToStr/Comment.nvim",
-        config = function()
-            require("Comment").setup()
-        end,
-    })
+        -- Conform formatting
+        {
+            "stevearc/conform.nvim",
+            config = function()
+                require("conform").setup()
+            end,
+        },
 
-    -- Conform formatting
-    use({
-        "stevearc/conform.nvim",
-        config = function()
-            require("conform").setup()
-        end,
-    })
+        {
+            "nvim-tree/nvim-tree.lua",
+            tag = "nightly", -- optional, updated every week. (see issue #1193)
+        },
 
-    use({
-        "nvim-tree/nvim-tree.lua",
-        tag = "nightly", -- optional, updated every week. (see issue #1193)
-    })
-
-    use({
-        "nvim-lualine/lualine.nvim",
-        requires = { "kyazdani42/nvim-web-devicons", opt = true },
+        {
+            "nvim-lualine/lualine.nvim",
+            requires = { "kyazdani42/nvim-web-devicons", opt = true },
+        },
     })
 
     if packer_bootstrap then
@@ -110,6 +102,17 @@ return require("packer").startup(function(use)
         })
         require("colorizer").setup()
         require("gitsigns").setup()
+
+        require("mason").setup()
+
+        require("mason-lspconfig").setup({
+            ensure_installed = { "lua_ls", "ansiblels" },
+        })
+        require("lspconfig").ansiblels.setup({
+            settings = {
+                filetypes = { "ansible" },
+            },
+        })
     end
 
     require("opts")
@@ -122,7 +125,7 @@ return require("packer").startup(function(use)
     require("plugins.lualine")
     require("plugins.nvim-lint")
     require("plugins.conform")
-    require("remaps")
     require("plugins.harpoon")
     require("plugins.vim-ansible-yaml")
+    require("remaps")
 end)
