@@ -23,9 +23,7 @@ return require("packer").startup(function(use)
         "wbthomason/packer.nvim",
         "nvim-lua/plenary.nvim",
         "neanias/everforest-nvim",
-    })
 
-    use({
         -- LSP
         "williamboman/mason.nvim",
         "williamboman/mason-lspconfig.nvim",
@@ -39,6 +37,7 @@ return require("packer").startup(function(use)
         "hrsh7th/nvim-cmp",
         "chase/vim-ansible-yaml",
         "mfussenegger/nvim-lint",
+
         "tpope/vim-sleuth", -- Detect tabstop and shiftwidth automatically
         "nanozuki/tabby.nvim",
         "nvim-treesitter/nvim-treesitter",
@@ -94,13 +93,17 @@ return require("packer").startup(function(use)
 
     if packer_bootstrap then
         require("packer").sync()
+
         require("everforest").setup({
             background = "hard",
         })
+
         require("nvim-autopairs").setup({
             disable_filetype = { "TelescopePrompt" },
         })
+
         require("colorizer").setup()
+
         require("gitsigns").setup()
 
         require("mason").setup()
@@ -108,6 +111,7 @@ return require("packer").startup(function(use)
         require("mason-lspconfig").setup({
             ensure_installed = { "lua_ls", "ansiblels" },
         })
+
         require("lspconfig").ansiblels.setup({
             settings = {
                 filetypes = { "ansible" },
