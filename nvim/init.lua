@@ -21,8 +21,25 @@ local packer_bootstrap = ensure_packer()
 return require("packer").startup(function(use)
     use("wbthomason/packer.nvim")
     use("nvim-lua/plenary.nvim")
-    use("williamboman/mason.nvim")
+
+    -- LSP
+    use({
+        "williamboman/mason.nvim",
+        "williamboman/mason-lspconfig.nvim",
+        "neovim/nvim-lspconfig",
+    })
+
     require("mason").setup()
+
+    require("mason-lspconfig").setup({
+        ensure_installed = { "lua_ls", "ansiblels" },
+    })
+    require("lspconfig").ansiblels.setup({
+        cmd = { "ansible-language-server", "--stdio" },
+        settings = {
+            filetypes = { "ansible" },
+        },
+    })
 
     -- vim-ansible
     use("chase/vim-ansible-yaml")
@@ -88,9 +105,6 @@ return require("packer").startup(function(use)
     use("saadparwaiz1/cmp_luasnip")
     -- Formatting
     use("jose-elias-alvarez/null-ls.nvim")
-    -- Language server
-    use("neovim/nvim-lspconfig")
-    use("williamboman/nvim-lsp-installer")
 
     -- Utilities
     use("windwp/nvim-autopairs")
@@ -126,18 +140,18 @@ return require("packer").startup(function(use)
 
     require("opts")
     require("cmd")
+    -- require("plugins.mason")
     require("plugins.nvim-tree")
+    require("plugins.nvim-cmp")
     require("plugins.telescope")
     require("plugins.tabby")
     require("plugins.treesitter")
     require("plugins.lualine")
     require("plugins.nvim-lint")
     require("plugins.conform")
-    -- require("plugins.mason")
     require("remaps")
     require("plugins.harpoon")
     require("plugins.vim-ansible-yaml")
 
     --    require('plugins.indent_blanklines')
-
 end)
