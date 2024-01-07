@@ -22,12 +22,48 @@ return require("packer").startup(function(use)
     use({
         "wbthomason/packer.nvim",
         "nvim-lua/plenary.nvim",
-        "neanias/everforest-nvim",
+
+        -- Colorscheme
+        {
+            "neanias/everforest-nvim",
+            config = function()
+                require("everforest").setup({
+                    background = "hard",
+                })
+            end,
+        },
 
         -- LSP
-        "williamboman/mason.nvim",
-        "williamboman/mason-lspconfig.nvim",
-        "neovim/nvim-lspconfig",
+        -- Mason
+        {
+            "williamboman/mason.nvim",
+            config = function()
+                require("mason").setup()
+            end,
+        },
+
+        {
+            "williamboman/mason-lspconfig.nvim",
+            config = function()
+                require("mason").setup({
+                    ensure_installed = {
+                        "lua_ls",
+                        "ansiblels",
+                    },
+                })
+            end,
+        },
+
+        {
+            "neovim/nvim-lspconfig",
+            config = function()
+                require("lspconfig").setup({
+                    settings = {
+                        filetypes = { "ansible" },
+                    },
+                })
+            end,
+        },
 
         -- Autocomplete
         "hrsh7th/cmp-buffer",
@@ -37,7 +73,6 @@ return require("packer").startup(function(use)
         "hrsh7th/nvim-cmp",
         "chase/vim-ansible-yaml",
         "mfussenegger/nvim-lint",
-
         "tpope/vim-sleuth", -- Detect tabstop and shiftwidth automatically
         "nanozuki/tabby.nvim",
         "nvim-treesitter/nvim-treesitter",
@@ -45,23 +80,45 @@ return require("packer").startup(function(use)
         "L3MON4D3/LuaSnip",
         "saadparwaiz1/cmp_luasnip",
         -- "jose-elias-alvarez/null-ls.nvim",
-        "windwp/nvim-autopairs",
-        "norcalli/nvim-colorizer.lua",
-        "ewis6991/gitsigns.nvim",
         "preservim/vimux", -- Data Science
         "julienr/vim-cellmode", -- Jupyter
 
+        -- Gitsigns
+        {
+            "ewis6991/gitsigns.nvim",
+            config = function()
+                require("gitsigns").setup()
+            end,
+        },
+
+        -- Colorizer
+        {
+            "norcalli/nvim-colorizer.lua",
+            config = function()
+                require("colorizer").setup()
+            end,
+        },
+
+        -- Autopairs
+        {
+            "windwp/nvim-autopairs",
+            config = function()
+                require("nvim-autopairs").setup({
+                    disable_filetype = { "TelescopePrompt" },
+                })
+            end,
+        },
+
         -- Harpoon
-        use({
+        {
             "ThePrimeagen/harpoon",
             branch = "harpoon2",
-            requires = { { "nvim-lua/plenary.nvim" } },
-        }),
+        },
+
         -- Telescope
         {
             "nvim-telescope/telescope.nvim",
             tag = "0.1.5",
-            requires = { { "nvim-lua/plenary.nvim" } },
         },
 
         -- Commenting
@@ -80,11 +137,13 @@ return require("packer").startup(function(use)
             end,
         },
 
+        -- Nvim-Tree
         {
             "nvim-tree/nvim-tree.lua",
             tag = "nightly", -- optional, updated every week. (see issue #1193)
         },
 
+        -- Lualine
         {
             "nvim-lualine/lualine.nvim",
             requires = { "kyazdani42/nvim-web-devicons", opt = true },
@@ -93,30 +152,6 @@ return require("packer").startup(function(use)
 
     if packer_bootstrap then
         require("packer").sync()
-
-        require("everforest").setup({
-            background = "hard",
-        })
-
-        require("nvim-autopairs").setup({
-            disable_filetype = { "TelescopePrompt" },
-        })
-
-        require("colorizer").setup()
-
-        require("gitsigns").setup()
-
-        require("mason").setup()
-
-        require("mason-lspconfig").setup({
-            ensure_installed = { "lua_ls", "ansiblels" },
-        })
-
-        require("lspconfig").ansiblels.setup({
-            settings = {
-                filetypes = { "ansible" },
-            },
-        })
     end
 
     require("opts")
