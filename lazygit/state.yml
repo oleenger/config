@@ -1,7 +1,9 @@
 lastupdatecheck: 0
 recentrepos:
+- /home/oleenger/dev/bandak-db-browser
 - /home/oleenger/dev/ansible-bandak-deploy
 startuppopupversion: 5
-customcommandshistory: []
+customcommandshistory:
+- q
 hidecommandlog: false
 ignorewhitespaceindiffview: false

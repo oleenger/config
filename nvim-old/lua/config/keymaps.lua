@@ -6,3 +6,7 @@ map("n", "<leader>sn", ":Telescope live_grep search_dirs=~/.nb/home/<cr>")
 
 map("n", "<leader>nb", ":!nb ")
 map("n", "<leader>nn", ":e /home/oleenger/.nb/home/")
+
+map("i", "jj", "<ESC>", "Exit insert mode")
+map("n", "<leader>nh", ":nohl<CR>", { desc = "Clear search highlights" })
+
