@@ -181,7 +181,7 @@ vim.diagnostic.config({
       tailwindcss = {},
       dockerls = {},
       sqlls = {},
-      terraformls = {},
+      -- terraformls = {},
       jsonls = {},
       yamlls = {},
 
