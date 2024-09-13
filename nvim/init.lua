@@ -26,7 +26,6 @@ require('lazy').setup {
   require 'plugins.autocompletion',
   -- require 'plugins.none-ls',
   require 'plugins.gitsigns',
-  -- require 'plugins.alpha',
   require 'plugins.indent-blankline',
   require 'plugins.misc',
   require 'plugins.comment',
@@ -35,6 +34,8 @@ require('lazy').setup {
   require 'plugins.lazygit',
   require 'plugins.nvim-metals',
   require 'plugins.conform',
+  require 'plugins.vim-maximizer',
+  require 'plugins.aerial',
 }
 
 require('everforest').load()
