@@ -15,30 +15,21 @@ return {
     'hrsh7th/cmp-nvim-lsp',
   },
   config = function()
-
     -- disable virtual_text (inline) diagnostics and use floating window
--- format the message such that it shows source, message and
--- the error code. Show the message with <space>e
-vim.diagnostic.config({
-	virtual_text = false,
-	signs = true,
-	float = {
-		border = "single",
-		format = function(diagnostic)
-			return string.format(
-				"%s (%s) [%s]",
-				diagnostic.message,
-				diagnostic.source,
-				diagnostic.code or diagnostic.user_data.lsp.code
-			)
-		end,
-	},
-})
+    -- format the message such that it shows source, message and
+    -- the error code. Show the message with <space>e
+    vim.diagnostic.config {
+      virtual_text = false,
+      signs = true,
+      float = {
+        border = 'single',
+        format = function(diagnostic)
+          return string.format('%s (%s) [%s]', diagnostic.message, diagnostic.source, diagnostic.code or diagnostic.user_data.lsp.code)
+        end,
+      },
+    }
 
-    vim.api.nvim_set_keymap('n', '<space>dd', '<cmd>lua vim.diagnostic.open_float()<CR>', { noremap=true, silent=true })
-
-
-
+    vim.api.nvim_set_keymap('n', '<space>dd', '<cmd>lua vim.diagnostic.open_float()<CR>', { noremap = true, silent = true })
 
     vim.api.nvim_create_autocmd('LspAttach', {
       group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
@@ -50,8 +41,17 @@ vim.diagnostic.config({
         -- for LSP related items. It sets the mode, buffer and description for us each time.
         local map = function(keys, func, desc, mode)
           mode = mode or 'n'
-          vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
+          vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' })
         end
+
+        -- LSP mappings
+        map('n', 'K', vim.lsp.buf.hover)
+        map('n', 'gds', vim.lsp.buf.document_symbol)
+        map('n', 'gws', vim.lsp.buf.workspace_symbol)
+        map('n', '<leader>cl', vim.lsp.codelens.run)
+        map('n', '<leader>sh', vim.lsp.buf.signature_help)
+        map('n', '<leader>rn', vim.lsp.buf.rename)
+        map('n', '<leader>f', vim.lsp.buf.format)
 
         -- Jump to the definition of the word under your cursor.
         --  This is where a variable was first declared, or where a function is defined, etc.

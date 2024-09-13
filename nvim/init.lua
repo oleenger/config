@@ -33,9 +33,11 @@ require('lazy').setup {
   require 'plugins.dressing',
   require 'plugins.linting',
   require 'plugins.lazygit',
+  require 'plugins.nvim-metals',
+  require 'plugins.conform',
 }
 
-require("everforest").load()
+require('everforest').load()
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
