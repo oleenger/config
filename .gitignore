@@ -1,5 +1,6 @@
 target/
 op/
+lazy-lock.json
 gh/
 lazygit/state.yml
 lazygit
