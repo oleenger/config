@@ -83,7 +83,7 @@ for host in hosts:
 with open("hosts.yml") as stream:
   content = yaml.safe_load(stream)
 
-  for url in content["vips"]:
+  for url in content["sites"]:
     pac += f"'{ url }': { START_PORT },\n"
 
 pac += """
