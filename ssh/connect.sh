@@ -3,6 +3,9 @@
 TRA_PROXY="ssh.ult"
 CONFIG=~/.ssh/config
 
+eval `keychain --eval ~/.ssh/id_ed25519`
+ssh-add ~/.ssh/id_rsa
+
 proxy_login() {
     echo "Checking tra connection"
     ssh -O check $TRA_PROXY
