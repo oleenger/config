@@ -38,74 +38,76 @@ def generate(content):
       else:
         item_str += f"\tUser { content['User'] }\n"
 
-
       output += item_str
 
-  print(output)
+  return output
 
-with open("hosts.yml") as stream:
-  try:
+def generate_config():
+  with open("hosts.yml") as stream:
     content = yaml.safe_load(stream)
-    generate(content)
-  except yaml.YAMLError as exc:
-    print(exc)
+    config  = generate(content)
+    f = open("config", "w")
+    f.write(config)
+    f.close()
 
+def generate_pac():
+  hosts = list()
+  with open("config") as file:
+    for line in file:
+      if "Host" in line:
+        obj = dict()
+      if "HostName" in line:
+        hostname = line.split("HostName ")[1].strip()
+        obj['hostname'] = hostname
+        print(hostname)
+      if "DynamicForward" in line:
+        dynamic_forward = line.split("DynamicForward")[1].strip()
+        print(dynamic_forward)
+        obj['dynamic_forward'] = dynamic_forward
+        hosts.append(obj)
 
+    pac = """
+    function FindProxyForURL(url, requestedHost) {
+        "use strict";
+        alert("Trying url = " + url + " *** host = " + host + " *** Resolved IP = " + dnsResolve(host));
+        var hosts =
+        {
+    """
 
+    for host in hosts:
+      pac += f"'{ host['hostname'] }': { str(host['dynamic_forward']) },\n"
 
-hosts = list()
-with open("config") as file:
-  for line in file:
-    if "Host" in line:
-      obj = dict()
-    if "HostName" in line:
-      hostname = line.split("HostName ")[1].strip()
-      obj['hostname'] = hostname
-      print(hostname)
-    if "DynamicForward" in line:
-      dynamic_forward = line.split("DynamicForward")[1].strip()
-      print(dynamic_forward)
-      obj['dynamic_forward'] = dynamic_forward
-      hosts.append(obj)
+    #SITES
+    with open("hosts.yml") as stream:
+      content = yaml.safe_load(stream)
 
-pac = """
-function FindProxyForURL(url, requestedHost) {
-    "use strict";
-    alert("Trying url = " + url + " *** host = " + host + " *** Resolved IP = " + dnsResolve(host));
-    var hosts =
-    {
-"""
+      for url in content["sites"]:
+        if content['sites'][url] != None and "Proxy" in content['sites'][url].keys():
+          proxy = content["sites"][url]["Proxy"]
+          idx = next((i for i,d in enumerate(content["hostnames"]["bandak.nsc.no"]["hosts"]) if proxy in d), None)
+          port = START_PORT + idx + 1 
+        else:
+          port = START_PORT
+        pac += f"'{ url }': { port },\n"
 
-for host in hosts:
-  pac += f"'{ host['hostname'] }': { str(host['dynamic_forward']) },\n"
-
-#VIPs
-with open("hosts.yml") as stream:
-  content = yaml.safe_load(stream)
-
-  for url in content["sites"]:
-    if content['sites'][url] != None and "Proxy" in content['sites'][url].keys():
-      proxy = content["sites"][url]["Proxy"]
-      idx = next((i for i,d in enumerate(content["hostnames"]["bandak.nsc.no"]["hosts"]) if proxy in d), None)
-      port = START_PORT + idx + 1 
-    else:
-      port = START_PORT
-    pac += f"'{ url }': { port },\n"
-
-pac += """
-   };
-  for (var host in hosts) {
-    var port = hosts[host];
-    if (requestedHost == host || shExpMatch(requestedHost, host)) {
-      return 'SOCKS5 localhost:' + port;
+    pac += """
+       };
+      for (var host in hosts) {
+        var port = hosts[host];
+        if (requestedHost == host || shExpMatch(requestedHost, host)) {
+          return 'SOCKS5 localhost:' + port;
+        }
+      }
+      return 'DIRECT';
     }
-  }
-  return 'DIRECT';
-}
-"""
+    """
 
-print(pac)
+    print(pac)
 
-f = open("/mnt/c/Users/t927604/proxy.pac", "w")
-f.write(pac)
-f.close()
+    f = open("/mnt/c/Users/t927604/proxy.pac", "w")
+    f.write(pac)
+    f.close()
+
+
+generate_config()
+generate_pac()
