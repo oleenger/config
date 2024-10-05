@@ -1,0 +1,513 @@
+# include NESt and Bandak SSH configs 
+# Include ~/.ssh/config.d/nest-ssh
+# Include ~/.ssh/config.d/bandak-ssh
+
+
+
+# Host *
+ServerAliveInterval 300
+ServerAliveCountMax 2
+ControlMaster auto
+ControlPath ~/.ssh/sockets/%r@%h:%p
+
+Host tra
+HostName            ssh.ult.telenor.net
+User                oiolen
+IdentityFile        ~/.ssh/id_ed25519
+DynamicForward      1080
+ServerAliveInterval 240
+
+
+Host restricted-sftp
+    HostName 10.181.55.244
+    User to927606
+    Port 2222
+
+
+Host *.ehub.nsc.no
+User oiolen
+Port 22
+IdentityFile ~/.ssh/id_ed25519
+ProxyJump ssh.ult.telenor.net
+
+Host                mapr-ansible
+Hostname            bandak-ansible01.bandak.nsc.no
+User                oiolen
+DynamicForward      1200
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+# NESt
+
+Host                nest-ansible
+Hostname            nest-ansible01.nsc.no
+User                oiolen
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+Host                ansible-su
+Hostname            nest-ansible01.nsc.no
+User                ansible
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_rsa_ansible
+
+Host                nest01
+Hostname            nest-broker01.nsc.no
+User                oiolen
+DynamicForward      1141
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+IdentitiesOnly      yes
+
+Host                nest02
+Hostname            nest-broker02.nsc.no
+User                oiolen
+DynamicForward      1142
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+IdentitiesOnly      yes
+
+Host                nest03
+Hostname            nest-broker03.nsc.no
+User                oiolen
+DynamicForward      1143
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+IdentitiesOnly      yes
+
+Host                nest04
+Hostname            nest-broker04.nsc.no
+User                oiolen
+DynamicForward      1144
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+IdentitiesOnly      yes
+
+Host                nest05
+Hostname            nest-broker05.nsc.no
+User                oiolen
+DynamicForward      1145
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+IdentitiesOnly      yes
+
+Host                cc01
+Hostname            10.124.5.132
+User                oiolen
+DynamicForward      1150
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+IdentitiesOnly      yes
+
+
+#NESt Compute
+
+Host                portainer
+Hostname            portainer.nest.nsc.no
+User                oiolen
+DynamicForward      1171
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+IdentitiesOnly      yes
+
+Host                harbor
+Hostname            harbor.nest.nsc.no
+User                oiolen
+DynamicForward      1171
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+Host                worker01
+Hostname            nest-worker01.nsc.no
+User                oiolen
+DynamicForward      1171
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+Host                worker02
+Hostname            nest-worker02.nsc.no
+User                oiolen
+DynamicForward      1172
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+Host                worker03
+Hostname            nest-worker03.nsc.no
+User                oiolen
+DynamicForward      1173
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+Host                worker04
+Hostname            nest-worker04.nsc.no
+User                oiolen
+DynamicForward      1174
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+Host                worker05
+Hostname            nest-worker05.nsc.no
+User                oiolen
+DynamicForward      1175
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+Host                worker06
+Hostname            nest-worker06.nsc.no
+User                oiolen
+DynamicForward      1176
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+Host                connect01
+Hostname            nest-connect01.nsc.no
+User                oiolen
+DynamicForward      1181
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+Host                connect02
+Hostname            nest-connect02.nsc.no
+User                oiolen
+DynamicForward      1182
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+Host                connect03
+Hostname            nest-connect03.nsc.no
+User                oiolen
+DynamicForward      1183
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+Host                connect04
+Hostname            nest-connect04.nsc.no
+User                oiolen
+DynamicForward      1184
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+Host                sr
+Hostname            nest-sr01.nsc.no
+User                oiolen
+DynamicForward      1190
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+# NESt KSQL-DB
+Host                ksql01
+Hostname            nest-ksqldb01.nsc.no
+User                oiolen
+DynamicForward      1195
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+Host                ksql02
+Hostname            nest-ksqldb02.nsc.no
+User                oiolen
+DynamicForward      1196
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+Host                ksql03
+Hostname            nest-ksqldb03.nsc.no
+User                oiolen
+DynamicForward      1197
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+# NESt Stage
+
+Host                stage-cc01
+Hostname            nest-s-cc01.nsc.no
+User                oiolen
+DynamicForward      1198
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+Host                stage-broker01
+Hostname            nest-s-broker01.nsc.no
+User                oiolen
+DynamicForward      1201
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+Host                stage-broker02
+Hostname            nest-s-broker02.nsc.no
+User                oiolen
+DynamicForward      1202
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+Host                stage-broker03
+Hostname            nest-s-broker03.nsc.no
+User                oiolen
+DynamicForward      1203
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+Host                stage-broker04
+Hostname            nest-s-broker04.nsc.no
+User                oiolen
+DynamicForward      1204
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+Host                stage-connect01
+Hostname            nest-s-connect01.nsc.no
+User                oiolen
+DynamicForward      1205
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+Host                stage-connect02
+Hostname            nest-s-connect02.nsc.no
+User                oiolen
+DynamicForward      1206
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+Host                nest-s-worker01
+Hostname            nest-s-worker01.nsc.no
+User                oiolen
+DynamicForward      1207
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+Host                portainer-s
+Hostname            portainer-s.nest.nsc.no
+User                oiolen
+DynamicForward      1207
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+IdentitiesOnly      yes
+
+Host                nest-s-worker02
+Hostname            nest-s-worker02.nsc.no
+User                oiolen
+DynamicForward      1208
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+Host                nest-s-worker03
+Hostname            nest-s-worker03.nsc.no
+User                oiolen
+DynamicForward      1209
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+# NESt Stage KSQLDB
+Host                s-ksql01
+Hostname            nest-s-ksqldb01.nsc.no
+User                oiolen
+DynamicForward      1210
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+# For login and SOCKS5 Proxy for web
+Host                gitlab-proxy
+Hostname            nest-git01.nsc.no
+User                oiolen
+DynamicForward      1151
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+IdentitiesOnly      yes
+
+# For git ssh
+Host                nest-git01.nsc.no nest-git01
+Port                2222
+User                git
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+IdentitiesOnly      yes
+
+# For git ssh
+Host                nest-git01.nsc.no nest-git01
+Hostname           10.124.88.196
+Port                2222
+User                git
+ProxyJump           gitlab-proxy
+IdentityFile        ~/.ssh/gitlab
+IdentitiesOnly      yes
+   
+
+# Bandak Prod
+ 
+Host                mapr01
+Hostname            mapr01.bandak.nsc.no
+User                oiolen
+DynamicForward      1250
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+#IdentitiesOnly      yes
+ 
+Host                mapr02
+Hostname            mapr02.bandak.nsc.no
+User                oiolen
+DynamicForward      1251
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+#IdentitiesOnly      yes
+
+Host                mapr03
+Hostname            mapr03.bandak.nsc.no
+User                oiolen
+DynamicForward      1252
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+#IdentitiesOnly      yes
+
+Host                mapr04
+Hostname            mapr04.bandak.nsc.no
+User                oiolen
+DynamicForward      1253
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+#IdentitiesOnly      yes
+
+Host                mapr05
+Hostname            mapr05.bandak.nsc.no
+User                oiolen
+DynamicForward      1254
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+#IdentitiesOnly      yes
+
+Host                mapr06
+Hostname            mapr06.bandak.nsc.no
+User                oiolen
+DynamicForward      1255
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+#IdentitiesOnly      yes
+
+Host                mapr07
+Hostname            mapr07.bandak.nsc.no
+User                oiolen
+DynamicForward      1256
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+#IdentitiesOnly      yes
+
+Host                mapr08
+Hostname            mapr08.bandak.nsc.no
+User                oiolen
+DynamicForward      1257
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+#IdentitiesOnly      yes
+
+Host                edge-adm01
+Hostname            edge-adm01.bandak.nsc.no
+User                oiolen
+DynamicForward      1260
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+#IdentitiesOnly      yes
+
+Host                edge-eng01
+Hostname            edge-eng01.bandak.nsc.no
+User                oiolen
+DynamicForward      1261
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+#IdentitiesOnly      yes
+
+Host                edge-eng02
+Hostname            edge-eng02.bandak.nsc.no
+User                oiolen
+DynamicForward      1262
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+#IdentitiesOnly      yes
+
+Host                edge-eng03
+Hostname            edge-eng03.bandak.nsc.no
+User                oiolen
+DynamicForward      1263
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+#IdentitiesOnly      yes
+
+Host                edge-usr01
+Hostname            edge-usr01.bandak.nsc.no
+User                oiolen
+DynamicForward      1265
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+#IdentitiesOnly      yes
+
+
+
+# Bandak Stage
+
+Host                s-edge-usr01
+Hostname            s-edge-usr01.bandak.nsc.no
+User                oiolen
+DynamicForward      1220
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+Host                s-edge-eng01
+Hostname            s-edge-eng01.bandak.nsc.no
+User                oiolen
+DynamicForward      1221
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+Host                s-edge-eng02
+Hostname            s-edge-eng02.bandak.nsc.no
+User                oiolen
+DynamicForward      1222
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+Host                s-edge-eng03
+Hostname            s-edge-eng03.bandak.nsc.no
+User                oiolen
+DynamicForward      1223
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+Host                s-edge-adm01
+Hostname            s-edge-adm01.bandak.nsc.no
+User                oiolen
+DynamicForward      1224
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+Host                s-mapr01
+Hostname            s-mapr01.bandak.nsc.no
+User                oiolen
+DynamicForward      1225
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+Host                s-mapr02
+Hostname            s-mapr02.bandak.nsc.no
+User                oiolen
+DynamicForward      1226
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+Host                s-mapr03
+Hostname            s-mapr03.bandak.nsc.no
+User                oiolen
+DynamicForward      1227
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+Host                s-mapr04
+Hostname            s-mapr04.bandak.nsc.no
+User                oiolen
+DynamicForward      1228
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
+Host                s-mapr05, s-mapr05.bandak.nsc.no
+Hostname            s-mapr05.bandak.nsc.no
+User                oiolen
+DynamicForward      1229
+ProxyJump           tra
+IdentityFile        ~/.ssh/id_ed25519
+
