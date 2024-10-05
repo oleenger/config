@@ -3,22 +3,6 @@
 TRA_PROXY="ssh.ult"
 CONFIG=~/.ssh/config
 
-eval `keychain --eval ~/.ssh/id_ed25519`
-ssh-add ~/.ssh/id_rsa
-
-proxy_login() {
-    echo "Checking tra connection"
-    ssh -O check $TRA_PROXY
-
-    if [[ $? -ne 0 ]]
-    then
-        echo "No connection found. Connecting to TRA"
-        ssh -fN $TRA_PROXY
-    else
-        echo "tra connection already established"
-    fi
-}
-
 hosts_login() {
     hosts=$(awk '/Host / {print $2}' $CONFIG)
 
@@ -36,5 +20,7 @@ hosts_login() {
     done
 }
 
-##proxy_login
+eval `keychain --eval ~/.ssh/id_ed25519`
+ssh-add ~/.ssh/id_rsa
+
 hosts_login
