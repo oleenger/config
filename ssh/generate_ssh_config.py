@@ -43,7 +43,6 @@ def generate(content):
 with open("hosts.yml") as stream:
   try:
     content = yaml.safe_load(stream)
-    #pprint.pprint(content)
     generate(content)
   except yaml.YAMLError as exc:
     print(exc)
