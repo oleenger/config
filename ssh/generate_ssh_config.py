@@ -84,7 +84,13 @@ with open("hosts.yml") as stream:
   content = yaml.safe_load(stream)
 
   for url in content["sites"]:
-    pac += f"'{ url }': { START_PORT },\n"
+    if content['sites'][url] != None and "Proxy" in content['sites'][url].keys():
+      proxy = content["sites"][url]["Proxy"]
+      idx = next((i for i,d in enumerate(content["hostnames"]["bandak.nsc.no"]["hosts"]) if proxy in d), None)
+      port = START_PORT + idx + 1 
+    else:
+      port = START_PORT
+    pac += f"'{ url }': { port },\n"
 
 pac += """
    };
@@ -97,7 +103,6 @@ pac += """
   return 'DIRECT';
 }
 """
-
 
 print(pac)
 
