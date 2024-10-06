@@ -2,7 +2,7 @@
 
 > For inspiration only - Without warrant and support.
 
-Script to genereate ~/.ssh/config and browser proxy pac-file.
+Script to generate ~/.ssh/config and browser proxy pac-file.
 Input: `hosts.yaml`
 Output: `~/.ssh/config` and `PAC_FILE` (examples in `/output`)
 
