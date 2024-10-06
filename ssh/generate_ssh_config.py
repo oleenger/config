@@ -27,7 +27,7 @@ def generate(content):
         IdentityFile { content['IdentityFile'] }
         DynamicForward { str(dynamic_forward) }
       """
-      
+     
       dynamic_forward = dynamic_forward + 1
 
       if not "NoProxyJump" in item.keys():
@@ -37,10 +37,10 @@ def generate(content):
         if "Port" in item['hosts'][hostname].keys():
           item_str += f"\tPort { item['hosts'][hostname]['Port'] }\n"
         
-        if "User" in item['hosts'][hostname].keys():
-          item_str += f"\tUser { item['hosts'][hostname]['User'] }\n"
-        else:
-          item_str += f"\tUser { content['User'] }\n"
+      if item['hosts'][hostname] != None and "User" in item['hosts'][hostname].keys():
+        item_str += f"\tUser { item['hosts'][hostname]['User'] }\n"
+      else:
+        item_str += f"\tUser { content['User'] }\n"
 
       output += item_str
 

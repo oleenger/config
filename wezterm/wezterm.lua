@@ -21,6 +21,13 @@ default_domain = "WSL:Ubuntu-22.04"
 
 return {
 
+-- This is used to make my foreground (text, etc) brighter than my background
+foreground_text_hsb = {
+  hue = 1.0,
+  saturation = 1.2,
+  brightness = 1.5,
+},
+
 	enable_tab_bar = false,
 
 	mouse_bindings = {

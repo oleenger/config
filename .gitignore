@@ -1,5 +1,5 @@
 target/
-*lazy-lock*
+nvim/lazy-lock.json
 op/
 gh/
 lazygit/state.yml

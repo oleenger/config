@@ -22,6 +22,5 @@ hosts_login() {
 }
 
 eval `keychain --eval $SSH_KEYFILE`
-ssh-add ~/.ssh/id_rsa
-
+ssh-add ~/.ssh/id_ed25519
 hosts_login
