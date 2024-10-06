@@ -2,6 +2,9 @@ import yaml
 
 T_ID = "t927604"
 START_PORT = 1200
+HOSTS_FILE = "/home/oleenger/.ssh/hosts.yml"
+CONFIG_FILE = "/home/oleenger/.ssh/config"
+PAC_FILE = f"/mnt/c/Users/{ T_ID }/proxy.pac"
 
 def generate(content):
   dynamic_forward = START_PORT
@@ -16,7 +19,7 @@ def generate(content):
   for host in content['hostnames']:
     item = content['hostnames'][host]
 
-    for hostname in content['hostnames'][host]['hosts']:
+    for hostname in item['hosts']:
 
       item_str = f"""
         Host { hostname }
@@ -44,14 +47,14 @@ def generate(content):
   return output
 
 def generate_config():
-  with open("hosts.yml") as stream:
+  with open(HOSTS_FILE) as stream:
     f = open("config", "w")
     f.write(generate(yaml.safe_load(stream)))
     f.close()
 
 def generate_pac():
   hosts = list()
-  with open("config") as file:
+  with open(CONFIG_FILE) as file:
     for line in file:
       if "Host" in line:
         obj = dict()
@@ -73,7 +76,7 @@ def generate_pac():
       pac += f"'{ host['hostname'] }': { str(host['dynamic_forward']) },\n"
 
     #SITES
-    with open("hosts.yml") as stream:
+    with open(HOSTS_FILE) as stream:
       content = yaml.safe_load(stream)
 
       for url in content["sites"]:
@@ -97,7 +100,7 @@ def generate_pac():
     }
     """
 
-    f = open(f"/mnt/c/Users/{ T_ID }/proxy.pac", "w")
+    f = open(PAC_FILE, "w")
     f.write(pac)
     f.close()
 
