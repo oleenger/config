@@ -20,7 +20,6 @@ IdentityFile: <SSH_IDENTITY_FILE>
 ```
 connect.sh:
 
-TRA_PROXY="ssh.ult"
 CONFIG=~/.ssh/config
 SSH_KEYFILE="~/.ssh/<SSH_IDENTITY_FILE>"
 ```
@@ -29,7 +28,6 @@ SSH_KEYFILE="~/.ssh/<SSH_IDENTITY_FILE>"
 generate_ssh_config:
 
 T_ID = "<t_id>"
-START_PORT = 1200
 HOSTS_FILE = "/home/<user>/.ssh/hosts.yml"
 CONFIG_FILE = "/home/<user>/.ssh/config"
 PAC_FILE = f"/mnt/c/Users/{ T_ID }/proxy.pac"
