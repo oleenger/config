@@ -36,6 +36,7 @@ require('lazy').setup {
   require 'plugins.conform',
   require 'plugins.vim-maximizer',
   require 'plugins.aerial',
+  require 'plugins.markdown-preview',
 }
 
 require('everforest').load()
