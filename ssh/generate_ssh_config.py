@@ -1,5 +1,6 @@
 import yaml
 
+T_ID = "t927604"
 START_PORT = 1200
 
 def generate(content):
@@ -96,7 +97,7 @@ def generate_pac():
     }
     """
 
-    f = open("/mnt/c/Users/t927604/proxy.pac", "w")
+    f = open(f"/mnt/c/Users/{ T_ID }/proxy.pac", "w")
     f.write(pac)
     f.close()
 

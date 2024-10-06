@@ -2,6 +2,7 @@
 
 TRA_PROXY="ssh.ult"
 CONFIG=~/.ssh/config
+SSH_KEYFILE="~/.ssh/id_ed25519"
 
 hosts_login() {
     hosts=$(awk '/Host / {print $2}' $CONFIG)
@@ -13,14 +14,14 @@ hosts_login() {
         if [[ $? -ne 0 ]]
         then
             echo "Connecting to $host"
-            ssh -fN $host
+            ssh -fN $host -q
         else
             echo "$host connection already established"
         fi
     done
 }
 
-eval `keychain --eval ~/.ssh/id_ed25519`
+eval `keychain --eval $SSH_KEYFILE`
 ssh-add ~/.ssh/id_rsa
 
 hosts_login
