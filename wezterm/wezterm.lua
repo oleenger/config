@@ -22,6 +22,22 @@ default_domain = 'WSL:Ubuntu-22.04'
 return {
 
 	enable_tab_bar = false,
+	-- color_scheme = 'N0tch2k',
+	-- color_scheme = 'Tomorrow Night (Gogh)',
+	color_scheme = "Catppuccin Mocha",
+	font = wezterm.font_with_fallback({
+		"JetBrains Mono",
+		{ family = "Symbols Nerd Font Mono", scale = 0.75 },
+	}),
+	macos_window_background_blur = 10,
+	window_decorations = "RESIZE",
+	use_cap_height_to_scale_fallback_fonts = true,
+	font_size = 12,
+	line_height = 1.2,
+	scrollback_lines = 5000,
+	window_close_confirmation = "NeverPrompt",
+  adjust_window_size_when_changing_font_size = false,
+	use_dead_keys = false,
 
 	mouse_bindings = {
 		{
@@ -39,17 +55,6 @@ return {
 		},
 	},
 
-	color_scheme = 'N0tch2k',
-	color_scheme = 'Tomorrow Night (Gogh)',
-	window_background_opacity = 1,
-
-	window_decorations = "RESIZE",
-
-	font_size = 12,
-	line_height = 1.2,
-
-	use_dead_keys = false,
-	scrollback_lines = 1000,
 
 	keys = {
 		{
@@ -62,6 +67,5 @@ return {
 			mods = 'CTRL|SHIFT',
 			action = wezterm.action.EmitEvent 'toggle-opacity',
 		},
-	}
-
+	},
 }
