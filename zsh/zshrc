@@ -1,80 +1,22 @@
-#Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
-source ~/powerlevel10k/powerlevel10k.zsh-theme
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH" 
-
-
 export ZSH=$HOME/.config/zsh
 
-export HISTFILE=$HOME/.zsh_history
-export HISTSIZE=10000
-export SAVEHIST=10000
-setopt HIST_IGNORE_ALL_DUPS
-setopt HIST_FIND_NO_DUPS
+#Homebrew
+export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH" 
 
-source $ZSH/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-source $ZSH/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source $ZSH/plugins/zsh-eza/zsh-eza.plugin.zsh
-
-eval "$(fzf --zsh)"
-
-# Use fd (https://github.com/sharkdp/fd) for listing path candidates.
-# - The first argument to the function ($1) is the base path to start traversal
-# - See the source code (completion.{bash,zsh}) for the details.
-_fzf_compgen_path() {
-  fd --hidden --exclude .git . "$1"
-}
-
-# Use fd to generate the list for directory completion
-_fzf_compgen_dir() {
-  fd --type=d --hidden --exclude .git . "$1"
-}
-
-# -- Use fd instead of fzf --
-export FZF_DEFAULT_COMMAND="fd --hidden --strip-cwd-prefix --exclude .git"
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_ALT_C_COMMAND="fd --type=d --hidden --strip-cwd-prefix --exclude .git"
-export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always {} | head -200'"
-show_file_or_dir_preview="if [ -d {} ]; then eza --tree --color=always {} | head -200; else batcat -n --color=always --line-range :500 {}; fi"
-export FZF_CTRL_T_OPTS="--preview '$show_file_or_dir_preview'"
-
-
-
-ZSH_THEME="agnoster"
-
-# Uncomment the following line to use case-sensitive completion.
-CASE_SENSITIVE="true"
-
-alias ls="eza --icons=always"
-alias vim="nvim"
-alias vvim="/usr/bin/vim"
-alias cat="batcat"
-alias ll="ls -alh"
-alias reload-zsh="source ~/.zshrc"
-alias edit-zsh="nvim ~/.zshrc"
-alias find="fd"
+#Themes
 export BAT_THEME="Visual Studio Dark+"
 
+#Imports
+source $ZSH/imports/powerlevel10k.zsh
+source $ZSH/imports/history.zsh
+source $ZSH/imports/functions.zsh
+source $ZSH/imports/fzf.zsh
+source $ZSH/imports/zoxide.zsh
 
-eval "$(zoxide init zsh)"
-alias cd="z"
+#Plugins
+source $ZSH/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source $ZSH/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+source $ZSH/plugins/zsh-eza/zsh-eza.plugin.zsh
 
-alias gs="git status"
-
-# ssh
-ss () {
-  local server
-  server=$(grep -E 'Host ' ~/.ssh/config | awk '{print $2}' | fzf)
-  if [[ -n $server ]]; then
-    ssh $server
-  fi
-}
-
-
+#Aliases
+source $ZSH/imports/aliases.zsh

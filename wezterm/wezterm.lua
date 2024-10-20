@@ -1,4 +1,4 @@
-local wezterm = require("wezterm")
+local wezterm = require 'wezterm'
 local act = wezterm.action
 local mux = wezterm.mux
 
@@ -7,7 +7,7 @@ if wezterm.config_builder then
 	config = wezterm.config_builder()
 end
 
-wezterm.on("toggle-opacity", function(window, pane)
+wezterm.on('toggle-opacity', function(window, pane)
 	local overrides = window:get_config_overrides() or {}
 	if not overrides.window_background_opacity then
 		overrides.window_background_opacity = 0.85
@@ -17,16 +17,9 @@ wezterm.on("toggle-opacity", function(window, pane)
 	window:set_config_overrides(overrides)
 end)
 
-default_domain = "WSL:Ubuntu-22.04"
+default_domain = 'WSL:Ubuntu-22.04'
 
 return {
-
--- This is used to make my foreground (text, etc) brighter than my background
-foreground_text_hsb = {
-  hue = 1.0,
-  saturation = 1.2,
-  brightness = 1.5,
-},
 
 	enable_tab_bar = false,
 
@@ -46,7 +39,8 @@ foreground_text_hsb = {
 		},
 	},
 
-	color_scheme = "N0tch2k",
+	color_scheme = 'N0tch2k',
+	color_scheme = 'Tomorrow Night (Gogh)',
 	window_background_opacity = 1,
 
 	window_decorations = "RESIZE",
@@ -59,14 +53,15 @@ foreground_text_hsb = {
 
 	keys = {
 		{
-			key = "1",
-			mods = "CTRL",
+			key = '1',
+			mods = 'CTRL',
 			action = wezterm.action.ToggleFullScreen,
 		},
 		{
-			key = "B",
-			mods = "CTRL|SHIFT",
-			action = wezterm.action.EmitEvent("toggle-opacity"),
+			key = 'B',
+			mods = 'CTRL|SHIFT',
+			action = wezterm.action.EmitEvent 'toggle-opacity',
 		},
-	},
+	}
+
 }
