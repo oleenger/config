@@ -21,7 +21,7 @@ default_domain = 'WSL:Ubuntu-22.04'
 
 return {
 
-	enable_tab_bar = false,
+	enable_tab_bar = true,
 	-- color_scheme = 'N0tch2k',
 	-- color_scheme = 'Tomorrow Night (Gogh)',
 	color_scheme = "Catppuccin Mocha",
@@ -67,5 +67,6 @@ return {
 			mods = 'CTRL|SHIFT',
 			action = wezterm.action.EmitEvent 'toggle-opacity',
 		},
+		{ key = 'v', mods = 'CTRL', action = act.PasteFrom 'Clipboard' },
 	},
 }
