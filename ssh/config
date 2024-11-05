@@ -2,165 +2,165 @@
     ServerAliveInterval 240
     ServerAliveCountMax 2
     ControlMaster auto
-    ControlPath ~/.ssh/sockets/%r@%h:%p
+    ControlPath ~/.ssh/sockets/oiolen@%h:%p
   
         Host ssh.ult
         HostName ssh.ult.telenor.net
         IdentityFile ~/.ssh/id_ed25519
-      	DynamicForward 1080
-	User oiolen
+        DynamicForward 1200
+      	User oiolen
 
         Host mapr01
         HostName mapr01.bandak.nsc.no
         IdentityFile ~/.ssh/id_ed25519
+        DynamicForward 1201
       	ProxyJump ssh.ult
-	DynamicForward 1300
 	User oiolen
 
         Host mapr02
         HostName mapr02.bandak.nsc.no
         IdentityFile ~/.ssh/id_ed25519
+        DynamicForward 1202
       	ProxyJump ssh.ult
-	DynamicForward 1300
 	User oiolen
 
         Host mapr03
         HostName mapr03.bandak.nsc.no
         IdentityFile ~/.ssh/id_ed25519
+        DynamicForward 1203
       	ProxyJump ssh.ult
-	DynamicForward 1300
 	User oiolen
 
         Host mapr04
         HostName mapr04.bandak.nsc.no
         IdentityFile ~/.ssh/id_ed25519
+        DynamicForward 1204
       	ProxyJump ssh.ult
-	DynamicForward 1300
 	User oiolen
 
         Host mapr05
         HostName mapr05.bandak.nsc.no
         IdentityFile ~/.ssh/id_ed25519
+        DynamicForward 1205
       	ProxyJump ssh.ult
-	DynamicForward 1300
 	User oiolen
 
         Host mapr06
         HostName mapr06.bandak.nsc.no
         IdentityFile ~/.ssh/id_ed25519
+        DynamicForward 1206
       	ProxyJump ssh.ult
-	DynamicForward 1300
 	User oiolen
 
         Host mapr07
         HostName mapr07.bandak.nsc.no
         IdentityFile ~/.ssh/id_ed25519
+        DynamicForward 1207
       	ProxyJump ssh.ult
-	DynamicForward 1300
 	User oiolen
 
         Host mapr08
         HostName mapr08.bandak.nsc.no
         IdentityFile ~/.ssh/id_ed25519
+        DynamicForward 1208
       	ProxyJump ssh.ult
-	DynamicForward 1300
 	User oiolen
 
         Host edge-usr01
         HostName edge-usr01.bandak.nsc.no
         IdentityFile ~/.ssh/id_ed25519
+        DynamicForward 1209
       	ProxyJump ssh.ult
-	DynamicForward 1300
 	User oiolen
 
         Host edge-eng01
         HostName edge-eng01.bandak.nsc.no
         IdentityFile ~/.ssh/id_ed25519
+        DynamicForward 1210
       	ProxyJump ssh.ult
-	DynamicForward 1300
 	User oiolen
 
         Host edge-eng02
         HostName edge-eng02.bandak.nsc.no
         IdentityFile ~/.ssh/id_ed25519
+        DynamicForward 1211
       	ProxyJump ssh.ult
-	DynamicForward 1300
 	User oiolen
 
         Host s-mapr01
         HostName s-mapr01.bandak.nsc.no
         IdentityFile ~/.ssh/id_ed25519
+        DynamicForward 1212
       	ProxyJump ssh.ult
-	DynamicForward 1300
 	User oiolen
 
         Host s-mapr02
         HostName s-mapr02.bandak.nsc.no
         IdentityFile ~/.ssh/id_ed25519
+        DynamicForward 1213
       	ProxyJump ssh.ult
-	DynamicForward 1300
 	User oiolen
 
         Host s-mapr03
         HostName s-mapr03.bandak.nsc.no
         IdentityFile ~/.ssh/id_ed25519
+        DynamicForward 1214
       	ProxyJump ssh.ult
-	DynamicForward 1300
 	User oiolen
 
         Host s-mapr04
         HostName s-mapr04.bandak.nsc.no
         IdentityFile ~/.ssh/id_ed25519
+        DynamicForward 1215
       	ProxyJump ssh.ult
-	DynamicForward 1300
 	User oiolen
 
         Host s-mapr05
         HostName s-mapr05.bandak.nsc.no
         IdentityFile ~/.ssh/id_ed25519
+        DynamicForward 1216
       	ProxyJump ssh.ult
-	DynamicForward 1300
 	User oiolen
 
         Host s-edge-usr01
         HostName s-edge-usr01.bandak.nsc.no
         IdentityFile ~/.ssh/id_ed25519
+        DynamicForward 1217
       	ProxyJump ssh.ult
-	DynamicForward 1300
 	User oiolen
 
         Host s-edge-eng01
         HostName s-edge-eng01.bandak.nsc.no
         IdentityFile ~/.ssh/id_ed25519
+        DynamicForward 1218
       	ProxyJump ssh.ult
-	DynamicForward 1300
 	User oiolen
 
         Host s-edge-eng02
         HostName s-edge-eng02.bandak.nsc.no
         IdentityFile ~/.ssh/id_ed25519
+        DynamicForward 1219
       	ProxyJump ssh.ult
-	DynamicForward 1300
 	User oiolen
 
         Host s-edge-eng03
         HostName s-edge-eng03.bandak.nsc.no
         IdentityFile ~/.ssh/id_ed25519
+        DynamicForward 1220
       	ProxyJump ssh.ult
-	DynamicForward 1300
 	User oiolen
 
         Host bandak-ansible01
         HostName bandak-ansible01.bandak.nsc.no
         IdentityFile ~/.ssh/id_ed25519
+        DynamicForward 1221
       	ProxyJump ssh.ult
-	DynamicForward 1300
 	User oiolen
 
         Host nest-git01
         HostName nest-git01.nsc.no
         IdentityFile ~/.ssh/id_ed25519
+        DynamicForward 1222
       	ProxyJump ssh.ult
 	Port 2222
 	User git
-

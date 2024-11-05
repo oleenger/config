@@ -10,7 +10,7 @@ end
 wezterm.on('toggle-opacity', function(window, pane)
 	local overrides = window:get_config_overrides() or {}
 	if not overrides.window_background_opacity then
-		overrides.window_background_opacity = 0.85
+		overrides.window_background_opacity = 0.75
 	else
 		overrides.window_background_opacity = nil
 	end
@@ -27,7 +27,7 @@ return {
 	color_scheme = "Catppuccin Mocha",
 	font = wezterm.font_with_fallback({
 		"JetBrains Mono",
-		{ family = "Symbols Nerd Font Mono", scale = 0.75 },
+		{ family = "Symbols Nerd Font Mono", scale = 0.95 },
 	}),
 	macos_window_background_blur = 10,
 	window_decorations = "RESIZE",

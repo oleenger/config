@@ -2,9 +2,9 @@ import yaml
 
 T_ID = "t927604"
 START_PORT = 1200
-HOSTS_FILE = "/home/oleenger/.ssh/hosts.yml"
-CONFIG_FILE = "/home/oleenger/.ssh/config"
-PAC_FILE = f"/mnt/c/Users/{ T_ID }/proxy.pac"
+HOSTS_FILE = "/Users/t927604/.ssh/hosts.yml"
+CONFIG_FILE = "/Users/t927604/.ssh/config"
+PAC_FILE = f"/Users/t927604/proxy.pac"
 
 def generate(content):
   dynamic_forward = START_PORT
