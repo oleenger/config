@@ -16,18 +16,14 @@ on-focus-changed = "move-mouse window-lazy-center"
 alt-f = 'fullscreen'
 alt-shift-c = 'reload-config'
 
-
-# shift-h = 'focus left'
-# shift-k = 'focus up'
-# shift-l = 'focus right'
-# shift-j = 'focus down'
-
 alt-1 = 'workspace 1'
 alt-2 = 'workspace 2'
 alt-3 = 'workspace 3'
 alt-4 = 'workspace 4'
 alt-5 = 'workspace 5'
 alt-6 = 'workspace 6'
+alt-o = 'workspace O'
+alt-m = 'workspace M'
 
 alt-h = 'focus left'
 alt-l = 'focus right'
@@ -86,15 +82,15 @@ run = 'move-node-to-workspace 6'
 
 [[on-window-detected]]
 if.app-id = 'com.microsoft.Outlook'
-run = "move-node-to-workspace 3"
+run = "move-node-to-workspace O"
 
 [[on-window-detected]]
 if.app-id = 'com.microsoft.teams2'
-run = "move-node-to-workspace 4"
+run = "move-node-to-workspace M"
 
 [[on-window-detected]]
 if.app-id = 'com.tinyspeck.slackmacgap'
-run = "move-node-to-workspace 4"
+run = "move-node-to-workspace M"
 
 [[on-window-detected]]
 if.app-id = 'md.obsidian'
