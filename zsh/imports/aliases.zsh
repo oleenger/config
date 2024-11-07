@@ -1,7 +1,7 @@
 alias ls="eza --icons=always"
 alias vim="nvim"
 alias vvim="/usr/bin/vim"
-alias cat="batcat"
+alias cat="bat"
 alias ll="ls -alh"
 alias gs="git status"
 alias reload-zsh="source ~/.zshrc"
