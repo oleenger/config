@@ -1,3 +1,0 @@
-[filesystem "Ubuntu|17.0.12|/dev/sdc"]
-	timestampResolution = 91000 nanoseconds
-	minRacyThreshold = 15857 microseconds
