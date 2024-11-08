@@ -1,6 +1,7 @@
 require 'core.options' -- Load general options
 require 'core.keymaps' -- Load general keymaps
 require 'core.snippets' -- Custom code snippets
+require 'core.workflows'
 
 -- Set up the Lazy plugin manager
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -36,6 +37,7 @@ require('lazy').setup {
   require 'plugins.conform',
   require 'plugins.vim-maximizer',
   require 'plugins.aerial',
+  require 'plugins.obsidian',
   require 'plugins.markdown-preview',
 }
 
