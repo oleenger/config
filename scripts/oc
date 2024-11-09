@@ -1,0 +1,26 @@
+#!/bin/zsh
+
+file_name=$(find $OBSIDIAN_VAULT -type f -name "*.md" | fzf --preview 'bat --color=always {}')
+
+if [ -n "$1" ] && [ $1 = "v" ]; then
+    tmux_running=$(pgrep tmux)
+
+    SESSION="obsidian"
+
+    if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
+        tmux new-session -s $SESSION -c $SESSION
+        exit 0
+    fi
+
+    if ! tmux has-session -t=$SESSION 2> /dev/null; then
+        tmux new-session -ds $SESSION -c $SESSION
+    fi
+
+    tmux send-keys -t $SESSION "cd $OBSIDIAN_VAULT" C-m
+    tmux send-keys -t $SESSION "vim $file_name" C-m
+    tmux send-keys -t $SESSION ":w" C-m
+    tmux switch-client -t $SESSION
+else
+    bat --color=always $file_name
+fi
+
