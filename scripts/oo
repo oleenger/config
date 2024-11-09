@@ -18,5 +18,3 @@ file_name=$(echo "$1" | tr ' ' '-').md
 tmux send-keys -t $SESSION "cd $OBSIDIAN_VAULT" C-m
 tmux send-keys -t $SESSION "vim ." C-m
 tmux switch-client -t $SESSION
-
-

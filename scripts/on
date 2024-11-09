@@ -5,6 +5,14 @@ if [ -z "$1" ]; then
   exit 1
 fi
 
+folder=$(find $OBSIDIAN_VAULT -mindepth 1 -maxdepth 1 -type d ! -path '*/.*' | sort -r | fzf)
+
+if [[ -z $folder ]]; then
+    exit 0
+fi
+
+file_name=$folder/$(echo "$1" | tr ' ' '-').md
+
 tmux_running=$(pgrep tmux)
 
 SESSION="obsidian"
@@ -18,11 +26,7 @@ if ! tmux has-session -t=$SESSION 2> /dev/null; then
     tmux new-session -ds $SESSION -c $SESSION
 fi
 
-file_name=$(echo "$1" | tr ' ' '-').md
-
 tmux send-keys -t $SESSION "cd $OBSIDIAN_VAULT" C-m
 tmux send-keys -t $SESSION "vim $file_name" C-m
 tmux send-keys -t $SESSION ":w" C-m
 tmux switch-client -t $SESSION
-
-
