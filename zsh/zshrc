@@ -17,6 +17,7 @@ export BAT_THEME="Visual Studio Dark+"
 source $ZSH/imports/powerlevel10k.zsh
 source $ZSH/imports/history.zsh
 source $ZSH/imports/functions.zsh
+source $ZSH/imports/git.zsh
 source $ZSH/imports/fzf.zsh
 source $ZSH/imports/zoxide.zsh
 

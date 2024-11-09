@@ -1,3 +1,4 @@
+alias conf="cd $HOME/.config/"
 alias ls="eza --icons=always"
 alias vim="nvim"
 alias vvim="/usr/bin/vim"
