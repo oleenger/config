@@ -31,8 +31,8 @@ vim.keymap.set('n', 'N', 'Nzzzv', opts)
 -- Buffers
 vim.keymap.set('n', '<leader>x', ':Bdelete!<CR>', opts) -- close buffer
 vim.keymap.set('n', '<leader>b', '<cmd> enew <CR>', opts) -- new buffer
-vim.keymap.set('n', '<leader>n', ':bnext<CR>', opts) -- new buffer
-vim.keymap.set('n', '<leader>n', ':bprevious<CR>', opts) -- new buffer
+vim.keymap.set('n', '<tab>', ':bnext<CR>', opts)
+vim.keymap.set('n', '<S-tab>', ':bprevious<CR>', opts)
 
 -- Window management
 vim.keymap.set('n', '<leader>|', '<C-w>v', opts) -- split window vertically

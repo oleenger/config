@@ -1,5 +1,4 @@
 require 'core.options' -- Load general options
-require 'core.keymaps' -- Load general keymaps
 require 'core.snippets' -- Custom code snippets
 require 'core.workflows'
 
@@ -42,6 +41,7 @@ require('lazy').setup {
   require 'plugins.markdown-preview',
 }
 
+require 'core.keymaps' -- Load general keymaps
 require('everforest').load()
 
 -- The line beneath this is called `modeline`. See `:help modeline`
