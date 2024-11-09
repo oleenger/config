@@ -3,7 +3,7 @@
 if [[ $# -eq 1 ]]; then
     selected=$1
 else
-    selected=$(find ~/gitlab ~/.config/nvim -mindepth 1 -maxdepth 1 -type d | fzf)
+    selected=$(grep -E 'Host ' ~/.ssh/config | awk '{print $2}' | fzf)
 fi
 
 if [[ -z $selected ]]; then

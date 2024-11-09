@@ -7,8 +7,8 @@ fi
 
 export ZSH=$HOME/.config/zsh
 
-#Homebrew
 export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH" 
+export PATH="$HOME/.config/scripts/:$PATH" 
 
 #Themes
 export BAT_THEME="Visual Studio Dark+"

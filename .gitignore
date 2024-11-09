@@ -1,3 +1,4 @@
+tmux/plugins
 raycast/
 target/
 nvim/lazy-lock.json
