@@ -43,15 +43,15 @@ return {
           mode = mode or 'n'
           vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' })
         end
-
+        -- #TODO: These mappings override n, n.
         -- LSP mappings
-        map('n', 'K', vim.lsp.buf.hover)
-        map('n', 'gds', vim.lsp.buf.document_symbol)
-        map('n', 'gws', vim.lsp.buf.workspace_symbol)
-        map('n', '<leader>cl', vim.lsp.codelens.run)
-        map('n', '<leader>sh', vim.lsp.buf.signature_help)
-        map('n', '<leader>rn', vim.lsp.buf.rename)
-        map('n', '<leader>f', vim.lsp.buf.format)
+        -- map('n', 'K', vim.lsp.buf.hover)
+        -- map('n', 'gds', vim.lsp.buf.document_symbol)
+        -- map('n', 'gws', vim.lsp.buf.workspace_symbol)
+        -- map('n', '<leader>cl', vim.lsp.codelens.run)
+        -- map('n', '<leader>sh', vim.lsp.buf.signature_help)
+        -- map('n', '<leader>rn', vim.lsp.buf.rename)
+        -- map('n', '<leader>f', vim.lsp.buf.format)
 
         -- Jump to the definition of the word under your cursor.
         --  This is where a variable was first declared, or where a function is defined, etc.

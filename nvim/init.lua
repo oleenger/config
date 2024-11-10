@@ -1,5 +1,6 @@
 require 'core.options' -- Load general options
 require 'core.snippets' -- Custom code snippets
+require 'core.keymaps' -- Load general keymaps
 require 'core.workflows'
 
 -- Set up the Lazy plugin manager
@@ -16,6 +17,8 @@ vim.opt.rtp:prepend(lazypath)
 -- Set up plugins
 require('lazy').setup {
   require 'plugins.neotree',
+  require 'plugins.telescope-file-browser',
+  require 'plugins.oil',
   require 'plugins.colorscheme-everforest',
   require 'plugins.bufferline',
   require 'plugins.lualine',
@@ -41,7 +44,6 @@ require('lazy').setup {
   require 'plugins.markdown-preview',
 }
 
-require 'core.keymaps' -- Load general keymaps
 require('everforest').load()
 
 -- The line beneath this is called `modeline`. See `:help modeline`
