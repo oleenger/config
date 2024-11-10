@@ -17,6 +17,8 @@ return {
   config = function()
     require('telescope').setup {
       defaults = {
+        border = {},
+        -- borderchars = { " ", " ", " ", " ", " ", " ", " ", " " },
         mappings = {
           i = {
             ['<C-k>'] = require('telescope.actions').move_selection_previous, -- move to prev result
@@ -42,7 +44,17 @@ return {
           require('telescope.themes').get_dropdown(),
         },
       },
+
     }
+
+
+    vim.api.nvim_set_hl(0, 'TelescopeNormal', { bg='#333333' })
+    -- vim.api.nvim_set_hl(0, 'TelescopePreviewNormal', { bg='#333333', fg='#333333'})
+    -- vim.api.nvim_set_hl(0, 'TelescopeResultsBorder', { bg='#333333', fg='#333333'})
+    -- vim.api.nvim_set_hl(0, 'TelescopePreviewBorder', { bg='#333333', fg='#333333'})
+    -- vim.api.nvim_set_hl(0, 'TelescopePromptBorder', { bg='#333333', fg='#333333'})
+    -- vim.api.nvim_set_hl(0, 'TelescopeResultsBorder', { bg='#333333', fg='#333333'})
+
 
     -- Enable Telescope extensions if they are installed
     pcall(require('telescope').load_extension, 'fzf')

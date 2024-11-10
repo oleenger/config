@@ -14,6 +14,8 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+vim.g.python3_host_prog = '/opt/homebrew/bin/python3'
+
 -- Set up plugins
 require('lazy').setup {
   require 'plugins.neotree',
