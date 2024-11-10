@@ -48,6 +48,7 @@ return {
     }
 
 
+
     vim.api.nvim_set_hl(0, 'TelescopeNormal', { bg='#333333' })
     -- vim.api.nvim_set_hl(0, 'TelescopePreviewNormal', { bg='#333333', fg='#333333'})
     -- vim.api.nvim_set_hl(0, 'TelescopeResultsBorder', { bg='#333333', fg='#333333'})
@@ -62,6 +63,30 @@ return {
 
     -- See `:help telescope.builtin`
     local builtin = require 'telescope.builtin'
+    local M = {}
+
+    function M.grep_notes()
+      local opts = {}
+      opts.hidden = true
+      opts.search_dirs = {
+        "~/obsidian/oleenger/notes/",
+      }
+      opts.prompt_prefix = "   "
+      opts.prompt_title = " Grep Notes"
+      require("telescope.builtin").live_grep(opts)
+    end
+    vim.keymap.set("n", "<leader>og", M.grep_notes, { noremap = true, silent = true })
+    function M.find_notes()
+      require("telescope.builtin").find_files {
+        prompt_title = " Find Notes",
+        cwd = "~/obsidian/oleenger/notes/",
+        layout_strategy = "horizontal",
+        layout_config = { preview_width = 0.65, width = 0.75 },
+      }
+    end
+    vim.keymap.set("n", "<leader>of", M.find_notes, { noremap = true, silent = true })
+
+
     vim.keymap.set('n', '<leader><leader>', builtin.find_files, { desc = '[S]earch [F]iles' })
     vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
     vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
