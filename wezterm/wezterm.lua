@@ -1,72 +1,53 @@
 local wezterm = require 'wezterm'
-local act = wezterm.action
-local mux = wezterm.mux
+-- local act = wezterm.action
+-- local mux = wezterm.mux
 
 local config = {}
 if wezterm.config_builder then
-	config = wezterm.config_builder()
+  config = wezterm.config_builder()
 end
+
+config.font = wezterm.font("MesloLGS NF")
+config.font_size = 15
+config.line_height = 1.1
+config.enable_tab_bar = false
+
+config.color_scheme = 'Gruvbox Material (Gogh)'
+config.colors = {}
+config.colors.background = '#222222'
+
+config.scrollback_lines = 5000
+config.window_close_confirmation = "NeverPrompt"
+config.use_dead_keys = false
+
+config.window_decorations = "RESIZE"
+config.send_composed_key_when_left_alt_is_pressed = true
+
+config.window_padding = {
+	left = 20,
+	right = 20,
+	top = 20,
+	bottom = 10,
+}
 
 wezterm.on('toggle-opacity', function(window, pane)
 	local overrides = window:get_config_overrides() or {}
 	if not overrides.window_background_opacity then
 		overrides.window_background_opacity = 0.75
+		overrides.macos_window_background_blur = 10
 	else
 		overrides.window_background_opacity = nil
+		overrides.macos_window_background_blur = nil
 	end
 	window:set_config_overrides(overrides)
 end)
 
-default_domain = 'WSL:Ubuntu-22.04'
-
-return {
-
-	enable_tab_bar = true,
-	-- color_scheme = 'N0tch2k',
-	-- color_scheme = 'Tomorrow Night (Gogh)',
-	color_scheme = "Catppuccin Mocha",
-	font = wezterm.font_with_fallback({
-		"JetBrains Mono",
-		{ family = "Symbols Nerd Font Mono", scale = 0.95 },
-	}),
-	macos_window_background_blur = 10,
-	window_decorations = "RESIZE",
-	use_cap_height_to_scale_fallback_fonts = true,
-	font_size = 12,
-	line_height = 1.2,
-	scrollback_lines = 5000,
-	window_close_confirmation = "NeverPrompt",
-  adjust_window_size_when_changing_font_size = false,
-	use_dead_keys = false,
-
-	mouse_bindings = {
-		{
-			event = { Down = { streak = 1, button = "Right" } },
-			mods = "NONE",
-			action = wezterm.action_callback(function(window, pane)
-				local has_selection = window:get_selection_text_for_pane(pane) ~= ""
-				if has_selection then
-					window:perform_action(act.CopyTo("ClipboardAndPrimarySelection"), pane)
-					window:perform_action(act.ClearSelection, pane)
-				else
-					window:perform_action(act({ PasteFrom = "Clipboard" }), pane)
-				end
-			end),
-		},
-	},
-
-
-	keys = {
-		{
-			key = '1',
-			mods = 'CTRL',
-			action = wezterm.action.ToggleFullScreen,
-		},
-		{
-			key = 'B',
-			mods = 'CTRL|SHIFT',
-			action = wezterm.action.EmitEvent 'toggle-opacity',
-		},
-		{ key = 'v', mods = 'CTRL', action = act.PasteFrom 'Clipboard' },
+config.keys = {
+	{
+		key = 'B',
+		mods = 'CTRL|SHIFT',
+		action = wezterm.action.EmitEvent 'toggle-opacity',
 	},
 }
+
+return config

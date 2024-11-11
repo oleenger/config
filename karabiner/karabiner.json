@@ -5,6 +5,7 @@
                 "rules": [
                     {
                         "description": "Pipe",
+                        "enabled": false,
                         "manipulators": [
                             {
                                 "from": {

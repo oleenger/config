@@ -22,10 +22,20 @@ return {
         path = "~/obsidian/oleenger/",
       },
     },
-  templates = {
+    templates = {
       subdir = ".templates",
       date_format = "%Y-%m-%d",
       time_format = "%H:%M:%S",
+    },
   },
-  },
+  config = function()
+
+    -- navigate to vault
+    vim.keymap.set("n", "<leader>oo", ":cd ~/obsidian/oleenger/<cr>")
+   
+    -- search for files in full vault
+    vim.keymap.set("n", "<leader>os", ":Telescope find_files search_dirs={\"~/obsidian/oleenger/\"}<cr>")
+    vim.keymap.set("n", "<leader>oz", ":Telescope live_grep search_dirs={\"~/obsidian/oleenger\"}<cr>")
+
+  end
 }
