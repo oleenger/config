@@ -1,8 +1,12 @@
+
+
 -- Set leader key
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 -- Disable the spacebar key's default behavior in Normal and Visual modes
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
+
+vim.keymap.set("n", "<leader>u", vim.lsp.buf.format, { remap = false })
 
 -- For conciseness
 local opts = { noremap = true, silent = true }

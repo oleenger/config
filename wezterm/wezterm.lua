@@ -15,6 +15,7 @@ config.enable_tab_bar = false
 config.color_scheme = 'Gruvbox Material (Gogh)'
 config.colors = {}
 config.colors.background = '#222222'
+config.colors.foreground = '#e2dfd2'
 
 config.scrollback_lines = 5000
 config.window_close_confirmation = "NeverPrompt"
@@ -24,30 +25,30 @@ config.window_decorations = "RESIZE"
 config.send_composed_key_when_left_alt_is_pressed = true
 
 config.window_padding = {
-	left = 20,
-	right = 20,
-	top = 20,
-	bottom = 10,
+  left = 20,
+  right = 20,
+  top = 20,
+  bottom = 10,
 }
 
 wezterm.on('toggle-opacity', function(window, pane)
-	local overrides = window:get_config_overrides() or {}
-	if not overrides.window_background_opacity then
-		overrides.window_background_opacity = 0.75
-		overrides.macos_window_background_blur = 10
-	else
-		overrides.window_background_opacity = nil
-		overrides.macos_window_background_blur = nil
-	end
-	window:set_config_overrides(overrides)
+  local overrides = window:get_config_overrides() or {}
+  if not overrides.window_background_opacity then
+    overrides.window_background_opacity = 0.75
+    overrides.macos_window_background_blur = 10
+  else
+    overrides.window_background_opacity = nil
+    overrides.macos_window_background_blur = nil
+  end
+  window:set_config_overrides(overrides)
 end)
 
 config.keys = {
-	{
-		key = 'B',
-		mods = 'CTRL|SHIFT',
-		action = wezterm.action.EmitEvent 'toggle-opacity',
-	},
+  {
+    key = 'B',
+    mods = 'CTRL|SHIFT',
+    action = wezterm.action.EmitEvent 'toggle-opacity',
+  },
 }
 
 return config
