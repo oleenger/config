@@ -26,6 +26,7 @@ require('lazy').setup {
   require 'plugins.treesitter',
   require 'plugins.telescope',
   require 'plugins.lsp',
+  require 'plugins.fugi',
   require 'plugins.trouble',
   require 'plugins.autocompletion',
   -- require 'plugins.render-markdown',
