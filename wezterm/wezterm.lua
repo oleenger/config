@@ -24,10 +24,10 @@ config.window_decorations = "RESIZE"
 config.send_composed_key_when_left_alt_is_pressed = true
 
 config.window_padding = {
-  left = 20,
-  right = 20,
-  top = 20,
-  bottom = 10,
+	left = 20,
+	right = 20,
+	top = 20,
+	bottom = 10,
 }
 
 wezterm.on('toggle-opacity', function(window, pane)
