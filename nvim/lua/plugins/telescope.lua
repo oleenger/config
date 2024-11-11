@@ -16,5 +16,6 @@
     },
     config = function()
       require "plugins.config.telescope"
+      require "plugins.config.keymaps-telescope"
     end
   }
