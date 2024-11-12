@@ -1,8 +1,6 @@
 local wezterm = require 'wezterm'
--- local act = wezterm.action
--- local mux = wezterm.mux
-
 local config = {}
+
 if wezterm.config_builder then
   config = wezterm.config_builder()
 end
@@ -14,7 +12,6 @@ config.enable_tab_bar = false
 
 config.color_scheme = 'Gruvbox Material (Gogh)'
 config.colors = {}
-config.colors.background = '#222222'
 config.colors.foreground = '#e2dfd2'
 
 config.scrollback_lines = 5000
@@ -23,6 +20,7 @@ config.use_dead_keys = false
 
 config.window_decorations = "RESIZE"
 config.send_composed_key_when_left_alt_is_pressed = true
+config.max_fps = 120
 
 config.window_padding = {
   left = 20,

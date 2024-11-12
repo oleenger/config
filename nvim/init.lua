@@ -20,7 +20,6 @@ require('lazy').setup {
   -- require 'plugins.neotree',
   require 'plugins.telescope-file-browser',
   require 'plugins.oil',
-  require 'plugins.colorscheme-everforest',
   require 'plugins.bufferline',
   require 'plugins.lualine',
   require 'plugins.treesitter',
@@ -44,9 +43,8 @@ require('lazy').setup {
   require 'plugins.aerial',
   require 'plugins.obsidian',
   require 'plugins.markdown-preview',
+  require 'plugins.colorscheme',
 }
-
-require('everforest').load()
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
