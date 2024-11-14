@@ -10,7 +10,7 @@ vim.keymap.set('n', '<C-s>s', builtin.builtin, { desc = '[S]earch [S]elect Teles
 vim.keymap.set('n', '<C-s>d', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
 vim.keymap.set('n', '<C-s>r', builtin.resume, { desc = '[S]earch [R]esume' })
 vim.keymap.set('n', '<C-s>.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
-vim.keymap.set('n', '<C-s>b', builtin.buffers, { desc = '[ ] Find existing buffers' })
+vim.keymap.set('n', 'b', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
 
 -- Grep Obsidian Notes

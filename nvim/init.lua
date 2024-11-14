@@ -18,9 +18,9 @@ vim.g.python3_host_prog = '/opt/homebrew/bin/python3'
 -- Set up plugins
 require('lazy').setup {
   -- require 'plugins.neotree',
-  require 'plugins.telescope-file-browser',
+  -- require 'plugins.telescope-file-browser',
   require 'plugins.oil',
-  require 'plugins.bufferline',
+  -- require 'plugins.bufferline',
   require 'plugins.lualine',
   require 'plugins.treesitter',
   require 'plugins.telescope',

@@ -12,7 +12,7 @@ return {
         json = { 'prettier' },
         yaml = { 'prettier' },
         markdown = { 'prettier' },
-        graphql = { 'prettier' },
+        -- graphql = { 'prettier' },
         lua = { 'stylua' },
         python = { 'isort', 'black' },
       },

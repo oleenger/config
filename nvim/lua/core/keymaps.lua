@@ -27,13 +27,15 @@ vim.keymap.set("n", "<leader>Y", [["+Y]])
 -- Vertical scroll and center
 vim.keymap.set('n', '<C-d>', '<C-d>zz', opts)
 vim.keymap.set('n', '<C-u>', '<C-u>zz', opts)
+vim.keymap.set('n', '<S-j>', '<C-d>zz', opts)
+vim.keymap.set('n', '<S-k>', '<C-u>zz', opts)
 
 -- Find and center
 vim.keymap.set('n', 'n', 'nzzzv', opts)
 vim.keymap.set('n', 'N', 'Nzzzv', opts)
 
 -- Buffers
-vim.keymap.set('n', '<leader>x', ':Bdelete!<CR>', opts) -- close buffer
+vim.keymap.set('n', '<leader>x', ':bdelete!<CR>', opts) -- close buffer
 vim.keymap.set('n', '<leader>b', '<cmd> enew <CR>', opts) -- new buffer
 vim.keymap.set('n', '<tab>', ':bnext<CR>', opts)
 vim.keymap.set('n', '<S-tab>', ':bprevious<CR>', opts)
