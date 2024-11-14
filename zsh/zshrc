@@ -30,7 +30,7 @@ zinit ice depth=1
 
 zinit light zsh-users/zsh-autosuggestions
 # ZSH_AUTOSUGGEST_STRATEGY='history'
-bindkey '^I' autosuggest-accept
+# bindkey '^I' autosuggest-accept
 bindkey '^ ' autosuggest-execute
 
 zinit light zdharma-continuum/fast-syntax-highlighting

@@ -20,6 +20,7 @@ require('lazy').setup {
   -- require 'plugins.neotree',
   -- require 'plugins.telescope-file-browser',
   require 'plugins.oil',
+  require 'plugins.hop',
   -- require 'plugins.bufferline',
   require 'plugins.lualine',
   require 'plugins.treesitter',
