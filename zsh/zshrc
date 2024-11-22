@@ -4,6 +4,7 @@ ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 [ ! -d $ZINIT_HOME/.git ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 source "${ZINIT_HOME}/zinit.zsh"
 
+
 #Powerlevel10k
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
@@ -28,14 +29,19 @@ source $ZSH/imports/zoxide.zsh
 #Plugins
 zinit ice depth=1
 
-zinit light zsh-users/zsh-autosuggestions
-# ZSH_AUTOSUGGEST_STRATEGY='history'
-# bindkey '^I' autosuggest-accept
-bindkey '^ ' autosuggest-execute
+# zinit light zsh-users/zsh-autosuggestions
+#ZSH_AUTOSUGGEST_STRATEGY='history'
+# # bindkey '^I' autosuggest-accept
+# bindkey '^ ' autosuggest-execute
 
 zinit light zdharma-continuum/fast-syntax-highlighting
 zinit light jeffreytse/zsh-vi-mode
 # zinit light marlonrichert/zsh-autocomplete
+
+# zinit load atuinsh/atuin
+# export ATUIN_NOBIND="true"
+# eval "$(atuin init zsh --disable-ctrl-r)"
+# eval "$(atuin init zsh)"
 
 #Aliases
 source $ZSH/imports/aliases.zsh
