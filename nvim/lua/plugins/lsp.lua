@@ -9,7 +9,7 @@ return {
 
     -- Useful status updates for LSP.
     -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-    { 'j-hui/fidget.nvim', opts = {} },
+    { 'j-hui/fidget.nvim',       opts = {} },
 
     -- Allows extra capabilities provided by nvim-cmp
     'hrsh7th/cmp-nvim-lsp',
@@ -24,12 +24,14 @@ return {
       float = {
         border = 'single',
         format = function(diagnostic)
-          return string.format('%s (%s) [%s]', diagnostic.message, diagnostic.source, diagnostic.code or diagnostic.user_data.lsp.code)
+          return string.format('%s (%s) [%s]', diagnostic.message, diagnostic.source,
+            diagnostic.code or diagnostic.user_data.lsp.code)
         end,
       },
     }
 
-    vim.api.nvim_set_keymap('n', '<space>dd', '<cmd>lua vim.diagnostic.open_float()<CR>', { noremap = true, silent = true })
+    vim.api.nvim_set_keymap('n', '<space>dd', '<cmd>lua vim.diagnostic.open_float()<CR>',
+      { noremap = true, silent = true })
 
     vim.api.nvim_create_autocmd('LspAttach', {
       group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
@@ -51,7 +53,7 @@ return {
         -- map('n', '<leader>cl', vim.lsp.codelens.run)
         -- map('n', '<leader>sh', vim.lsp.buf.signature_help)
         -- map('n', '<leader>rn', vim.lsp.buf.rename)
-        -- map('n', '<leader>f', vim.lsp.buf.format)
+        map('n', '<leader>f', vim.lsp.buf.format())
 
         -- Jump to the definition of the word under your cursor.
         --  This is where a variable was first declared, or where a function is defined, etc.
@@ -204,7 +206,7 @@ return {
             },
             diagnostics = { disable = { 'missing-fields' } },
             format = {
-              enable = false,
+              enable = true,
             },
           },
         },

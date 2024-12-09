@@ -1,12 +1,10 @@
-
-
 -- Set leader key
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 -- Disable the spacebar key's default behavior in Normal and Visual modes
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 
-vim.keymap.set("n", "<leader>u", vim.lsp.buf.format, { remap = false })
+vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, { remap = false })
 
 -- For conciseness
 local opts = { noremap = true, silent = true }
@@ -21,7 +19,7 @@ vim.keymap.set('n', '<leader>sn', '<cmd>noautocmd w <CR>', opts)
 vim.keymap.set("x", "<leader>p", [["_dP]])
 
 -- next greatest remap ever : asbjornHaland
-vim.keymap.set({"n", "v"}, "<leader>y", [["+y]])
+vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]])
 vim.keymap.set("n", "<leader>Y", [["+Y]])
 
 -- Vertical scroll and center
@@ -35,15 +33,15 @@ vim.keymap.set('n', 'n', 'nzzzv', opts)
 vim.keymap.set('n', 'N', 'Nzzzv', opts)
 
 -- Buffers
-vim.keymap.set('n', '<leader>x', ':bdelete!<CR>', opts) -- close buffer
+vim.keymap.set('n', '<leader>x', ':bdelete!<CR>', opts)   -- close buffer
 vim.keymap.set('n', '<leader>b', '<cmd> enew <CR>', opts) -- new buffer
 vim.keymap.set('n', '<tab>', ':bnext<CR>', opts)
 vim.keymap.set('n', '<S-tab>', ':bprevious<CR>', opts)
 
 -- Window management
-vim.keymap.set('n', '<leader>|', '<C-w>v', opts) -- split window vertically
-vim.keymap.set('n', '<leader>-', '<C-w>s', opts) -- split window horizontally
-vim.keymap.set('n', '<leader>se', '<C-w>=', opts) -- make split windows equal width & height
+vim.keymap.set('n', '<leader>|', '<C-w>v', opts)      -- split window vertically
+vim.keymap.set('n', '<leader>-', '<C-w>s', opts)      -- split window horizontally
+vim.keymap.set('n', '<leader>se', '<C-w>=', opts)     -- make split windows equal width & height
 vim.keymap.set('n', '<leader>xs', ':close<CR>', opts) -- close current split window
 
 -- Move up/down
