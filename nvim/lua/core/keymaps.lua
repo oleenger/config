@@ -29,7 +29,7 @@ vim.keymap.set('n', '<S-j>', '<C-d>zz', opts)
 vim.keymap.set('n', '<S-k>', '<C-u>zz', opts)
 
 -- Find and center
-vim.keymap.set('n', 'n', 'nzzzv', opts)
+-- vim.keymap.set('n', 'n', 'nzzzv', opts)
 vim.keymap.set('n', 'N', 'Nzzzv', opts)
 
 -- Buffers

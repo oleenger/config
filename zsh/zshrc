@@ -14,6 +14,7 @@ export ZSH=$HOME/.config/zsh
 export OBSIDIAN_VAULT=$HOME/obsidian/oleenger
 export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH" 
 export PATH="$HOME/.config/scripts/:$PATH" 
+export PATH="$HOME/.local/bin:$PATH"
 
 #Themes
 export BAT_THEME="Visual Studio Dark+"
@@ -42,6 +43,16 @@ zinit light jeffreytse/zsh-vi-mode
 # export ATUIN_NOBIND="true"
 # eval "$(atuin init zsh --disable-ctrl-r)"
 # eval "$(atuin init zsh)"
+
+# Yazi
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	yazi "$@" --cwd-file="$tmp"
+	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+		builtin cd -- "$cwd"
+	fi
+	rm -f -- "$tmp"
+}
 
 #Aliases
 source $ZSH/imports/aliases.zsh

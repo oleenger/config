@@ -43,7 +43,7 @@ require('lazy').setup {
   require 'plugins.vim-maximizer',
   require 'plugins.aerial',
   require 'plugins.obsidian',
-  require 'plugins.markdown-preview',
+  -- require 'plugins.markdown-preview',
   require 'plugins.colorscheme',
 }
 

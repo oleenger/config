@@ -14,7 +14,6 @@ on-focus-changed = "move-mouse window-lazy-center"
 
 [mode.main.binding]
 alt-f = 'fullscreen'
-alt-shift-c = 'reload-config'
 
 alt-1 = 'workspace 1'
 alt-2 = 'workspace 2'
@@ -26,6 +25,7 @@ alt-o = 'workspace O'
 alt-m = 'workspace M'
 alt-w = 'workspace W'
 alt-b = 'workspace B'
+alt-q = 'workspace Q'
 
 alt-h = 'focus left'
 alt-l = 'focus right'
@@ -42,6 +42,7 @@ alt-shift-o = 'move-node-to-workspace O'
 alt-shift-m = 'move-node-to-workspace M'
 alt-shift-w = 'move-node-to-workspace W'
 alt-shift-b = 'move-node-to-workspace B'
+alt-shift-q = 'move-node-to-workspace Q'
 
 alt-period = 'layout tiles horizontal vertical'
 alt-comma = 'layout accordion horizontal vertical'
@@ -103,4 +104,7 @@ run = "move-node-to-workspace B"
 if.app-id = 'Cisco-Systems.Spark'
 run = "move-node-to-workspace W"
 
+[[on-window-detected]]
+if.app-id = 'com.google.Chrome'
+run = "move-node-to-workspace Q"
 

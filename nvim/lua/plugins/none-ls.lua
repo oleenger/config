@@ -12,6 +12,7 @@ return {
     -- Formatters & linters for mason to install
     require('mason-null-ls').setup {
       ensure_installed = {
+        'pylint',
         'prettier',  -- ts/js formatter
         'stylua',    -- lua formatter
         'eslint_d',  -- ts/js linter
