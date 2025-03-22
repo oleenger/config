@@ -6,6 +6,10 @@ vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 
 vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, { remap = false })
 
+-- DB Browser
+
+vim.keymap.set("n", "<leader>dbs", ":!~/deploy-dbbrowser-stage.sh<CR>", { desc = "Deploy DB Browser - STAGE"})
+
 -- For conciseness
 local opts = { noremap = true, silent = true }
 
@@ -29,7 +33,7 @@ vim.keymap.set('n', '<S-j>', '<C-d>zz', opts)
 vim.keymap.set('n', '<S-k>', '<C-u>zz', opts)
 
 -- Find and center
--- vim.keymap.set('n', 'n', 'nzzzv', opts)
+vim.keymap.set('n', 'n', 'nzzzv', opts)
 vim.keymap.set('n', 'N', 'Nzzzv', opts)
 
 -- Buffers

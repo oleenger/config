@@ -43,7 +43,7 @@ return {
         -- for LSP related items. It sets the mode, buffer and description for us each time.
         local map = function(keys, func, desc, mode)
           mode = mode or 'n'
-          vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' })
+          -- vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' })
         end
         -- #TODO: These mappings override n, n.
         -- LSP mappings
@@ -178,11 +178,11 @@ return {
           },
         },
       },
-      html = { filetypes = { 'html', 'twig', 'hbs' } },
-      cssls = {},
+      html = { filetypes = { 'htmldjango', 'html', 'twig', 'hbs' } },
+      cssls = { filetypes = { 'css'} },
       -- tailwindcss = {},
       dockerls = {},
-      sqlls = {},
+      -- sqlls = {},
       -- terraformls = {},
       jsonls = {},
       yamlls = {},
@@ -226,6 +226,7 @@ return {
     local ensure_installed = vim.tbl_keys(servers or {})
     vim.list_extend(ensure_installed, {
       'stylua', -- Used to format Lua code
+      'pyright', -- Used to format Lua code
     })
     require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 

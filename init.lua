@@ -1,5 +1,5 @@
 require 'core.options'  -- Load general options
-require 'core.snippets' -- Custom code snippetsp
+require 'core.snippets' -- Custom code snippets
 require 'core.keymaps'  -- Load general keymaps
 
 -- Set up the Lazy plugin manager
@@ -18,31 +18,30 @@ vim.g.python3_host_prog = '/opt/homebrew/bin/python3'
 -- Set up plugins
 require('lazy').setup {
   -- require 'plugins.neotree',
-  -- require 'plugins.telescope-file-browser',
   require 'plugins.oil',
-  require 'plugins.hop',
+  --require 'plugins.hop',
   -- require 'plugins.bufferline',
   require 'plugins.lualine',
-  require 'plugins.treesitter',
+  -- require 'plugins.treesitter',
   require 'plugins.telescope',
-  require 'plugins.lsp',
-  -- require 'plugins.fugi',
+  --require 'plugins.lsp',
+  --require 'plugins.fugi',
   require 'plugins.trouble',
   require 'plugins.autocompletion',
   -- require 'plugins.render-markdown',
   -- require 'plugins.none-ls',
-  require 'plugins.gitsigns',
-  require 'plugins.indent-blankline',
+  --require 'plugins.gitsigns',
+  --require 'plugins.indent-blankline',
   require 'plugins.misc',
   require 'plugins.comment',
   require 'plugins.dressing',
   -- require 'plugins.linting',
-  require 'plugins.lazygit',
-  -- require 'plugins.nvim-metals',
+  --require 'plugins.lazygit',
+  --require 'plugins.nvim-metals',
   -- require 'plugins.conform',
   require 'plugins.vim-maximizer',
-  require 'plugins.aerial',
-  require 'plugins.obsidian',
+  --require 'plugins.aerial',
+  --require 'plugins.obsidian',
   -- require 'plugins.markdown-preview',
   require 'plugins.colorscheme',
 }
