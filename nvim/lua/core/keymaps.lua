@@ -4,11 +4,13 @@ vim.g.maplocalleader = ' '
 -- Disable the spacebar key's default behavior in Normal and Visual modes
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 
-vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, { remap = false })
+-- Quickfix
+vim.keymap.set('n', '<C-n>', '<cmd>cnext<CR>', { desc = "Quickfix Next"})
+vim.keymap.set('n', '<C-p>', '<cmd>cprev<CR>', { desc = "Quickfix Prev"})
+
 
 -- DB Browser
-
-vim.keymap.set("n", "<leader>dbs", ":!~/deploy-dbbrowser-stage.sh<CR>", { desc = "Deploy DB Browser - STAGE"})
+vim.keymap.set("n", "<leader>dbs", ":!~/deploy-dbbrowser-stage.sh<CR>", { desc = 'Deploy DB Browser - STAGE'})
 
 -- For conciseness
 local opts = { noremap = true, silent = true }
@@ -37,16 +39,10 @@ vim.keymap.set('n', 'n', 'nzzzv', opts)
 vim.keymap.set('n', 'N', 'Nzzzv', opts)
 
 -- Buffers
-vim.keymap.set('n', '<leader>x', ':bdelete!<CR>', opts)   -- close buffer
-vim.keymap.set('n', '<leader>b', '<cmd> enew <CR>', opts) -- new buffer
+vim.keymap.set('n', '<leader>bx', ':bdelete!<CR>', opts)   -- close buffer
+vim.keymap.set('n', '<leader>bn', '<cmd> enew <CR>', opts) -- new buffer
 vim.keymap.set('n', '<tab>', ':bnext<CR>', opts)
 vim.keymap.set('n', '<S-tab>', ':bprevious<CR>', opts)
-
--- Window management
-vim.keymap.set('n', '<leader>|', '<C-w>v', opts)      -- split window vertically
-vim.keymap.set('n', '<leader>-', '<C-w>s', opts)      -- split window horizontally
-vim.keymap.set('n', '<leader>se', '<C-w>=', opts)     -- make split windows equal width & height
-vim.keymap.set('n', '<leader>xs', ':close<CR>', opts) -- close current split window
 
 -- Move up/down
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
@@ -70,8 +66,7 @@ vim.keymap.set('v', '>', '>gv', opts)
 -- Keep last yanked when pasting
 vim.keymap.set('v', 'p', '"_dP', opts)
 
--- Diagnostic keymaps
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic message' })
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
-vim.keymap.set('n', '<leader>d', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
+vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, { remap = false })
+
+
+
