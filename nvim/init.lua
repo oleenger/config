@@ -1,6 +1,6 @@
-require 'core.options'  -- Load general options
+require 'core.options' -- Load general options
 require 'core.snippets' -- Custom code snippetsp
-require 'core.keymaps'  -- Load general keymaps
+require 'core.keymaps' -- Load general keymaps
 
 -- Set up the Lazy plugin manager
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -19,6 +19,7 @@ vim.g.python3_host_prog = '/opt/homebrew/bin/python3'
 require('lazy').setup {
   -- require 'plugins.neotree',
   -- require 'plugins.telescope-file-browser',
+  require 'plugins.mason',
   require 'plugins.oil',
   require 'plugins.hop',
   -- require 'plugins.bufferline',
@@ -39,7 +40,7 @@ require('lazy').setup {
   -- require 'plugins.linting',
   require 'plugins.lazygit',
   -- require 'plugins.nvim-metals',
-  -- require 'plugins.conform',
+  require 'plugins.conform',
   require 'plugins.vim-maximizer',
   require 'plugins.aerial',
   require 'plugins.obsidian',
