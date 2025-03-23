@@ -1,0 +1,18 @@
+---
+name: db-browser
+project_root: "/Users/t927604/development/gitlab/telenor/bandak-platform/bandak-db-browser"
+windows:
+- nvim:
+    layout: 6089,204x45,0,0,77
+    panes:
+    - vim /Users/t927604/development/gitlab/telenor/bandak-platform/bandak-db-browser/app.py
+- server:
+    layout: 7211,204x45,0,0[204x14,0,0,78,204x30,0,15,79]
+    panes:
+    - /opt/python-venvs/dbbrowser/bin/python3.9 app.py stage
+    - cd /Users/t927604/development/gitlab/telenor/bandak-platform/bandak-db-browser && gs
+- mapr08:
+    layout: 666d,204x45,0,0{102x45,0,0,85,101x45,103,0,86}
+    panes:
+    - ssh mapr08
+    - ssh mapr08

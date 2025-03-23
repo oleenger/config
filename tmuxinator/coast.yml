@@ -1,0 +1,12 @@
+---
+name: coast
+project_root: "/Users/t927604/development/gitea/s07451-bandak-operations/operations/"
+windows:
+- nvim:
+    layout: 6089,204x45,0,0,77
+    panes:
+    - vim /Users/t927604/development/gitea/s07451-bandak-operations/operations/
+- server:
+    layout: 7211,204x45,0,0[204x14,0,0,78,204x30,0,15,79]
+    panes:
+    - open -na "Google Chrome" --args --new-window https://argocd-server-argocd.apps.ocp9503.ehub.nsc.no/applications
