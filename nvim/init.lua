@@ -37,7 +37,7 @@ require('lazy').setup {
   require 'plugins.misc',
   require 'plugins.comment',
   require 'plugins.dressing',
-  -- require 'plugins.linting',
+  require 'plugins.linting',
   require 'plugins.lazygit',
   -- require 'plugins.nvim-metals',
   require 'plugins.conform',
