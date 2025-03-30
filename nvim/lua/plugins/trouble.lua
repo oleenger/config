@@ -1,37 +1,37 @@
 return {
   {
-    "folke/trouble.nvim",
-    branch = "main", -- IMPORTANT!
+    'folke/trouble.nvim',
+    branch = 'main', -- IMPORTANT!
     keys = {
       {
-        "<leader>xx",
-        "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
-        desc = "Diagnostics (Trouble)",
+        '<leader>xx',
+        '<cmd>Trouble diagnostics toggle filter.buf=0<cr>',
+        desc = 'Diagnostics (Trouble)',
       },
       {
-        "<leader>xX",
-        "<cmd>Trouble diagnostics toggle<cr>",
-        desc = "Buffer Diagnostics (Trouble)",
+        '<leader>xX',
+        '<cmd>Trouble diagnostics toggle<cr>',
+        desc = 'Buffer Diagnostics (Trouble)',
       },
       {
-        "<leader>cs",
-        "<cmd>Trouble symbols toggle focus=false<cr>",
-        desc = "Symbols (Trouble)",
+        '<leader>cs',
+        '<cmd>Trouble symbols toggle focus=false<cr>',
+        desc = 'Symbols (Trouble)',
       },
       {
-        "<leader>cl",
-        "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
-        desc = "LSP Definitions / references / ... (Trouble)",
+        '<leader>cl',
+        '<cmd>Trouble lsp toggle focus=false win.position=right<cr>',
+        desc = 'LSP Definitions / references / ... (Trouble)',
       },
       {
-        "<leader>xL",
-        "<cmd>Trouble loclist toggle<cr>",
-        desc = "Location List (Trouble)",
+        '<leader>xL',
+        '<cmd>Trouble loclist toggle<cr>',
+        desc = 'Location List (Trouble)',
       },
       {
-        "<leader>xQ",
-        "<cmd>Trouble qflist toggle<cr>",
-        desc = "Quickfix List (Trouble)",
+        '<leader>xQ',
+        '<cmd>Trouble qflist toggle<cr>',
+        desc = 'Quickfix List (Trouble)',
       },
     },
     opts = {
@@ -40,14 +40,14 @@ return {
         -- type = "float",
       },
       win = {
-        type = "split",
-        relative = "win",
-        position = "right",
-        size = 0.3
+        type = 'split',
+        relative = 'win',
+        position = 'right',
+        size = 0.3,
       },
       modes = {
         cascade = {
-          mode = "diagnostics", -- inherit from diagnostics mode
+          mode = 'diagnostics', -- inherit from diagnostics mode
           filter = function(items)
             local severity = vim.diagnostic.severity.HINT
             for _, item in ipairs(items) do
@@ -60,6 +60,5 @@ return {
         },
       },
     }, -- for default options, refer to the configuration section for custom setup.
-  }
+  },
 }
-
