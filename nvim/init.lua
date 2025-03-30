@@ -1,7 +1,6 @@
 require 'core.options' -- Load general options
 require 'core.snippets' -- Custom code snippetsp
 require 'core.keymaps' -- Load general keymaps
-require 'core.lsp' -- Load general keymaps
 
 -- Set up the Lazy plugin manager
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -19,7 +18,7 @@ vim.g.python3_host_prog = '/opt/homebrew/bin/python3'
 -- Set up plugins
 require('lazy').setup {
   -- require 'plugins.telescope-file-browser',
-  -- require 'plugins.mason',
+  require 'plugins.mason',
   require 'plugins.oil',
   require 'plugins.hop',
   -- require 'plugins.bufferline',
@@ -51,6 +50,8 @@ require('lazy').setup {
 
   -- require 'plugins.neotree',
 }
+
+require 'core.lsp' -- Load general keymaps
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
