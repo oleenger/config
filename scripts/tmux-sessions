@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+selected=$(tmux list-sessions | awk '{print $1}' \
+    | fzf \
+)
+
+if [[ -z $selected ]]; then
+    exit 0
+fi
+
+tmux_running=$(pgrep tmux)
+
+if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
+    tmux new-session -s $selected -c $selected
+    exit 0
+fi
+
+if ! tmux has-session -t=$selected 2> /dev/null; then
+    tmux new-session -ds $selected -c $selected
+fi
+
+tmux switch-client -t $selected
