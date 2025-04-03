@@ -1,5 +1,5 @@
 return {
-  cmd = { 'pyright' },
+  cmd = { 'pyright-langserver', '--stdio' },
   root_markers = { '.git' },
-  filetypes = { 'python', '.py' },
+  filetypes = { 'python' },
 }
