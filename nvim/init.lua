@@ -43,6 +43,7 @@ require('lazy').setup {
   require 'plugins.nvim-metals',
   require 'plugins.conform',
   require 'plugins.vim-maximizer',
+  require 'plugins.harpoon',
   require 'plugins.aerial',
   require 'plugins.obsidian',
   -- require 'plugins.markdown-preview',

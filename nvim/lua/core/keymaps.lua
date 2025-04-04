@@ -42,8 +42,6 @@ vim.keymap.set('n', 'N', 'Nzzzv', opts)
 -- Buffers
 vim.keymap.set('n', '<leader>bx', ':bdelete!<CR>', opts) -- close buffer
 vim.keymap.set('n', '<leader>bn', '<cmd> enew <CR>', opts) -- new buffer
-vim.keymap.set('n', '<tab>', ':bnext<CR>', opts)
-vim.keymap.set('n', '<S-tab>', ':bprevious<CR>', opts)
 
 -- Move up/down
 vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv")
