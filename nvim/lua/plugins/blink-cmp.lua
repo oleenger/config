@@ -1,7 +1,7 @@
 return {
   'saghen/blink.cmp',
   -- use a release tag to download pre-built binaries
-  version = 'v0.14.0',
+  version = '1',
 
   dependencies = {},
 
@@ -10,9 +10,6 @@ return {
   opts = {
     keymap = {
       preset = 'default',
-      -- Map C-Z in conjunction with C-Y for completion, as we are on a QWRTZ
-      -- keyboard.
-      ['<C-Z>'] = { 'accept', 'fallback' },
     },
 
     appearance = {
@@ -50,19 +47,21 @@ return {
 
     signature = { enabled = true },
 
-    -- sources = {
-    --   default = { "lsp", "path", "snippets", "buffer", "emoji" },
-    --   providers = {
-    --     copilot = {
-    --       enabled = function()
-    --         return vim.g.copilot_completion_enabled
-    --       end,
-    --       name = "copilot",
-    --       module = "blink-cmp-copilot",
-    --       score_offset = 100,
-    --       should_show_items = true,
-    --     },
-    --   },
-    -- },
+    sources = {
+      default = { 'lsp', 'path', 'snippets', 'buffer'},
+      per_filetype = {
+        markdown = { 'lsp', 'path' },
+      }, --   providers = {
+      --     copilot = {
+      --       enabled = function()
+      --         return vim.g.copilot_completion_enabled
+      --       end,
+      --       name = "copilot",
+      --       module = "blink-cmp-copilot",
+      --       score_offset = 100,
+      --       should_show_items = true,
+      --     },
+      --   },
+    },
   },
 }

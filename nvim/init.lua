@@ -1,6 +1,7 @@
 require 'core.options' -- Load general options
 require 'core.snippets' -- Custom code snippetsp
 require 'core.keymaps' -- Load general keymaps
+require 'core.lsp' -- Load general keymaps
 
 -- Set up the Lazy plugin manager
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -43,11 +44,11 @@ require('lazy').setup {
   require 'plugins.aerial',
   require 'plugins.markdown-preview',
   -----DISABLED
+  -- require 'plugins.blink-cmp',
   -- require 'plugins.nvim-metals',
   -- require 'plugins.neotree',
   -- require 'plugins.obsidian',
   -- require 'plugins.telescope-file-browser',
-  require 'plugins.blink-cmp',
   -- require 'plugins.fugi',
   -- require 'plugins.bufferline',
   -- require 'plugins.none-ls',

@@ -1,57 +1,53 @@
 return {
-  'williamboman/mason.nvim',
-  dependencies = {
+  {
     'williamboman/mason-lspconfig.nvim',
-    'WhoIsSethDaniel/mason-tool-installer.nvim',
-  },
-  config = function()
-    -- import mason
-    local mason = require 'mason'
-
-    -- import mason-lspconfig
-    local mason_lspconfig = require 'mason-lspconfig'
-
-    local mason_tool_installer = require 'mason-tool-installer'
-
-    -- enable mason and configure icons
-    mason.setup {
-      ui = {
-        icons = {
-          package_installed = '✓',
-          package_pending = '➜',
-          package_uninstalled = '✗',
-        },
-      },
-    }
-
-    mason_lspconfig.setup {
-      automatic_enable = true,
+    opts = {
       -- list of servers for mason to install
       ensure_installed = {
+        'ts_ls',
         'html',
         'cssls',
+        'tailwindcss',
+        'svelte',
         'lua_ls',
-        -- 'marksman',
+        'graphql',
         'emmet_ls',
-        'prettier',
         'prismals',
         'pyright',
-        'markdownlint-cli2',
+        'eslint',
       },
-    }
-
-    mason_tool_installer.setup {
+    },
+    dependencies = {
+      {
+        'williamboman/mason.nvim',
+        opts = {
+          ui = {
+            icons = {
+              package_installed = '✓',
+              package_pending = '➜',
+              package_uninstalled = '✗',
+            },
+          },
+        },
+      },
+      'neovim/nvim-lspconfig',
+    },
+  },
+  {
+    'WhoIsSethDaniel/mason-tool-installer.nvim',
+    opts = {
       ensure_installed = {
+        'markdownlint-cli2',
         'prettier', -- prettier formatter
         'stylua', -- lua formatter
         'isort', -- python formatter
         'black', -- python formatter
         'pylint',
         'eslint_d',
-        'djlint',
-        'markdownlint-cli2',
-        'jinja-lsp',
       },
-    }
-  end,
+    },
+    dependencies = {
+      'williamboman/mason.nvim',
+    },
+  },
 }

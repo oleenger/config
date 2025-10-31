@@ -67,6 +67,13 @@ return { -- Autocompletion
       Operator = '󰆕',
       TypeParameter = '󰊄',
     }
+
+    cmp.setup.filetype('markdown', {
+      sources = {
+        { name = 'nvim_lsp' },
+      },
+    })
+
     cmp.setup {
       snippet = {
         expand = function(args)
