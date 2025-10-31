@@ -25,14 +25,18 @@ return {
     }
 
     mason_lspconfig.setup {
+      automatic_enable = true,
       -- list of servers for mason to install
       ensure_installed = {
         'html',
         'cssls',
         'lua_ls',
+        -- 'marksman',
         'emmet_ls',
+        'prettier',
         'prismals',
         'pyright',
+        'markdownlint-cli2',
       },
     }
 
@@ -45,6 +49,7 @@ return {
         'pylint',
         'eslint_d',
         'djlint',
+        'markdownlint-cli2',
         'jinja-lsp',
       },
     }

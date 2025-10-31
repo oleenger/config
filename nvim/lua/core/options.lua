@@ -1,7 +1,7 @@
 vim.schedule(function()
   vim.opt.clipboard = 'unnamedplus'
 end)
-
+vim.g.mkdp_theme = 'light'
 vim.o.cursorcolumn = false
 vim.wo.number = true -- Make line numbers default (default: false)
 vim.o.relativenumber = true -- Set relative numbered lines (default: false)
@@ -21,7 +21,7 @@ vim.o.sidescrolloff = 8 -- Minimal number of screen columns either side of curso
 vim.o.cursorline = false -- Highlight the current line (default: false)
 vim.o.splitbelow = true -- Force all horizontal splits to go below current window (default: false)
 vim.o.splitright = true -- Force all vertical splits to go to the right of current window (default: false)
-vim.o.hlsearch = false -- Set highlight on search (default: true)
+vim.o.hlsearch = false -- Set highlight on search (default: true)p
 vim.o.showmode = false -- We don't need to see things like -- INSERT -- anymore (default: true)
 vim.opt.termguicolors = true -- Set termguicolors to enable highlight groups (default: false)
 vim.o.whichwrap = 'bs<>[]hl' -- Which "horizontal" keys are allowed to travel to prev/next line (default: 'b,s')

@@ -6,6 +6,7 @@ return {
 
     lint.linters_by_ft = {
       python = { 'ruff' },
+      markdown = { 'markdownlint-cli2' },
     }
 
     local lint_augroup = vim.api.nvim_create_augroup('lint', { clear = true })
@@ -18,7 +19,7 @@ return {
     })
 
     vim.keymap.set('n', '<leader>l', function()
-      lint.try_lint()
-    end, { desc = 'Trigger linting for current file' })
+      vim.diagnostic.config { virtual_text = not vim.diagnostic.config().virtual_text }
+    end, { desc = 'Disable virtual_text' })
   end,
 }

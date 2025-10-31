@@ -56,7 +56,7 @@ vim.keymap.set('n', '<C-l>', ':wincmd l<CR>', opts)
 vim.keymap.set('n', '<leader>s', [[:%s/<C-r><C-w>//gI<Left><Left><Left>]])
 
 -- Toggle line wrapping
-vim.keymap.set('n', '<leader>lw', '<cmd>set wrap!<CR>', opts)
+vim.keymap.set('n', '<leader>sw', '<cmd>set wrap!<CR>', opts)
 
 -- Stay in indent mode
 vim.keymap.set('v', '<', '<gv', opts)
