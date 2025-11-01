@@ -1,6 +1,7 @@
 require 'core.options' -- Load general options
 require 'core.snippets' -- Custom code snippetsp
 require 'core.keymaps' -- Load general keymaps
+require 'core.lsp' -- Load general keymaps
 
 -- Set up the Lazy plugin manager
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -17,22 +18,19 @@ vim.g.python3_host_prog = '/opt/homebrew/bin/python3'
 
 -- Set up plugins
 require('lazy').setup {
-  -- require 'plugins.neotree',
-  -- require 'plugins.telescope-file-browser',
+  require 'plugins.colorscheme',
   require 'plugins.mason',
   require 'plugins.oil',
-  require 'plugins.hop',
-  -- require 'plugins.bufferline',
+  -- require 'plugins.hop',
+  require 'plugins.flash',
   require 'plugins.lualine',
   require 'plugins.dim',
   require 'plugins.treesitter',
   require 'plugins.telescope',
   require 'plugins.lsp',
-  -- require 'plugins.fugi',
   require 'plugins.trouble',
   require 'plugins.autocompletion',
-  -- require 'plugins.render-markdown',
-  -- require 'plugins.none-ls',
+  require 'plugins.render-markdown',
   require 'plugins.gitsigns',
   require 'plugins.indent-blankline',
   require 'plugins.misc',
@@ -40,14 +38,22 @@ require('lazy').setup {
   require 'plugins.dressing',
   require 'plugins.linting',
   require 'plugins.lazygit',
-  require 'plugins.nvim-metals',
+  require 'plugins.tiny-diagnostics',
   require 'plugins.conform',
   require 'plugins.vim-maximizer',
   require 'plugins.harpoon',
-  require 'plugins.aerial',
-  require 'plugins.obsidian',
-  -- require 'plugins.markdown-preview',
-  require 'plugins.colorscheme',
+  -- require 'plugins.substitute',
+  -- require 'plugins.aerial',
+  require 'plugins.markdown-preview',
+  -----DISABLED
+  -- require 'plugins.blink-cmp',
+  -- require 'plugins.nvim-metals',
+  -- require 'plugins.neotree',
+  -- require 'plugins.obsidian',
+  -- require 'plugins.telescope-file-browser',
+  -- require 'plugins.fugi',
+  -- require 'plugins.bufferline',
+  -- require 'plugins.none-ls',
 }
 
 -- The line beneath this is called `modeline`. See `:help modeline`

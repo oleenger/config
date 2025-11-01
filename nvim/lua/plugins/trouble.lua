@@ -2,6 +2,7 @@ return {
   {
     'folke/trouble.nvim',
     branch = 'main', -- IMPORTANT!
+    cmd = 'Trouble',
     keys = {
       {
         '<leader>xx',

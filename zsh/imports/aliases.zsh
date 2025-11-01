@@ -1,3 +1,4 @@
+alias mkd_table_formatter="markdown-table-formatter -p 0"
 alias conf="cd $HOME/.config/"
 alias ls="eza --icons=always"
 alias vim="nvim"

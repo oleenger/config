@@ -23,6 +23,8 @@ alt-5 = 'workspace 5'
 alt-6 = 'workspace 6'
 alt-o = 'workspace O'
 alt-m = 'workspace M'
+alt-r = 'workspace R'
+alt-s = 'workspace S'
 alt-w = 'workspace W'
 alt-b = 'workspace B'
 alt-q = 'workspace Q'
@@ -40,9 +42,11 @@ alt-shift-5 = 'move-node-to-workspace 5'
 alt-shift-6 = 'move-node-to-workspace 6'
 alt-shift-o = 'move-node-to-workspace O'
 alt-shift-m = 'move-node-to-workspace M'
+alt-shift-r = 'move-node-to-workspace R'
 alt-shift-w = 'move-node-to-workspace W'
 alt-shift-b = 'move-node-to-workspace B'
 alt-shift-q = 'move-node-to-workspace Q'
+alt-shift-s = 'move-node-to-workspace S'
 
 alt-period = 'layout tiles horizontal vertical'
 alt-comma = 'layout accordion horizontal vertical'
@@ -50,7 +54,7 @@ alt-tab = 'workspace-back-and-forth'
 alt-shift-tab = 'move-workspace-to-monitor --wrap-around next'
 
 alt-shift-semicolon = 'mode service'
-alt-shift-r = 'mode resize'
+alt-shift-0 = 'mode resize'
 
 
 [mode.resize.binding]
@@ -68,20 +72,21 @@ esc = 'mode main'
 
 [gaps]
 inner.horizontal = 15
-inner.vertical =   15
-outer.left =       20
-outer.bottom =     20
-outer.top =        20
-outer.right =      20
+inner.vertical = 15
+outer.left = 20
+outer.bottom = 20
+outer.top = 20
+outer.right = 20
 
 [workspace-to-monitor-force-assignment]
 1 = "main"
 2 = "secondary"
 W = "secondary"
+F = "main"
 3 = "main"
 4 = "main"
 5 = "main"
-B = "secondary"
+B = "main"
 
 
 [[on-window-detected]]
@@ -94,7 +99,7 @@ run = "move-node-to-workspace M"
 
 [[on-window-detected]]
 if.app-id = 'com.tinyspeck.slackmacgap'
-run = "move-node-to-workspace M"
+run = "move-node-to-workspace S"
 
 [[on-window-detected]]
 if.app-id = 'md.obsidian'
@@ -108,3 +113,7 @@ run = "move-node-to-workspace W"
 if.app-id = 'com.google.Chrome'
 run = "move-node-to-workspace Q"
 
+
+[[on-window-detected]]
+if.app-id = 'org.mozilla.firefox'
+run = "move-node-to-workspace R"
