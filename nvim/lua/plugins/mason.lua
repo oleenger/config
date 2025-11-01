@@ -1,6 +1,7 @@
 return {
   {
     'williamboman/mason-lspconfig.nvim',
+    event = { 'BufReadPre', 'BufNewFile' },
     opts = {
       -- list of servers for mason to install
       ensure_installed = {
@@ -8,11 +9,10 @@ return {
         'html',
         'cssls',
         'tailwindcss',
-        'svelte',
         'lua_ls',
-        'graphql',
         'emmet_ls',
         'prismals',
+        'marksman',
         'pyright',
         'eslint',
       },
@@ -44,6 +44,7 @@ return {
         'black', -- python formatter
         'pylint',
         'eslint_d',
+        'marksman',
       },
     },
     dependencies = {

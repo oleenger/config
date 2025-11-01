@@ -3,18 +3,21 @@ return {
   {
     -- Tmux & split window navigation
     'christoomey/vim-tmux-navigator',
+    event = 'VeryLazy',
   },
   {
     -- Detect tabstop and shiftwidth automatically
     'tpope/vim-sleuth',
+    event = 'VeryLazy',
   },
   {
     -- GitHub integration for vim-fugitive
-    'tpope/vim-rhubarb',
+    -- 'tpope/vim-rhubarb',
   },
   {
     -- Hints keybinds
     'folke/which-key.nvim',
+    event = 'VeryLazy',
   },
   {
     -- Autoclose parentheses, brackets, quotes, etc.
@@ -33,6 +36,7 @@ return {
   {
     -- High-performance color highlighter
     'norcalli/nvim-colorizer.lua',
+    event = 'VeryLazy',
     config = function()
       require('colorizer').setup()
     end,

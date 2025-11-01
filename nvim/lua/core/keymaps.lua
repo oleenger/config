@@ -18,7 +18,7 @@ vim.keymap.set('i', 'jj', '<ESC>', { desc = 'Exit insert mode' })
 vim.keymap.set('n', '<leader>nh', ':nohl<CR>', { desc = 'Clear search highlights' })
 
 -- save file without auto-formatting
-vim.keymap.set('n', '<leader>sn', '<cmd>noautocmd w <CR>', opts)
+-- vim.keymap.set('n', '<leader>sn', '<cmd>noautocmd w <CR>', opts)
 
 -- greatest remap ever
 vim.keymap.set('x', '<leader>p', [["_dP]])
@@ -56,7 +56,7 @@ vim.keymap.set('n', '<C-l>', ':wincmd l<CR>', opts)
 vim.keymap.set('n', '<leader>s', [[:%s/<C-r><C-w>//gI<Left><Left><Left>]])
 
 -- Toggle line wrapping
-vim.keymap.set('n', '<leader>sw', '<cmd>set wrap!<CR>', opts)
+-- vim.keymap.set('n', '<leader>sw', '<cmd>set wrap!<CR>', opts)
 
 -- Stay in indent mode
 vim.keymap.set('v', '<', '<gv', opts)

@@ -1,5 +1,6 @@
 return { -- Autocompletion
   'hrsh7th/nvim-cmp',
+  event = 'InsertEnter',
   dependencies = {
     -- Snippet Engine & its associated nvim-cmp source
     {
@@ -71,6 +72,7 @@ return { -- Autocompletion
     cmp.setup.filetype('markdown', {
       sources = {
         { name = 'nvim_lsp' },
+        { name = 'luasnip' },
       },
     })
 
