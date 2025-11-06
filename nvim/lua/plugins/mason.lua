@@ -35,6 +35,7 @@ return {
   },
   {
     'WhoIsSethDaniel/mason-tool-installer.nvim',
+    event = { 'BufReadPre', 'BufNewFile' },
     opts = {
       ensure_installed = {
         'markdownlint-cli2',
@@ -44,6 +45,7 @@ return {
         'black', -- python formatter
         'pylint',
         'eslint_d',
+        'djlint',
         'marksman',
       },
     },
