@@ -1,94 +1,110 @@
 return {
-  'obsidian-nvim/obsidian.nvim',
-  version = '*', -- recommended, use latest release instead of latest commit
+  'epwalsh/obsidian.nvim',
+  version = '*',
+  lazy = true,
   ft = 'markdown',
-  -- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
-  -- event = {
-  --   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
-  --   -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/*.md"
-  --   -- refer to `:h file-pattern` for more examples
-  --   "BufReadPre path/to/my-vault/*.md",
-  --   "BufNewFile path/to/my-vault/*.md",
-  -- },
-  ---@module 'obsidian'
-  ---@type obsidian.config
+  dependencies = { 'nvim-lua/plenary.nvim' },
+
   opts = {
-    disable_frontmatter = true,
     workspaces = {
       {
-        name = 'personal',
+        name = 'vault',
         path = '~/obsidian/oleenger',
-        overrides = {
-          templates = {
-            subdir = '_templates',
-            date_format = '%Y-%m-%d',
-            time_format = '%H:%M:%S',
-          },
-        },
       },
     },
-    note_id_func = function(title)
-      -- Create note IDs in a Zettelkasten format with a timestamp and a suffix.
-      -- In this case a note with the title 'My new note' will be given an ID that looks
-      -- like '1657296016-my-new-note', and therefore the file name '1657296016-my-new-note.md'
-      local suffix = ''
 
-      if title ~= nil then
-        -- If title is given, transform it into valid file name.
-        suffix = title:gsub(' ', '-'):gsub('[^A-Za-z0-9-]', ''):lower()
-      else
-        -- If title is nil, just add 4 random uppercase letters to the suffix.
-        for _ = 1, 4 do
-          suffix = suffix .. string.char(math.random(65, 90))
+    -- SMART SECTION-BASED FOLDER ROUTING
+  },
+
+  config = function(_, opts)
+    local obsidian = require 'obsidian'
+    obsidian.setup(opts)
+
+    ------------------------------------------------------
+    -- <leader>oc
+    -- Create note → insert wiki link → open with vsplit 70% → jump
+    ------------------------------------------------------
+
+    vim.keymap.set('n', '<leader>oc', function()
+      ------------------------------------------------------------
+      -- 0. Extract title & Index context
+      ------------------------------------------------------------
+      local line = vim.fn.getline '.'
+      local title = line:gsub('^%s*[-*]%s*', '')
+
+      local index_win = vim.api.nvim_get_current_win()
+      local index_buf = vim.api.nvim_get_current_buf()
+      local row = vim.api.nvim_win_get_cursor(index_win)[1]
+
+      ------------------------------------------------------------
+      -- 1. Detect section from Index.md
+      ------------------------------------------------------------
+      local section = nil
+      for i = row, 1, -1 do
+        local l = vim.api.nvim_buf_get_lines(index_buf, i - 1, i, false)[1]
+        if l then
+          local h2 = l:match '^##%s*(.+)'
+          if h2 then
+            section = h2:lower()
+            break
+          end
         end
       end
 
-      local date_format = os.date '%Y-%m-%d'
-      return tostring(date_format) .. '-' .. suffix
-    end,
+      ------------------------------------------------------------
+      -- 2. Determine folder based on section
+      ------------------------------------------------------------
+      local subdir = 'notes'
+      if section == 'now' then
+        subdir = 'tasks/now'
+      elseif section == 'soon' then
+        subdir = 'tasks/soon'
+      elseif section == 'waiting' then
+        subdir = 'tasks/waiting'
+      elseif section == 'someday' then
+        subdir = 'someday'
+      end
 
-    -- see below for full list of options 👇
-  },
+      ------------------------------------------------------------
+      -- 3. Construct full path
+      ------------------------------------------------------------
+      local vault = opts.workspaces[1].path
+      local full_path = vim.fn.expand(vault .. '/' .. subdir .. '/' .. title .. '.md')
+
+      ------------------------------------------------------------
+      -- 4. Create directories if needed
+      ------------------------------------------------------------
+      vim.fn.mkdir(vault .. '/' .. subdir, 'p')
+
+      ------------------------------------------------------------
+      -- 6. Open the note in THIS window
+      ------------------------------------------------------------
+      vim.cmd('edit ' .. vim.fn.fnameescape(full_path))
+
+      ------------------------------------------------------------
+      -- 7. Replace bullet with wiki link in Index.md
+      ------------------------------------------------------------
+      vim.api.nvim_set_current_win(index_win)
+
+      ------------------------------------------------------------
+      -- 8. Switch focus back to the new note
+      ------------------------------------------------------------
+      -- find the window containing the new file
+      for _, win in ipairs(vim.api.nvim_list_wins()) do
+        local buf = vim.api.nvim_win_get_buf(win)
+        local name = vim.api.nvim_buf_get_name(buf)
+        if name == full_path then
+          vim.api.nvim_set_current_win(win)
+          break
+        end
+      end
+    end, { desc = 'Create Obsidian note manually (v3.9.0 compatible)' })
+
+    ------------------------------------------------------
+    -- <leader>oo: follow wiki link under cursor
+    ------------------------------------------------------
+    vim.keymap.set('n', '<leader>oo', function()
+      obsidian.follow_link()
+    end, { desc = 'Open Obsidian link under cursor' })
+  end,
 }
-
--- return {
---   -- 'epwalsh/obsidian.nvim',
---   'obsidian-nvim/obsidian.nvim',
---
---   version = '*', -- recommended, use latest release instead of latest commit
---   -- lazy = true,
---   ft = 'markdown',
---   -- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
---   -- event = {
---   --   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
---   --   -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/*.md"
---   --   -- refer to `:h file-pattern` for more examples
---   --   "BufReadPre path/to/my-vault/*.md",
---   --   "BufNewFile path/to/my-vault/*.md",
---   -- },
---   dependencies = {
---     -- Required.
---     'nvim-lua/plenary.nvim',
---   },
---   opts = {
---     workspaces = {
---       {
---         name = 'oleenger',
---         path = '~/obsidian/oleenger/',
---       },
---     },
---     templates = {
---       subdir = '_templates',
---       date_format = '%Y-%m-%d',
---       time_format = '%H:%M:%S',
---     },
---   },
---   config = function()
---     -- navigate to vault
---     vim.keymap.set('n', '<leader>oo', ':cd ~/obsidian/oleenger/<cr>')
---
---     -- search for files in full vault
---     vim.keymap.set('n', '<leader>os', ':Telescope find_files search_dirs={"~/obsidian/oleenger/"}<cr>')
---     vim.keymap.set('n', '<leader>oz', ':Telescope live_grep search_dirs={"~/obsidian/oleenger"}<cr>')
---   end,
--- }

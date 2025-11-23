@@ -2,6 +2,7 @@ vim.schedule(function()
   vim.opt.clipboard = 'unnamedplus'
 end)
 vim.g.mkdp_theme = 'light'
+vim.opt.autoread = true
 vim.o.cursorcolumn = false
 vim.wo.number = true -- Make line numbers default (default: false)
 vim.o.relativenumber = true -- Set relative numbered lines (default: false)

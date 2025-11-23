@@ -33,12 +33,12 @@ vim.keymap.set('n', '<leader>r', builtin.registers, { desc = '[R]egisters' })
 
 -- Grep Obsidian Notes
 vim.keymap.set('n', '<C-s>og', function()
-  builtin.live_grep { cwd = '~/obsidian/oleenger/notes' }
+  builtin.live_grep { cwd = '~/obsidian/oleenger' }
 end)
 
 -- Search Obsidian Notes
 vim.keymap.set('n', '<C-S>on', function()
-  builtin.find_files { cwd = '~/obsidian/oleenger/notes' }
+  builtin.find_files { cwd = '~/obsidian/oleenger' }
 end)
 
 -- Search NeoVIM config files

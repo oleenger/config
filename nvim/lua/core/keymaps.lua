@@ -40,6 +40,7 @@ vim.keymap.set('n', 'n', 'nzzzv', opts)
 vim.keymap.set('n', 'N', 'Nzzzv', opts)
 
 -- Buffers
+vim.keymap.set('n', '<leader>bb', '<C-^><CR>', opts) -- new buffer
 vim.keymap.set('n', '<leader>bx', ':bdelete!<CR>', opts) -- close buffer
 vim.keymap.set('n', '<leader>bn', '<cmd> enew <CR>', opts) -- new buffer
 

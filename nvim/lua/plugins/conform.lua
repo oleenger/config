@@ -22,7 +22,7 @@ return {
         -- yaml = { 'prettier' },
         lua = { 'stylua' },
         python = { 'isort', 'black' },
-        markdown = { 'prettier', 'markdownlint-cli2' },
+        markdown = { 'prettier' },
       },
       format_on_save = {
         lsp_fallback = true,

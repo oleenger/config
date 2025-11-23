@@ -43,6 +43,8 @@ return {
         'stylua', -- lua formatter
         'isort', -- python formatter
         'black', -- python formatter
+        'flake8', -- python linter
+        'bandit', -- python security linter
         'pylint',
         'eslint_d',
         'djlint',

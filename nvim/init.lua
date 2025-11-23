@@ -49,7 +49,7 @@ require('lazy').setup {
   -- require 'plugins.blink-cmp',
   -- require 'plugins.nvim-metals',
   -- require 'plugins.neotree',
-  -- require 'plugins.obsidian',
+  require 'plugins.obsidian',
   -- require 'plugins.telescope-file-browser',
   -- require 'plugins.fugi',
   -- require 'plugins.bufferline',
