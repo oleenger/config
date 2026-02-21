@@ -1,0 +1,117 @@
+{
+  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json",
+  "agents": {
+    "sisyphus": {
+      "model": "github-copilot/claude-opus-4.6",
+      "variant": "max"
+    },
+    "hephaestus": {
+      "model": "github-copilot/gpt-5.2-codex",
+      "variant": "medium"
+    },
+    "oracle": {
+      "model": "github-copilot/gpt-5.2",
+      "variant": "high"
+    },
+    "librarian": {
+      "model": "github-copilot/claude-haiku-4.5"
+    },
+    "explore": {
+      "model": "github-copilot/gpt-5-mini"
+    },
+    "multimodal-looker": {
+      "model": "github-copilot/gemini-3-flash-preview"
+    },
+    "prometheus": {
+      "model": "github-copilot/claude-opus-4.6",
+      "variant": "max"
+    },
+    "metis": {
+      "model": "github-copilot/claude-opus-4.6",
+      "variant": "max"
+    },
+    "momus": {
+      "model": "github-copilot/gpt-5.2",
+      "variant": "medium"
+    },
+    "atlas": {
+      "model": "github-copilot/claude-sonnet-4.6"
+    },
+    "themis": {
+      "model": "github-copilot/claude-opus-4.6",
+      "variant": "max"
+    },
+    "hecate": {
+      "model": "github-copilot/gpt-5.2-codex",
+      "variant": "medium"
+    },
+    "aegis": {
+      "model": "github-copilot/claude-opus-4.6",
+      "variant": "max"
+    },
+    "calliope": {
+      "model": "github-copilot/gemini-3-flash-preview"
+    },
+    "daedalus": {
+      "model": "github-copilot/claude-opus-4.6",
+      "variant": "max"
+    },
+    "hermes": {
+      "model": "github-copilot/claude-haiku-4.5"
+    }
+  },
+  "categories": {
+    "visual-engineering": {
+      "model": "github-copilot/gemini-3-pro-preview",
+      "variant": "high"
+    },
+    "ultrabrain": {
+      "model": "github-copilot/claude-opus-4.6",
+      "variant": "max"
+    },
+    "deep": {
+      "model": "github-copilot/claude-opus-4.6",
+      "variant": "max"
+    },
+    "artistry": {
+      "model": "github-copilot/gemini-3-pro-preview",
+      "variant": "high"
+    },
+    "quick": {
+      "model": "github-copilot/claude-haiku-4.5"
+    },
+    "unspecified-low": {
+      "model": "github-copilot/claude-sonnet-4.6"
+    },
+    "unspecified-high": {
+      "model": "github-copilot/claude-sonnet-4.6"
+    },
+    "writing": {
+      "model": "github-copilot/gemini-3-flash-preview"
+    },
+    "security": {
+      "model": "github-copilot/claude-opus-4.6",
+      "variant": "max"
+    },
+    "testing": {
+      "model": "github-copilot/gpt-5.2-codex",
+      "variant": "medium"
+    },
+    "debugging": {
+      "model": "github-copilot/claude-opus-4.6",
+      "variant": "max"
+    },
+    "refactoring": {
+      "model": "github-copilot/gpt-5.2-codex",
+      "variant": "medium"
+    },
+    "architecture": {
+      "model": "github-copilot/claude-opus-4.6",
+      "variant": "max"
+    },
+    "frontend": {
+      "model": "github-copilot/gemini-3-pro-preview",
+      "variant": "high"
+    }
+  }
+}
