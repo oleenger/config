@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+# Usage: ./ssh-keepawake.sh user@host
+# This script keeps macOS awake only for the duration
+# of the SSH connection using caffeinate.
+
+if [ -z "$1" ]; then
+    echo "Usage: $0 user@host"
+    exit 1
+fi
+
+TARGET="$1"
+
+echo "Keeping macOS awake while connected to $TARGET ..."
+echo "Close the SSH session to restore normal sleep behavior."
+
+# -i → prevent idle sleep
+# -d → prevent display sleep
+# -s → prevent system sleep
+# Wrapping ssh inside caffeinate ensures:
+#   - When ssh exits, caffeinate exits
+#   - Sleep returns to normal immediately
+caffeinate -d -i -s ssh "$TARGET"
+

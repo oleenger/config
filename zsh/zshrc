@@ -36,7 +36,7 @@ zinit ice depth=1
 # bindkey '^ ' autosuggest-execute
 
 zinit light zdharma-continuum/fast-syntax-highlighting
-zinit light jeffreytse/zsh-vi-mode
+# zinit light jeffreytse/zsh-vi-mode
 # zinit light marlonrichert/zsh-autocomplete
 
 # zinit load atuinsh/atuin
@@ -60,7 +60,11 @@ source $ZSH/imports/aliases.zsh
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-bindkey -v
+bindkey -e
+bindkey '^[b' backward-word
+bindkey '^[f' forward-word
+bindkey '^[[1;3D' backward-word
+bindkey '^[[1;3C' forward-word
 
 function sesh-sessions() {
   {
@@ -78,3 +82,13 @@ zle     -N             sesh-sessions
 bindkey '^s' sesh-sessions
 
 export PATH="$PATH:/Users/t927604/.local/bin"
+
+# bun completions
+[ -s "/Users/t927604/.bun/_bun" ] && source "/Users/t927604/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+source /opt/homebrew/share/google-cloud-sdk/path.zsh.inc
+source /opt/homebrew/share/google-cloud-sdk/completion.zsh.inc
