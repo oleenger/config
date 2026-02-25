@@ -3,7 +3,7 @@
 if [[ $# -eq 1 ]]; then
     selected=$1
 else
-    selected=$(grep -E 'Host ' ~/.ssh/config | awk '{print $2}' | fzf)
+    selected=$(grep -E 'Host ' ~/.ssh/config | awk '{print $2}' | fzf --padding 1,2)
 fi
 
 if [[ -z $selected ]]; then

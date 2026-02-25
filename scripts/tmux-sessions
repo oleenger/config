@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 selected=$(tmux list-sessions | awk '{print $1}' \
-    | fzf \
+    | fzf --padding 1,2 \
 )
 
 if [[ -z $selected ]]; then
