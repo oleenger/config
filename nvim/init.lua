@@ -38,6 +38,7 @@ require('lazy').setup {
   require 'plugins.dressing',
   require 'plugins.linting',
   require 'plugins.lazygit',
+  -- require 'plugins.opencode',
   require 'plugins.tiny-diagnostics',
   require 'plugins.conform',
   require 'plugins.vim-maximizer',
