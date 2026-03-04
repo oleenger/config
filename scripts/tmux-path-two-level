@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+
+# Print parent/current for a path, with ~ for paths under $HOME.
+path="$1"
+[ -z "$path" ] && exit 0
+
+home="${HOME%/}"
+parent_dir="$(dirname "$path")"
+current="$(basename "$path")"
+
+if [ "$path" = "$home" ]; then
+  printf "~"
+  exit 0
+fi
+
+if [ "$parent_dir" = "$home" ]; then
+  printf "~/%s" "$current"
+  exit 0
+fi
+
+printf "%s/%s" "$(basename "$parent_dir")" "$current"

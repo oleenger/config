@@ -2,6 +2,9 @@
 
 selected=$(tmux list-sessions | awk '{print $1}' \
     | fzf \
+        --padding 1,2 \
+        --border rounded \
+        --border-label ' New Session ' \
 )
 
 if [[ -z $selected ]]; then

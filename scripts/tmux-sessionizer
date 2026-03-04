@@ -3,7 +3,12 @@
 if [[ $# -eq 1 ]]; then
     selected=$1
 else
-    selected=$(find ~/development -mindepth 2 -maxdepth 4 -type d | fzf)
+    selected=$(find ~/development -mindepth 2 -maxdepth 4 -type d | fzf \
+        --padding 1,2 \
+        --border rounded \
+        --border-label ' sessionizer ' \
+        --preview 'ls -la {}' \
+        --preview-window 'right:50%:border-left')
 fi
 
 if [[ -z $selected ]]; then
