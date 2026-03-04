@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+WEZTERM="/opt/homebrew/bin/wezterm"
+
+# Build tab-delimited entries: tag | display | pane_id_or_path | cwd_or_path
+entries=$(
+    # Existing workspaces: look up pane_id and cwd per workspace
+    $WEZTERM cli list 2>/dev/null | tail -n +2 | awk '{print $4}' | sort -u | while IFS= read -r ws; do
+        [[ -z "$ws" ]] && continue
+        read -r pane_id cwd <<< "$($WEZTERM cli list 2>/dev/null \
+            | tail -n +2 \
+            | awk -v w="$ws" '$4 == w {print $3, $NF; exit}')"
+        cwd=$(echo "$cwd" | sed 's|file://[^/]*||')
+        printf 'w\t󱂬  %s\t%s\t%s\n' "$ws" "$pane_id" "$cwd"
+    done
+
+    # Zoxide dirs
+    zoxide query --list 2>/dev/null | while IFS= read -r dir; do
+        printf 'd\t  %s\t\t%s\n' "$dir" "$dir"
+    done
+)
+
+selected=$(echo "$entries" | fzf \
+    --padding 1,2 \
+    --border rounded \
+    --border-label ' workspace ' \
+    --delimiter $'\t' \
+    --with-nth 2 \
+    --preview-window 'right:50%:border-left' \
+    --preview 'ls -la {4}')
+
+[[ -z "$selected" ]] && exit 0
+
+tag=$(echo "$selected" | cut -f1)
+pane_or_path=$(echo "$selected" | cut -f3)
+cwd_or_path=$(echo "$selected" | cut -f4)
+
+if [[ "$tag" == "w" ]]; then
+    $WEZTERM cli activate-pane --pane-id "$pane_or_path"
+    sleep 0.3
+else
+    name=$(echo "$cwd_or_path" | awk -F/ '{print $(NF-1) "/" $NF}' | tr '.' '_')
+    $WEZTERM cli spawn --new-window --workspace "$name" --cwd "$cwd_or_path"
+fi

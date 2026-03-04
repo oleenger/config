@@ -1,13 +1,14 @@
 local wezterm = require("wezterm")
+local workspace_switcher = wezterm.plugin.require("https://github.com/MLFlexer/smart_workspace_switcher.wezterm")
 local config = {}
 
 if wezterm.config_builder then
 	config = wezterm.config_builder()
 end
 
-config.font = wezterm.font("MesloLGS NF")
+config.font = wezterm.font("MesloLGS Nerd Font Mono")
 
-config.font_size = 15
+config.font_size = 17
 config.line_height = 1.1
 config.enable_tab_bar = false
 
@@ -35,13 +36,17 @@ config.window_padding = {
 
 config.set_environment_variables = {
 	ENABLE_TMUX_STARTUP = "true",
+	PATH = "/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
 }
+
+workspace_switcher.zoxide_path = "/opt/homebrew/bin/zoxide"
+
 config.selection_word_boundary = " \t\n{[}]()\"'`,;:"
 
 wezterm.on("toggle-opacity", function(window, pane)
 	local overrides = window:get_config_overrides() or {}
 	if not overrides.window_background_opacity then
-		overrides.window_background_opacity = 0.75
+		overrides.window_background_opacity = 0.85
 		overrides.macos_window_background_blur = 10
 	else
 		overrides.window_background_opacity = nil
@@ -55,6 +60,11 @@ config.keys = {
 		key = "B",
 		mods = "CTRL|SHIFT",
 		action = wezterm.action.EmitEvent("toggle-opacity"),
+	},
+	{
+		key = "p",
+		mods = "CMD",
+		action = workspace_switcher.switch_workspace(),
 	},
 	{ key = "Enter", mods = "SHIFT", action = wezterm.action({ SendString = "\n" }) },
 }
