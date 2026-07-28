@@ -1,3 +1,6 @@
+
+vim.loader.enable() -- Enable Lua bytecode cache for faster startup
+
 require 'core.options' -- Load general options
 require 'core.snippets' -- Custom code snippetsp
 require 'core.keymaps' -- Load general keymaps
@@ -17,12 +20,12 @@ vim.opt.rtp:prepend(lazypath)
 vim.g.python3_host_prog = '/opt/homebrew/bin/python3'
 
 -- Set up plugins
-require('lazy').setup {
+require('lazy').setup({
   require 'plugins.colorscheme',
   require 'plugins.mason',
   require 'plugins.oil',
   -- require 'plugins.hop',
-  require 'plugins.flash',
+  -- require 'plugins.flash',
   require 'plugins.lualine',
   require 'plugins.dim',
   require 'plugins.treesitter',
@@ -55,7 +58,21 @@ require('lazy').setup {
   -- require 'plugins.fugi',
   -- require 'plugins.bufferline',
   -- require 'plugins.none-ls',
-}
+}, {
+  performance = {
+    rtp = {
+      disabled_plugins = {
+        'gzip',
+        'tarPlugin',
+        'tohtml',
+        'tutor',
+        'zipPlugin',
+        'netrwPlugin',
+        'man',
+      },
+    },
+  },
+})
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
