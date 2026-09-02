@@ -1,0 +1,95 @@
+#!/bin/zsh
+#
+# o — open the Obsidian app on a new note in a folder
+#
+# Usage:
+#   o <folder> <title...>
+#
+# Examples:
+#   o m ai factory        -> meetings/ai-factory-020926.md
+#   o i quick thought      -> Inbox/quick-thought-020926.md
+#   o standups retro       -> standups/retro-020926.md   (literal folder)
+#
+# The first arg is a folder shortcut (see ALIASES) or a literal folder name.
+# Remaining args become the note title: slugified + today's date (ddmmyy).
+
+set -euo pipefail
+
+VAULT="${OBSIDIAN_VAULT:-$HOME/obsidian/oleenger}"
+VAULT_NAME="$(basename "$VAULT")"
+
+# folder shortcuts -> real folder names
+typeset -A ALIASES=(
+  m   meetings
+  i   Inbox
+  p   projects
+  c   cheat-sheets
+)
+
+if [[ $# -lt 1 ]]; then
+  print -u2 "usage: o <folder> <title...>"
+  exit 1
+fi
+
+key="$1"; shift
+folder="${ALIASES[$key]:-$key}"
+
+# note type derived from the folder (shown in metadata)
+typeset -A TYPES=(
+  meetings     meeting
+  Inbox        note
+  projects     project
+  cheat-sheets reference
+)
+ntype="${TYPES[$folder]:-$folder}"
+
+# title from remaining args -> slug
+if [[ $# -gt 0 ]]; then
+  slug="${(L)@}"           # lowercase, join args with spaces
+  slug="${slug// /-}"      # spaces -> hyphens
+  slug="${slug//[^a-z0-9-]/}"
+  slug="${slug//--/-}"
+  base="${slug}-$(date +%d%m%y)"
+else
+  slug=""
+  base="$(date +%d%m%y)"
+fi
+
+reldir="$folder"
+
+# meetings sub-routing: keyword -> meetings/<keyword>/<yy-mm>; else -> meetings/other/<yy-mm>
+if [[ "$folder" == "meetings" ]]; then
+  ym="$(date +%y-%m)"
+  reldir="meetings/other/$ym"
+  for kw in caplm 1-1 risk cop okr; do
+    if [[ "$slug" == *"$kw"* ]]; then
+      reldir="meetings/$kw/$ym"
+      break
+    fi
+  done
+fi
+
+relpath="$reldir/$base.md"
+abspath="$VAULT/$relpath"
+mkdir -p "$VAULT/$reldir"
+
+# url-encode for the obsidian:// URI (escapes everything unsafe, incl. newlines)
+enc() { print -rn -- "$1" | perl -MURI::Escape -ne 'print uri_escape($_, "^A-Za-z0-9._~/-")'; }
+
+if [[ -e "$abspath" ]]; then
+  # already exists -> just open it
+  uri="obsidian://open?vault=$(enc "$VAULT_NAME")&file=$(enc "${relpath%.md}")"
+else
+  # let Obsidian create it -> new notes always open in edit mode
+  content="---
+type: $ntype
+date: $(date +%y-%m-%d)
+participants: []
+tags: []
+---
+"
+  uri="obsidian://new?vault=$(enc "$VAULT_NAME")&file=$(enc "${relpath%.md}")&content=$(enc "$content")"
+fi
+
+open "$uri"
+print -- "opened: $relpath"

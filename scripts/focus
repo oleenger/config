@@ -1,0 +1,100 @@
+#!/bin/zsh
+#
+# focus — manage the task list in Focus.md (unordered set of things needing attention)
+#
+# Usage:
+#   focus                 list current tasks
+#   focus add <text...>   add a task
+#   focus done <n>        remove task <n> (numbers shown by list are just handles)
+#   focus edit            open Focus.md in $EDITOR
+#
+# Override the file location with FOCUS_FILE.
+
+set -euo pipefail
+
+if [[ -z "${FOCUS_FILE:-}" ]]; then
+  for c in \
+    "${OBSIDIAN_VAULT:-}/Focus.md" \
+    "${OBSIDIAN_VAULT:-}/oleenger/Focus.md" \
+    "$HOME/obsidian/oleenger/Focus.md"; do
+    if [[ -n "${c#/Focus.md}" && -f "$c" ]]; then FOCUS_FILE="$c"; break; fi
+  done
+  FOCUS_FILE="${FOCUS_FILE:-$HOME/obsidian/oleenger/Focus.md}"
+fi
+
+RULES='<!-- Unordered set of things needing attention. Order carries no meaning. Each line starts with a verb. Delete done items, do not tick them off. Overwrite freely. -->'
+
+# --- read tasks into an array ---------------------------------------------
+tasks=()
+if [[ -f "$FOCUS_FILE" ]]; then
+  while IFS= read -r line; do
+    # match "- [ ] task" or "- task" and strip the leading marker
+    if [[ "$line" == "- "* ]]; then
+      t="${line#- }"
+      t="${t#\[ \] }"
+      t="${t#\[x\] }"
+      tasks+=("$t")
+    fi
+  done < "$FOCUS_FILE"
+fi
+
+# --- write tasks back as an unordered checklist ---------------------------
+save() {
+  {
+    print -- "# Focus"
+    print --
+    for t in "$tasks[@]"; do
+      print -- "- [ ] $t"
+    done
+    print --
+    print -- "$RULES"
+  } > "$FOCUS_FILE"
+}
+
+list() {
+  if (( ${#tasks} == 0 )); then
+    print -- "Focus is clear."
+    return
+  fi
+  local i=1
+  for t in "$tasks[@]"; do
+    print -- "$i) $t"
+    ((i++))
+  done
+}
+
+cmd="${1:-list}"
+case "$cmd" in
+  list|ls|"")
+    list
+    ;;
+  add)
+    shift
+    [[ $# -gt 0 ]] || { print -u2 "focus: add needs task text"; exit 1; }
+    tasks+=("$*")
+    save
+    list
+    ;;
+  done|rm)
+    shift
+    n="${1:-}"
+    [[ "$n" == <-> ]] || { print -u2 "focus: done needs a task number"; exit 1; }
+    (( n >= 1 && n <= ${#tasks} )) || { print -u2 "focus: no task $n"; exit 1; }
+    removed="$tasks[$n]"
+    tasks[$n]=()
+    save
+    print -- "done: $removed"
+    print --
+    list
+    ;;
+  edit)
+    exec "${EDITOR:-vim}" "$FOCUS_FILE"
+    ;;
+  -h|--help|help)
+    sed -n '3,12p' "$0" | sed 's/^# \{0,1\}//'
+    ;;
+  *)
+    print -u2 "focus: unknown command '$cmd' (try: add, done, edit)"
+    exit 1
+    ;;
+esac
