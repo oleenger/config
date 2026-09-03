@@ -18,6 +18,11 @@ return {
     -- Hints keybinds
     'folke/which-key.nvim',
     event = 'VeryLazy',
+    opts = {
+      spec = {
+        { '<leader>o', group = 'obsidian' },
+      },
+    },
   },
   {
     -- Autoclose parentheses, brackets, quotes, etc.

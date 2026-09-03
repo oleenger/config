@@ -31,15 +31,7 @@ vim.keymap.set('n', '<leader>gs', builtin.git_status, { desc = '[G]it [S]tatus' 
 vim.keymap.set('n', '<leader>ts', builtin.treesitter, { desc = '[T]ree[Sitter]' })
 vim.keymap.set('n', '<leader>r', builtin.registers, { desc = '[R]egisters' })
 
--- Grep Obsidian Notes
-vim.keymap.set('n', '<C-s>og', function()
-  builtin.live_grep { cwd = '~/obsidian/oleenger' }
-end)
-
--- Search Obsidian Notes
-vim.keymap.set('n', '<C-S>on', function()
-  builtin.find_files { cwd = '~/obsidian/oleenger' }
-end)
+-- Obsidian vault search/grep live under the <leader>o group (see obsidian.lua)
 
 -- Search NeoVIM config files
 vim.keymap.set('n', '<C-s>co', function()

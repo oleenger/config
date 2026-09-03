@@ -1,95 +1,412 @@
 #!/bin/zsh
 #
-# o — open the Obsidian app on a new note in a folder
+# o — Obsidian vault command. One verb per action:
 #
-# Usage:
-#   o <folder> <title...>
+#   o i [text...]             capture a line to the Inbox      -> no editor
+#   o r                       AI-triage the Inbox (Copilot)    -> suggestions
+#   o n <folder> <title...>   new note in a named folder      -> Obsidian app
+#   o e <title...>            new note, fzf-pick the folder    -> vim
+#   o f                       find a note and open it          -> vim
+#   o g                       live-grep the vault, open match  -> vim
+#   o t [offset]              today's daily note (+/-N days)   -> Obsidian app
+#   o v                       open the vault                   -> vim
+#   o l <folder> [name]       symlink cwd into the vault
+#   o h                       show the cheat sheet
 #
-# Examples:
-#   o m ai factory        -> meetings/ai-factory-020926.md
-#   o i quick thought      -> Inbox/quick-thought-020926.md
-#   o standups retro       -> standups/retro-020926.md   (literal folder)
-#
-# The first arg is a folder shortcut (see ALIASES) or a literal folder name.
-# Remaining args become the note title: slugified + today's date (ddmmyy).
+# Folder shortcuts for `o n`: m=meetings i=Inbox p=projects c=cheat-sheets
+# (any other value is treated as a literal folder name).
+# Meeting sub-routing for `o n m ...` is driven by o-routes.conf.
 
 set -euo pipefail
+setopt extendedglob
 
-VAULT="${OBSIDIAN_VAULT:-$HOME/obsidian/oleenger}"
-VAULT_NAME="$(basename "$VAULT")"
+SESSION="obsidian"
 
-# folder shortcuts -> real folder names
-typeset -A ALIASES=(
-  m   meetings
-  i   Inbox
-  p   projects
-  c   cheat-sheets
-)
+vault_root() { print -r -- "${OBSIDIAN_VAULT:-$HOME/obsidian/oleenger}" }
 
-if [[ $# -lt 1 ]]; then
-  print -u2 "usage: o <folder> <title...>"
-  exit 1
-fi
+# slugify "Some Title!" -> some-title
+slugify() {
+  local s="${(L)*}"
+  s="${s// /-}"
+  s="${s//[^a-z0-9-]/}"
+  while [[ "$s" == *--* ]]; do s="${s//--/-}"; done
+  s="${s#-}"; s="${s%-}"
+  print -r -- "$s"
+}
 
-key="$1"; shift
-folder="${ALIASES[$key]:-$key}"
-
-# note type derived from the folder (shown in metadata)
-typeset -A TYPES=(
-  meetings     meeting
-  Inbox        note
-  projects     project
-  cheat-sheets reference
-)
-ntype="${TYPES[$folder]:-$folder}"
-
-# title from remaining args -> slug
-if [[ $# -gt 0 ]]; then
-  slug="${(L)@}"           # lowercase, join args with spaces
-  slug="${slug// /-}"      # spaces -> hyphens
-  slug="${slug//[^a-z0-9-]/}"
-  slug="${slug//--/-}"
-  base="${slug}-$(date +%d%m%y)"
-else
-  slug=""
-  base="$(date +%d%m%y)"
-fi
-
-reldir="$folder"
-
-# meetings sub-routing: keyword -> meetings/<keyword>/<yy-mm>; else -> meetings/other/<yy-mm>
-if [[ "$folder" == "meetings" ]]; then
-  ym="$(date +%y-%m)"
-  reldir="meetings/other/$ym"
-  for kw in caplm 1-1 risk cop okr; do
-    if [[ "$slug" == *"$kw"* ]]; then
-      reldir="meetings/$kw/$ym"
-      break
-    fi
-  done
-fi
-
-relpath="$reldir/$base.md"
-abspath="$VAULT/$relpath"
-mkdir -p "$VAULT/$reldir"
-
-# url-encode for the obsidian:// URI (escapes everything unsafe, incl. newlines)
-enc() { print -rn -- "$1" | perl -MURI::Escape -ne 'print uri_escape($_, "^A-Za-z0-9._~/-")'; }
-
-if [[ -e "$abspath" ]]; then
-  # already exists -> just open it
-  uri="obsidian://open?vault=$(enc "$VAULT_NAME")&file=$(enc "${relpath%.md}")"
-else
-  # let Obsidian create it -> new notes always open in edit mode
-  content="---
+# emit YAML frontmatter; $1 = type, $2 = "meeting" adds participants
+frontmatter() {
+  local ntype="$1" extra=""
+  [[ "${2:-}" == full ]] && extra="participants: []"$'\n'
+  print -r -- "---
 type: $ntype
 date: $(date +%y-%m-%d)
-participants: []
-tags: []
+${extra}tags: []
 ---
 "
-  uri="obsidian://new?vault=$(enc "$VAULT_NAME")&file=$(enc "${relpath%.md}")&content=$(enc "$content")"
-fi
+}
 
-open "$uri"
-print -- "opened: $relpath"
+# open a note in the Obsidian app.
+# app_open <relpath> [content] — existing file: open; missing: create w/ content
+app_open() {
+  local relpath="$1" content="${2:-}" vault="$(vault_root)"
+  local vault_name; vault_name="$(basename "$vault")"
+  local abspath="$vault/$relpath"
+  mkdir -p "$vault/${relpath:h}"
+
+  local enc
+  enc() { print -rn -- "$1" | perl -MURI::Escape -ne 'print uri_escape($_, "^A-Za-z0-9._~/-")' }
+
+  local uri
+  if [[ -e "$abspath" ]]; then
+    uri="obsidian://open?vault=$(enc "$vault_name")&file=$(enc "${relpath%.md}")"
+  else
+    uri="obsidian://new?vault=$(enc "$vault_name")&file=$(enc "${relpath%.md}")&content=$(enc "$content")"
+  fi
+
+  open "$uri"
+  print -- "opened: $relpath"
+}
+
+# ensure the detached obsidian session exists, rooted at the vault
+ensure_session() {
+  local vault="$(vault_root)"
+  tmux has-session -t "$SESSION" 2>/dev/null \
+    || tmux new-session -ds "$SESSION" -c "$vault"
+}
+
+# bring the session to the foreground (switch if inside tmux, else attach)
+focus_session() {
+  if [[ -n "${TMUX:-}" ]]; then
+    tmux switch-client -t "$SESSION"
+  else
+    tmux attach -t "$SESSION"
+  fi
+}
+
+# open a file (or "." for the vault root) in a new window of the session.
+# session_open <target> [line] — with a line, open vim on that line.
+session_open() {
+  local target="$1" line="${2:-}" vault="$(vault_root)"
+  ensure_session
+  if [[ "$target" == "." ]]; then
+    if tmux list-windows -t "$SESSION" -F '#{window_name}' 2>/dev/null | grep -qx vault; then
+      tmux select-window -t "$SESSION:vault"
+    else
+      tmux new-window -t "$SESSION" -n vault -c "$vault" "vim ."
+    fi
+  else
+    local lineflag=""
+    [[ -n "$line" ]] && lineflag="+${line} "
+    tmux new-window -t "$SESSION" -c "$vault" "vim ${lineflag}-- ${(q)target}"
+  fi
+  focus_session
+}
+
+# meetings sub-routing (keyword -> bucket) via o-routes.conf; echoes reldir
+route_meeting() {
+  local slug="$1" ym="$(date +%y-%m)" reldir
+  reldir="meetings/other/$ym"
+  local routes="${O_ROUTES:-${0:A:h}/o-routes.conf}"
+  if [[ -n "$slug" && -f "$routes" ]]; then
+    local rline bucket keywords kw
+    while IFS= read -r rline || [[ -n "$rline" ]]; do
+      rline="${rline%%\#*}"
+      [[ "$rline" == *:* ]] || continue
+      bucket="${rline%%:*}"; bucket="${bucket//[[:space:]]/}"
+      [[ -n "$bucket" ]] || continue
+      keywords="${rline#*:}"
+      for kw in ${(z)keywords}; do
+        if [[ "$slug" == *"$kw"* ]]; then
+          reldir="meetings/$bucket/$ym"
+          print -r -- "$reldir"
+          return
+        fi
+      done
+    done < "$routes"
+  fi
+  print -r -- "$reldir"
+}
+
+usage() {
+  print -u2 -- "usage: o <verb> [args]
+  o i [text...]             capture a line to the Inbox           -> no editor
+  o r                       AI-triage the Inbox (Copilot)        -> suggestions
+  o n <folder> <title...>   new note in a named folder (m/i/p/c) -> app
+  o e <title...>            new note, fzf-pick the folder        -> vim
+  o f                       find a note and open it              -> vim
+  o g                       live-grep the vault, open the match  -> vim
+  o t [offset]              today's daily note (+/-N days)       -> app
+  o v                       open the vault                       -> vim
+  o l <folder> [name]       symlink cwd into the vault
+  o h                       show the cheat sheet"
+}
+
+# ---- verbs ----------------------------------------------------------------
+
+# o i [text...] — capture one line to Inbox/inbox.md (no editor).
+# With no text, prompt once (used by the tmux popup: pop, type, enter, gone).
+verb_inbox() {
+  local vault="$(vault_root)"
+  local inbox="$vault/Inbox/inbox.md"
+  mkdir -p "$vault/Inbox"
+
+  local text="$*"
+  if [[ -z "$text" ]]; then
+    IFS= read -r "text?inbox> " || return 0
+  fi
+  [[ -n "$text" ]] || return 0
+
+  print -r -- "- [ ] $text <!-- $(date '+%Y-%m-%d %H:%M') -->" >> "$inbox"
+  print -- "captured."
+}
+
+# o r — AI-triage the Inbox via the GitHub Copilot CLI (suggest-only).
+# Prints Do/Link/Drop suggestions; never edits the vault. Override the model
+# with $O_COPILOT_MODEL (a copilot CLI model name, e.g. claude-sonnet-4.5).
+verb_review() {
+  if ! command -v copilot >/dev/null 2>&1; then
+    print -u2 "o r: GitHub Copilot CLI ('copilot') not found on PATH"; exit 1
+  fi
+  local vault="$(vault_root)"
+  local inbox="$vault/Inbox/inbox.md"
+  if [[ ! -s "$inbox" ]]; then
+    print -- "inbox empty — nothing to triage."; return
+  fi
+
+  local prompt="Triage this Obsidian inbox. For each '- [ ]' line, print exactly one line:
+[Do|Link|Drop] <text> — <reason or target>
+Do = under 2 minutes, just do it. Link = belongs in a project/note (suggest a folder or [[note]]). Drop = noise.
+Only print the list. Do not edit, move, or create any files.
+
+Inbox:
+$(cat -- "$inbox")"
+
+  local model=()
+  [[ -n "${O_COPILOT_MODEL:-}" ]] && model=(--model "$O_COPILOT_MODEL")
+
+  # suggest-only: deny the file-writing and shell tools so it can only answer
+  copilot -p "$prompt" --deny-tool write --deny-tool shell "${model[@]}"
+}
+
+# o n <folder> <title...> — create/open a note in the Obsidian app
+verb_new() {
+  if [[ $# -lt 1 ]]; then
+    print -u2 "o n: need a folder (m/i/p/c or a name) and a title"
+    exit 1
+  fi
+
+  typeset -A ALIASES=(m meetings i Inbox p projects c cheat-sheets)
+  typeset -A TYPES=(meetings meeting Inbox note projects project cheat-sheets reference)
+
+  local key="$1"; shift
+  local folder="${ALIASES[$key]:-$key}"
+  local ntype="${TYPES[$folder]:-note}"
+
+  local slug=""
+  (( $# > 0 )) && slug="$(slugify "$@")"
+
+  local base
+  if [[ -n "$slug" ]]; then base="${slug}-$(date +%d%m%y)"; else base="$(date +%d%m%y)"; fi
+
+  local reldir="$folder"
+  [[ "$folder" == meetings ]] && reldir="$(route_meeting "$slug")"
+
+  app_open "$reldir/$base.md" "$(frontmatter "$ntype" full)"
+}
+
+# o e <title...> — fzf-pick a folder, create note, open in vim
+verb_edit() {
+  local vault="$(vault_root)"
+  if [[ $# -eq 0 ]]; then
+    print -u2 "o e: need a title"
+    exit 1
+  fi
+
+  local folder
+  folder=$(find "$vault" -mindepth 1 -maxdepth 1 -type d ! -name '.*' | sort | fzf) || true
+  [[ -n "$folder" ]] || exit 0
+
+  local slug; slug="$(slugify "$@")"
+  [[ -n "$slug" ]] || { print -u2 "o e: title reduces to an empty slug"; exit 1; }
+
+  local file="$folder/$slug.md"
+  [[ -e "$file" ]] || frontmatter note > "$file"
+  session_open "$file"
+}
+
+# o f — fuzzy-find a note (bat preview pane) and open it in vim
+verb_find() {
+  local vault="$(vault_root)"
+  local file
+  file=$(find "$vault" -type f -name '*.md' | fzf --preview 'bat --color=always {}') || true
+  [[ -n "$file" ]] || exit 0
+  session_open "$file"
+}
+
+# o g — live-grep the vault (ripgrep + fzf) and open the match in vim
+verb_grep() {
+  local vault="$(vault_root)"
+  local rg="rg --line-number --no-heading --color=always --smart-case"
+  local out
+  out=$(
+    cd "$vault" && FZF_DEFAULT_COMMAND="$rg ''" fzf --ansi --disabled \
+      --delimiter : \
+      --bind "change:reload:$rg {q} || true" \
+      --preview 'bat --color=always {1} --highlight-line {2}' \
+      --preview-window 'up,60%,+{2}/3'
+  ) || true
+  [[ -n "$out" ]] || exit 0
+
+  local file="${out%%:*}"
+  local rest="${out#*:}"
+  local line="${rest%%:*}"
+  session_open "$vault/$file" "$line"
+}
+
+# o t [offset] — open/create today's daily note (offset in days) in the app
+verb_today() {
+  local off="${1:-0}"
+  [[ "$off" == <-> || "$off" == -<-> ]] || { print -u2 "o t: offset must be an integer (e.g. -1, 0, 1)"; exit 1; }
+
+  local adj
+  [[ "$off" == -* ]] && adj="$off" || adj="+$off"
+  local day; day="$(date -v"${adj}d" +%Y-%m-%d)"
+
+  local content="---
+type: daily
+date: $day
+tags: [daily-notes]
+---
+"
+  app_open "daily/$day.md" "$content"
+}
+
+# o v — open the vault root in vim
+verb_vault() { session_open "." }
+
+# o l <folder> [name] — symlink cwd into the vault
+verb_link() {
+  local vault="$(vault_root)"
+  if [[ $# -lt 1 || $# -gt 2 ]]; then
+    print -u2 "usage: o l <vault-folder> [link-name]"
+    exit 1
+  fi
+
+  local vault_folder="$1"
+  local source_dir="$(pwd -P)"
+  local link_name="${2:-$(basename "$source_dir")}"
+
+  if [[ -z "$vault_folder" || "$vault_folder" = /* || "/$vault_folder/" = *"/../"* || "/$vault_folder/" = *"/./"* || "/$vault_folder/" = *"//"* ]]; then
+    print -u2 "o l: vault folder must be a safe relative path"; exit 1
+  fi
+  if [[ -z "$link_name" || "$link_name" = */* || "$link_name" = "." || "$link_name" = ".." ]]; then
+    print -u2 "o l: link name must be a single path component"; exit 1
+  fi
+  if [[ "$source_dir" = "$vault" || "$source_dir" = "$vault"/* ]]; then
+    print -u2 "o l: source is already inside the vault"; exit 1
+  fi
+
+  local destination="$vault/$vault_folder/$link_name"
+  if [[ -e "$destination" || -L "$destination" ]]; then
+    print -u2 "o l: destination already exists: $destination"; exit 1
+  fi
+
+  mkdir -p "$vault/$vault_folder"
+  ln -s "$source_dir" "$destination"
+  print -- "linked: $destination -> $source_dir"
+}
+
+# o h — render the first GFM table in the cheat sheet as a boxed table
+o_trim() { local s="$1"; s="${s##[[:space:]]#}"; s="${s%%[[:space:]]#}"; print -r -- "${s//\`/}" }
+
+verb_help() {
+  local vault="$(vault_root)"
+  local sheet="$vault/cheat-sheets/obsidian.md"
+  if [[ ! -f "$sheet" ]]; then
+    print -u2 "o h: cheat sheet not found: $sheet"; exit 1
+  fi
+
+  local H D R
+  if [[ -t 1 ]]; then
+    H=$'\e[1;36m'; D=$'\e[2m'; R=$'\e[0m'
+  else
+    H=""; D=""; R=""
+  fi
+
+  # collect rows of the first markdown table; each row is tab-joined cells.
+  # (all locals declared up front: `local` inside the read loop trips a zsh
+  # quirk that echoes the loop variable.)
+  typeset -a rows widths cells clean
+  local line body ncols=0 in_table=0 c i
+  while IFS= read -r line; do
+    if [[ "$line" == '|'* ]]; then
+      in_table=1
+      [[ "$line" == *---* && "${line//[|: -]/}" == "" ]] && continue
+      body="${line#|}"; body="${body%|}"
+      cells=("${(@s:|:)body}")
+      clean=()
+      i=1
+      for c in "${cells[@]}"; do
+        c="$(o_trim "$c")"
+        clean+=("$c")
+        (( ${#c} > ${widths[i]:-0} )) && widths[i]=${#c}
+        (( i++ ))
+      done
+      (( ${#clean} > ncols )) && ncols=${#clean}
+      rows+=( "${(pj:\t:)clean}" )
+    elif (( in_table )); then
+      break
+    fi
+  done < "$sheet"
+
+  (( ${#rows} )) || { print -u2 "o h: no table found in $sheet"; exit 1 }
+
+  local first=1 row out cell padded k
+  o_sep() {
+    local out="$1" k
+    for (( k = 1; k <= ncols; k++ )); do
+      out+="${(l:$((widths[k]+2))::─:):-}"
+      (( k < ncols )) && out+="$2"
+    done
+    print -r -- "$D${out}${3}$R"
+  }
+
+  o_sep "┌" "┬" "┐"
+  for row in $rows; do
+    cells=("${(@ps:\t:)row}")
+    out="$D│$R"
+    for (( k = 1; k <= ncols; k++ )); do
+      cell="${cells[k]:-}"
+      padded="${(r:${widths[k]}:)cell}"
+      if (( first )); then
+        out+=" $H$padded$R "
+      else
+        out+=" $padded "
+      fi
+      out+="$D│$R"
+    done
+    print -r -- "$out"
+    (( first )) && { o_sep "├" "┼" "┤"; first=0 }
+  done
+  o_sep "└" "┴" "┘"
+}
+
+# ---- dispatch -------------------------------------------------------------
+
+verb="${1:-}"
+[[ $# -gt 0 ]] && shift || true
+case "$verb" in
+  i)              verb_inbox "$@" ;;
+  r)              verb_review "$@" ;;
+  n)              verb_new "$@" ;;
+  e)              verb_edit "$@" ;;
+  f)              verb_find "$@" ;;
+  g)              verb_grep "$@" ;;
+  t)              verb_today "$@" ;;
+  v)              verb_vault "$@" ;;
+  l)              verb_link "$@" ;;
+  h|-h|--help)    verb_help ;;
+  "")             usage; exit 1 ;;
+  *)              print -u2 "o: unknown verb '$verb'"; usage; exit 1 ;;
+esac

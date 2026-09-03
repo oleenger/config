@@ -1,110 +1,60 @@
+local VAULT_PATH = '~/obsidian/oleenger'
+local vault = vim.fn.expand(VAULT_PATH)
+
+local function vault_find()
+  require('telescope.builtin').find_files { cwd = vault }
+end
+
+local function vault_grep()
+  require('telescope.builtin').live_grep { cwd = vault }
+end
+
 return {
   'epwalsh/obsidian.nvim',
   version = '*',
   lazy = true,
   ft = 'markdown',
-  dependencies = { 'nvim-lua/plenary.nvim' },
+  dependencies = { 'nvim-lua/plenary.nvim', 'nvim-telescope/telescope.nvim' },
+
+  -- loads the plugin when any Obsidian command runs (so the keys below work
+  -- from any buffer, not only after a markdown file has opened it)
+  cmd = { 'ObsidianNew', 'ObsidianFollowLink', 'ObsidianBacklinks', 'ObsidianToday', 'ObsidianToggleCheckbox' },
+
+  -- one home for every Obsidian action; letters mirror the `o` CLI (n/f/o)
+  keys = {
+    { '<leader>oo', '<cmd>ObsidianFollowLink<CR>', desc = 'Obsidian: follow link under cursor' },
+    { '<leader>on', '<cmd>ObsidianNew<CR>', desc = 'Obsidian: new note' },
+    { '<leader>of', vault_find, desc = 'Obsidian: find note' },
+    { '<leader>og', vault_grep, desc = 'Obsidian: grep vault' },
+    { '<leader>ob', '<cmd>ObsidianBacklinks<CR>', desc = 'Obsidian: backlinks' },
+    { '<leader>ot', '<cmd>ObsidianToday<CR>', desc = "Obsidian: today's note" },
+    { '<leader>oc', '<cmd>ObsidianToggleCheckbox<CR>', desc = 'Obsidian: toggle checkbox' },
+  },
 
   opts = {
     workspaces = {
       {
         name = 'vault',
-        path = '~/obsidian/oleenger',
+        path = VAULT_PATH,
       },
     },
-
-    -- SMART SECTION-BASED FOLDER ROUTING
+    -- keep daily notes in daily/YYYY-MM-DD.md so the `o t` CLI verb and
+    -- <leader>ot resolve to the exact same file
+    daily_notes = { folder = 'daily', date_format = '%Y-%m-%d' },
+    -- :ObsidianNew (<leader>on) drops bare-title notes into Inbox/ for triage;
+    -- typing a path in the prompt still overrides
+    notes_subdir = 'Inbox',
+    new_notes_location = 'notes_subdir',
+    -- name files by the slugified title (like the `o n` CLI), not a zettel id
+    note_id_func = function(title)
+      if title ~= nil then
+        return title:gsub(' ', '-'):gsub('[^%w-]', ''):lower()
+      end
+      return tostring(os.time())
+    end,
   },
 
   config = function(_, opts)
-    local obsidian = require 'obsidian'
-    obsidian.setup(opts)
-
-    ------------------------------------------------------
-    -- <leader>oc
-    -- Create note → insert wiki link → open with vsplit 70% → jump
-    ------------------------------------------------------
-
-    vim.keymap.set('n', '<leader>oc', function()
-      ------------------------------------------------------------
-      -- 0. Extract title & Index context
-      ------------------------------------------------------------
-      local line = vim.fn.getline '.'
-      local title = line:gsub('^%s*[-*]%s*', '')
-
-      local index_win = vim.api.nvim_get_current_win()
-      local index_buf = vim.api.nvim_get_current_buf()
-      local row = vim.api.nvim_win_get_cursor(index_win)[1]
-
-      ------------------------------------------------------------
-      -- 1. Detect section from Index.md
-      ------------------------------------------------------------
-      local section = nil
-      for i = row, 1, -1 do
-        local l = vim.api.nvim_buf_get_lines(index_buf, i - 1, i, false)[1]
-        if l then
-          local h2 = l:match '^##%s*(.+)'
-          if h2 then
-            section = h2:lower()
-            break
-          end
-        end
-      end
-
-      ------------------------------------------------------------
-      -- 2. Determine folder based on section
-      ------------------------------------------------------------
-      local subdir = 'notes'
-      if section == 'now' then
-        subdir = 'tasks/now'
-      elseif section == 'soon' then
-        subdir = 'tasks/soon'
-      elseif section == 'waiting' then
-        subdir = 'tasks/waiting'
-      elseif section == 'someday' then
-        subdir = 'someday'
-      end
-
-      ------------------------------------------------------------
-      -- 3. Construct full path
-      ------------------------------------------------------------
-      local vault = opts.workspaces[1].path
-      local full_path = vim.fn.expand(vault .. '/' .. subdir .. '/' .. title .. '.md')
-
-      ------------------------------------------------------------
-      -- 4. Create directories if needed
-      ------------------------------------------------------------
-      vim.fn.mkdir(vault .. '/' .. subdir, 'p')
-
-      ------------------------------------------------------------
-      -- 6. Open the note in THIS window
-      ------------------------------------------------------------
-      vim.cmd('edit ' .. vim.fn.fnameescape(full_path))
-
-      ------------------------------------------------------------
-      -- 7. Replace bullet with wiki link in Index.md
-      ------------------------------------------------------------
-      vim.api.nvim_set_current_win(index_win)
-
-      ------------------------------------------------------------
-      -- 8. Switch focus back to the new note
-      ------------------------------------------------------------
-      -- find the window containing the new file
-      for _, win in ipairs(vim.api.nvim_list_wins()) do
-        local buf = vim.api.nvim_win_get_buf(win)
-        local name = vim.api.nvim_buf_get_name(buf)
-        if name == full_path then
-          vim.api.nvim_set_current_win(win)
-          break
-        end
-      end
-    end, { desc = 'Create Obsidian note manually (v3.9.0 compatible)' })
-
-    ------------------------------------------------------
-    -- <leader>oo: follow wiki link under cursor
-    ------------------------------------------------------
-    vim.keymap.set('n', '<leader>oo', function()
-      obsidian.follow_link()
-    end, { desc = 'Open Obsidian link under cursor' })
+    require('obsidian').setup(opts)
   end,
 }
