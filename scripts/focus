@@ -77,7 +77,7 @@ case "$cmd" in
     list
     ;;
   edit)
-    exec "${EDITOR:-vim}" "$FOCUS_FILE"
+    exec "${EDITOR:-nvim}" "$FOCUS_FILE"
     ;;
   -h|--help|help)
     sed -n '3,14p' "$0" | sed 's/^# \{0,1\}//'

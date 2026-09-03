@@ -93,12 +93,12 @@ session_open() {
     if tmux list-windows -t "$SESSION" -F '#{window_name}' 2>/dev/null | grep -qx vault; then
       tmux select-window -t "$SESSION:vault"
     else
-      tmux new-window -t "$SESSION" -n vault -c "$vault" "vim ."
+      tmux new-window -t "$SESSION" -n vault -c "$vault" "nvim ."
     fi
   else
     local lineflag=""
     [[ -n "$line" ]] && lineflag="+${line} "
-    tmux new-window -t "$SESSION" -c "$vault" "vim ${lineflag}-- ${(q)target}"
+    tmux new-window -t "$SESSION" -c "$vault" "nvim ${lineflag}-- ${(q)target}"
   fi
   focus_session
 }
