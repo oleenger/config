@@ -68,7 +68,17 @@ vim.keymap.set('v', 'p', '"_dP', opts)
 
 vim.keymap.set('n', '<leader>f', vim.lsp.buf.format, { remap = false })
 
--- Tasks (managed by the `todo` command): Now = Focus.md, the other horizons
--- (Next/Waiting/Later) = Todo.md. `<leader>tf` mirrors `todo f`.
-vim.keymap.set('n', '<leader>tf', '<cmd>edit ~/obsidian/oleenger/Focus.md<CR>', { desc = 'Tasks: Now (Focus.md)' })
-vim.keymap.set('n', '<leader>tt', '<cmd>edit ~/obsidian/oleenger/Todo.md<CR>', { desc = 'Tasks: Todo (Next/Waiting/Later)' })
+-- Tasks (managed by the `todo` command): keys mirror the horizons —
+-- f = Now (Focus.md), n/w/l = Next/Waiting/Later (Todo.md, jump to the section).
+local function open_task(path, section)
+  vim.cmd('edit ' .. vim.fn.fnameescape(vim.fn.expand(path)))
+  if section then
+    vim.fn.cursor(1, 1)
+    vim.fn.search('^## ' .. section, 'cW')
+  end
+end
+local TODO = '~/obsidian/oleenger/Todo.md'
+vim.keymap.set('n', '<leader>tf', function() open_task '~/obsidian/oleenger/Focus.md' end, { desc = 'Tasks: Now (Focus)' })
+vim.keymap.set('n', '<leader>tn', function() open_task(TODO, 'Next') end, { desc = 'Tasks: Next' })
+vim.keymap.set('n', '<leader>tw', function() open_task(TODO, 'Waiting') end, { desc = 'Tasks: Waiting' })
+vim.keymap.set('n', '<leader>tl', function() open_task(TODO, 'Later') end, { desc = 'Tasks: Later' })
