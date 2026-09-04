@@ -1,0 +1,181 @@
+#!/bin/zsh
+#
+# todo — task horizons: Now (Focus.md) + Next / Waiting / Later (Todo.md)
+#
+# Usage:
+#   todo                 list every horizon (Now, Next, Waiting, Later), numbered
+#   todo f <text...>     add to Now (Focus.md)
+#   todo <text...>       add to Next (the common case)
+#   todo w <text...>     add to Waiting (blocked / delegated)
+#   todo l <text...>     add to Later (someday / not urgent)
+#   todo up <n>          promote: Later|Waiting -> Next, Next -> Now
+#   todo done <n>        remove task <n>
+#   todo edit            open Todo.md in $EDITOR
+#
+# Now stays a pinned, standalone note (Focus.md). Only top-level "- " lines are
+# tasks; headings, prose, [[links]] and comments are preserved untouched.
+# Override locations with TODO_FILE / FOCUS_FILE.
+
+set -euo pipefail
+
+VAULT="${OBSIDIAN_VAULT:-$HOME/obsidian/oleenger}"
+TODO_FILE="${TODO_FILE:-$VAULT/Todo.md}"
+FOCUS_FILE="${FOCUS_FILE:-$VAULT/Focus.md}"
+
+count_file() { [[ -f "$1" ]] && awk '/^- / { c++ } END { print c + 0 }' "$1" || print 0; }
+now_count()  { count_file "$FOCUS_FILE"; }
+todo_count() { count_file "$TODO_FILE"; }
+
+ensure_todo() {
+  [[ -f "$TODO_FILE" ]] && return 0
+  mkdir -p "${TODO_FILE:h}"
+  print -l -- "# Todo" "" "## Next" "" "## Waiting" "" "## Later" "" > "$TODO_FILE"
+}
+ensure_focus() {
+  [[ -f "$FOCUS_FILE" ]] && return 0
+  mkdir -p "${FOCUS_FILE:h}"
+  print -l -- "# Focus" "" > "$FOCUS_FILE"
+}
+
+list() {
+  local now out1="" out2=""
+  now=$(now_count)
+  [[ -f "$FOCUS_FILE" ]] && out1=$(awk '
+    /^- / { n++; t = $0; sub(/^- (\[[ xX]\] )?/, "", t); printf "%2d) [Now] %s\n", n, t }
+  ' "$FOCUS_FILE")
+  [[ -f "$TODO_FILE" ]] && out2=$(awk -v off="$now" '
+    /^##[ \t]+/ { s = $0; sub(/^##[ \t]+/, "", s); sub(/[ \t]+$/, "", s); next }
+    /^- / { n++; t = $0; sub(/^- (\[[ xX]\] )?/, "", t); printf "%2d) [%s] %s\n", n + off, s, t }
+  ' "$TODO_FILE")
+  local all="${out1}"
+  [[ -n "$out1" && -n "$out2" ]] && all+=$'\n'
+  all+="$out2"
+  [[ -n "$all" ]] && print -r -- "$all" || print -- "Nothing on the list."
+}
+
+# append "- [ ] text" after the last task line of <file>
+append_task() {
+  local file="$1"; shift
+  local new="- [ ] $*" tmp="${file}.tmp.$$"
+  awk -v new="$new" '
+    /^- / { last = NR } { a[NR] = $0 }
+    END {
+      if (NR == 0) { print new; exit }
+      for (i = 1; i <= NR; i++) { print a[i]; if (i == last) print new }
+      if (!last) print new
+    }
+  ' "$file" > "$tmp"
+  mv "$tmp" "$file"
+}
+
+# add "- [ ] text" as the last item of <Section> in Todo.md (create if missing)
+add_to() {
+  local section="$1"; shift
+  local new="- [ ] $*" tmp="${TODO_FILE}.tmp.$$"
+  ensure_todo
+  awk -v S="$section" -v new="$new" '
+    { a[NR] = $0 }
+    /^##[ \t]+/ {
+      name = $0; sub(/^##[ \t]+/, "", name); sub(/[ \t]+$/, "", name)
+      if (tolower(name) == tolower(S)) { inS = 1; last = NR } else { inS = 0 }
+      next
+    }
+    inS && /^- / { last = NR }
+    END {
+      if (last == 0) {
+        for (i = 1; i <= NR; i++) print a[i]
+        if (NR > 0 && a[NR] != "") print ""
+        print "## " S
+        print new
+      } else {
+        for (i = 1; i <= NR; i++) { print a[i]; if (i == last) print new }
+      }
+    }
+  ' "$TODO_FILE" > "$tmp"
+  mv "$tmp" "$TODO_FILE"
+}
+
+# echo "Section<TAB>text" for the nth task in Todo.md
+todo_nth_info() {
+  awk -v k="$1" '
+    /^##[ \t]+/ { s = $0; sub(/^##[ \t]+/, "", s); sub(/[ \t]+$/, "", s); next }
+    /^- / { c++; if (c == k) { t = $0; sub(/^- (\[[ xX]\] )?/, "", t); print s "\t" t; exit } }
+  ' "$TODO_FILE"
+}
+
+# echo the text of the nth task in <file>
+nth_text() {
+  awk -v k="$2" '/^- / { c++; if (c == k) { t = $0; sub(/^- (\[[ xX]\] )?/, "", t); print t; exit } }' "$1"
+}
+
+# delete the nth task line in <file>
+remove_nth() {
+  local file="$1" tmp="${1}.tmp.$$"
+  awk -v k="$2" '/^- / { c++; if (c == k) next } { print }' "$file" > "$tmp"
+  mv "$tmp" "$file"
+}
+
+require_num() {
+  [[ "$1" == <-> ]] || { print -u2 "todo: '$2' needs a task number"; exit 1; }
+  local total=$(( $(now_count) + $(todo_count) ))
+  (( $1 >= 1 && $1 <= total )) || { print -u2 "todo: no task $1"; exit 1; }
+}
+
+cmd="${1:-list}"
+case "$cmd" in
+  list|ls|"")
+    list
+    ;;
+  f)
+    shift; [[ $# -gt 0 ]] || { print -u2 "todo: f needs task text"; exit 1; }
+    ensure_focus; append_task "$FOCUS_FILE" "$@"; list
+    ;;
+  n)
+    shift; [[ $# -gt 0 ]] || { print -u2 "todo: n needs task text"; exit 1; }
+    add_to Next "$@"; list
+    ;;
+  w)
+    shift; [[ $# -gt 0 ]] || { print -u2 "todo: w needs task text"; exit 1; }
+    add_to Waiting "$@"; list
+    ;;
+  l)
+    shift; [[ $# -gt 0 ]] || { print -u2 "todo: l needs task text"; exit 1; }
+    add_to Later "$@"; list
+    ;;
+  up)
+    shift; n="${1:-}"; require_num "$n" up
+    now=$(now_count)
+    if (( n <= now )); then
+      print -- "already at Now."
+    else
+      tn=$(( n - now ))
+      info=$(todo_nth_info "$tn"); section="${info%%$'\t'*}"; text="${info#*$'\t'}"
+      remove_nth "$TODO_FILE" "$tn"
+      if [[ "${(L)section}" == next ]]; then
+        ensure_focus; append_task "$FOCUS_FILE" "$text"; print -- "promoted to Now: $text"
+      else
+        add_to Next "$text"; print -- "promoted to Next: $text"
+      fi
+    fi
+    print --; list
+    ;;
+  done|rm)
+    shift; n="${1:-}"; require_num "$n" done
+    now=$(now_count)
+    if (( n <= now )); then
+      removed=$(nth_text "$FOCUS_FILE" "$n"); remove_nth "$FOCUS_FILE" "$n"
+    else
+      tn=$(( n - now )); removed=$(nth_text "$TODO_FILE" "$tn"); remove_nth "$TODO_FILE" "$tn"
+    fi
+    print -- "done: $removed"; print --; list
+    ;;
+  edit)
+    exec "${EDITOR:-nvim}" "$TODO_FILE"
+    ;;
+  -h|--help|help)
+    sed -n '3,17p' "$0" | sed 's/^# \{0,1\}//'
+    ;;
+  *)
+    add_to Next "$@"; list
+    ;;
+esac

@@ -67,3 +67,8 @@ vim.keymap.set('v', '>', '>gv', opts)
 vim.keymap.set('v', 'p', '"_dP', opts)
 
 vim.keymap.set('n', '<leader>f', vim.lsp.buf.format, { remap = false })
+
+-- Tasks (managed by the `todo` command): Now = Focus.md, the other horizons
+-- (Next/Waiting/Later) = Todo.md. `<leader>tf` mirrors `todo f`.
+vim.keymap.set('n', '<leader>tf', '<cmd>edit ~/obsidian/oleenger/Focus.md<CR>', { desc = 'Tasks: Now (Focus.md)' })
+vim.keymap.set('n', '<leader>tt', '<cmd>edit ~/obsidian/oleenger/Todo.md<CR>', { desc = 'Tasks: Todo (Next/Waiting/Later)' })

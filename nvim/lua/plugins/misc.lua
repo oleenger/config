@@ -21,6 +21,7 @@ return {
     opts = {
       spec = {
         { '<leader>o', group = 'obsidian' },
+        { '<leader>t', group = 'tasks' },
       },
     },
   },
