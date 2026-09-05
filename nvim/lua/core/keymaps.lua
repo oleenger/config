@@ -82,3 +82,34 @@ vim.keymap.set('n', '<leader>tf', function() open_task '~/obsidian/oleenger/Focu
 vim.keymap.set('n', '<leader>tn', function() open_task(TODO, 'Next') end, { desc = 'Tasks: Next' })
 vim.keymap.set('n', '<leader>tw', function() open_task(TODO, 'Waiting') end, { desc = 'Tasks: Waiting' })
 vim.keymap.set('n', '<leader>tl', function() open_task(TODO, 'Later') end, { desc = 'Tasks: Later' })
+
+-- Capture the current line into a horizon (uppercase = push this line there).
+-- Strips a leading bullet / [ ]|[x] checkbox, then hands it to the `todo` script.
+-- If the buffer lives inside the vault, appends a [[backlink]] to the source note.
+local TODO_BIN = vim.fn.expand '~/.config/scripts/todo'
+local VAULT = vim.fn.expand '~/obsidian/oleenger'
+local function capture(horizon, label)
+  local t = vim.api.nvim_get_current_line()
+  t = t:gsub('^%s*[-*+]%s+', ''):gsub('^%[.%]%s+', '')
+  t = vim.trim(t)
+  if t == '' then
+    vim.notify('todo: nothing on this line', vim.log.levels.WARN)
+    return
+  end
+  -- link back to the source note (vault-relative path, no .md), if we're in the vault
+  local buf = vim.api.nvim_buf_get_name(0)
+  if buf ~= '' and buf:sub(1, #VAULT) == VAULT then
+    local rel = buf:sub(#VAULT + 2):gsub('%.md$', '')
+    if rel ~= '' then t = t .. ' [[' .. rel .. ']]' end
+  end
+  vim.fn.system { TODO_BIN, horizon, t }
+  if vim.v.shell_error ~= 0 then
+    vim.notify('todo: failed to add', vim.log.levels.ERROR)
+    return
+  end
+  vim.notify('→ ' .. label .. ': ' .. t)
+end
+vim.keymap.set('n', '<leader>tF', function() capture('f', 'Now') end, { desc = 'Tasks: add line to Now' })
+vim.keymap.set('n', '<leader>tN', function() capture('n', 'Next') end, { desc = 'Tasks: add line to Next' })
+vim.keymap.set('n', '<leader>tW', function() capture('w', 'Waiting') end, { desc = 'Tasks: add line to Waiting' })
+vim.keymap.set('n', '<leader>tL', function() capture('l', 'Later') end, { desc = 'Tasks: add line to Later' })

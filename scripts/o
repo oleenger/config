@@ -4,8 +4,7 @@
 #
 #   o i [text...]             capture a line to the Inbox      -> no editor
 #   o r                       AI-triage the Inbox (Copilot)    -> suggestions
-#   o n <folder> <title...>   new note in a named folder      -> Obsidian app
-#   o e <title...>            new note, fzf-pick the folder    -> vim
+#   o n [title...]            new note, fzf-pick the folder    -> vim (app for meetings)
 #   o f                       find a note and open it          -> vim
 #   o g                       live-grep the vault, open match  -> vim
 #   o t [offset]              today's daily note (+/-N days)   -> Obsidian app
@@ -13,9 +12,9 @@
 #   o l <folder> [name]       symlink cwd into the vault
 #   o h                       show the cheat sheet
 #
-# Folder shortcuts for `o n`: m=meetings i=Inbox p=projects c=cheat-sheets
-# (any other value is treated as a literal folder name).
-# Meeting sub-routing for `o n m ...` is driven by o-routes.conf.
+# `o n` always fzf-picks the folder. Picking "meetings" routes by keyword into
+# meetings/<bucket>/<yy-mm>/ (o-routes.conf), dates the filename, and opens the
+# Obsidian app; any other folder gets a plain typed note opened in vim.
 
 set -euo pipefail
 setopt extendedglob
@@ -130,16 +129,7 @@ route_meeting() {
 
 usage() {
   print -u2 -- "usage: o <verb> [args]
-  o i [text...]             capture a line to the Inbox           -> no editor
-  o r                       AI-triage the Inbox (Copilot)        -> suggestions
-  o n <folder> <title...>   new note in a named folder (m/i/p/c) -> app
-  o e <title...>            new note, fzf-pick the folder        -> vim
-  o f                       find a note and open it              -> vim
-  o g                       live-grep the vault, open the match  -> vim
-  o t [offset]              today's daily note (+/-N days)       -> app
-  o v                       open the vault                       -> vim
-  o l <folder> [name]       symlink cwd into the vault
-  o h                       show the cheat sheet"
+  verbs: i r n f g t v l h    (run 'o h' for the full cheat sheet)"
 }
 
 # ---- verbs ----------------------------------------------------------------
@@ -189,57 +179,45 @@ $(cat -- "$inbox")"
   copilot -p "$prompt" --deny-tool write --deny-tool shell "${model[@]}"
 }
 
-# o n <folder> <title...> — create/open a note in the Obsidian app
+# o n <title...> — new note: fzf-pick the folder, then create + open.
+# Picking "meetings" applies keyword routing (bucket/yy-mm), a dated filename and
+# meeting frontmatter, and opens the Obsidian app (for pasting images). Every
+# other folder gets a plain typed note opened in vim.
 verb_new() {
-  if [[ $# -lt 1 ]]; then
-    print -u2 "o n: need a folder (m/i/p/c or a name) and a title"
-    exit 1
+  local vault="$(vault_root)"
+
+  local title="$*"
+  if [[ -z "$title" ]]; then
+    IFS= read -r "title?title> " || return 0   # bare `o n` -> prompt for the title
   fi
+  [[ -n "$title" ]] || exit 0
 
-  typeset -A ALIASES=(m meetings i Inbox p projects c cheat-sheets)
+  local slug; slug="$(slugify "$title")"
+  [[ -n "$slug" ]] || { print -u2 "o n: title reduces to an empty slug"; exit 1; }
+
+  local folderpath
+  folderpath=$(find "$vault" -mindepth 1 -maxdepth 1 -type d ! -name '.*' | sort | fzf --prompt 'folder> ') || true
+  [[ -n "$folderpath" ]] || exit 0
+  local folder="${folderpath:t}"
+
   typeset -A TYPES=(meetings meeting Inbox note projects project cheat-sheets reference)
-
-  local key="$1"; shift
-  local folder="${ALIASES[$key]:-$key}"
   local ntype="${TYPES[$folder]:-note}"
 
-  local slug=""
-  (( $# > 0 )) && slug="$(slugify "$@")"
-
-  local base
-  if [[ -n "$slug" ]]; then base="${slug}-$(date +%d%m%y)"; else base="$(date +%d%m%y)"; fi
-
-  local reldir="$folder"
-  [[ "$folder" == meetings ]] && reldir="$(route_meeting "$slug")"
-
-  app_open "$reldir/$base.md" "$(frontmatter "$ntype" full)"
-}
-
-# o e <title...> — fzf-pick a folder, create note, open in vim
-verb_edit() {
-  local vault="$(vault_root)"
-  if [[ $# -eq 0 ]]; then
-    print -u2 "o e: need a title"
-    exit 1
+  if [[ "$folder" == meetings ]]; then
+    app_open "$(route_meeting "$slug")/${slug}-$(date +%d%m%y).md" "$(frontmatter meeting full)"
+  else
+    local file="$folderpath/$slug.md"
+    [[ -e "$file" ]] || frontmatter "$ntype" > "$file"
+    session_open "$file"
   fi
-
-  local folder
-  folder=$(find "$vault" -mindepth 1 -maxdepth 1 -type d ! -name '.*' | sort | fzf) || true
-  [[ -n "$folder" ]] || exit 0
-
-  local slug; slug="$(slugify "$@")"
-  [[ -n "$slug" ]] || { print -u2 "o e: title reduces to an empty slug"; exit 1; }
-
-  local file="$folder/$slug.md"
-  [[ -e "$file" ]] || frontmatter note > "$file"
-  session_open "$file"
 }
 
-# o f — fuzzy-find a note (bat preview pane) and open it in vim
+# o f — fuzzy-find a note (bat preview pane) and open it in vim.
+# fd skips hidden dirs (.obsidian/.templates/.git) and .gitignored files by default.
 verb_find() {
   local vault="$(vault_root)"
   local file
-  file=$(find "$vault" -type f -name '*.md' | fzf --preview 'bat --color=always {}') || true
+  file=$(fd -e md --type f . "$vault" | fzf --preview 'bat --color=always {}') || true
   [[ -n "$file" ]] || exit 0
   session_open "$file"
 }
@@ -247,7 +225,7 @@ verb_find() {
 # o g — live-grep the vault (ripgrep + fzf) and open the match in vim
 verb_grep() {
   local vault="$(vault_root)"
-  local rg="rg --line-number --no-heading --color=always --smart-case"
+  local rg="rg --line-number --no-heading --color=always --smart-case -g '*.md'"
   local out
   out=$(
     cd "$vault" && FZF_DEFAULT_COMMAND="$rg ''" fzf --ansi --disabled \
@@ -317,79 +295,18 @@ verb_link() {
   print -- "linked: $destination -> $source_dir"
 }
 
-# o h — render the first GFM table in the cheat sheet as a boxed table
-o_trim() { local s="$1"; s="${s##[[:space:]]#}"; s="${s%%[[:space:]]#}"; print -r -- "${s//\`/}" }
-
+# o h — render the whole cheat sheet (markdown) via bat, falling back to cat
 verb_help() {
   local vault="$(vault_root)"
   local sheet="$vault/cheat-sheets/obsidian.md"
   if [[ ! -f "$sheet" ]]; then
     print -u2 "o h: cheat sheet not found: $sheet"; exit 1
   fi
-
-  local H D R
-  if [[ -t 1 ]]; then
-    H=$'\e[1;36m'; D=$'\e[2m'; R=$'\e[0m'
+  if command -v bat >/dev/null 2>&1; then
+    bat --style=plain --language=md "$sheet"
   else
-    H=""; D=""; R=""
+    cat -- "$sheet"
   fi
-
-  # collect rows of the first markdown table; each row is tab-joined cells.
-  # (all locals declared up front: `local` inside the read loop trips a zsh
-  # quirk that echoes the loop variable.)
-  typeset -a rows widths cells clean
-  local line body ncols=0 in_table=0 c i
-  while IFS= read -r line; do
-    if [[ "$line" == '|'* ]]; then
-      in_table=1
-      [[ "$line" == *---* && "${line//[|: -]/}" == "" ]] && continue
-      body="${line#|}"; body="${body%|}"
-      cells=("${(@s:|:)body}")
-      clean=()
-      i=1
-      for c in "${cells[@]}"; do
-        c="$(o_trim "$c")"
-        clean+=("$c")
-        (( ${#c} > ${widths[i]:-0} )) && widths[i]=${#c}
-        (( i++ ))
-      done
-      (( ${#clean} > ncols )) && ncols=${#clean}
-      rows+=( "${(pj:\t:)clean}" )
-    elif (( in_table )); then
-      break
-    fi
-  done < "$sheet"
-
-  (( ${#rows} )) || { print -u2 "o h: no table found in $sheet"; exit 1 }
-
-  local first=1 row out cell padded k
-  o_sep() {
-    local out="$1" k
-    for (( k = 1; k <= ncols; k++ )); do
-      out+="${(l:$((widths[k]+2))::─:):-}"
-      (( k < ncols )) && out+="$2"
-    done
-    print -r -- "$D${out}${3}$R"
-  }
-
-  o_sep "┌" "┬" "┐"
-  for row in $rows; do
-    cells=("${(@ps:\t:)row}")
-    out="$D│$R"
-    for (( k = 1; k <= ncols; k++ )); do
-      cell="${cells[k]:-}"
-      padded="${(r:${widths[k]}:)cell}"
-      if (( first )); then
-        out+=" $H$padded$R "
-      else
-        out+=" $padded "
-      fi
-      out+="$D│$R"
-    done
-    print -r -- "$out"
-    (( first )) && { o_sep "├" "┼" "┤"; first=0 }
-  done
-  o_sep "└" "┴" "┘"
 }
 
 # ---- dispatch -------------------------------------------------------------
@@ -400,7 +317,6 @@ case "$verb" in
   i)              verb_inbox "$@" ;;
   r)              verb_review "$@" ;;
   n)              verb_new "$@" ;;
-  e)              verb_edit "$@" ;;
   f)              verb_find "$@" ;;
   g)              verb_grep "$@" ;;
   t)              verb_today "$@" ;;

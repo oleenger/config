@@ -1,30 +1,51 @@
 #!/bin/zsh
 #
-# todo — task horizons: Now (Focus.md) + Next / Waiting / Later (Todo.md)
+# todo — task horizons + inbox triage + archive
+#
+# Horizons flow one way, toward Now:
+#   Now     -> Focus.md            doing it, ASAP
+#   Next    -> Todo.md ## Next     do soon
+#   Waiting -> Todo.md ## Waiting  blocked / delegated
+#   Later   -> Todo.md ## Later    someday
 #
 # Usage:
-#   todo                 list every horizon (Now, Next, Waiting, Later), numbered
-#   todo f <text...>     add to Now (Focus.md)
-#   todo <text...>       add to Next (the common case)
-#   todo w <text...>     add to Waiting (blocked / delegated)
-#   todo l <text...>     add to Later (someday / not urgent)
-#   todo up <n>          promote: Later|Waiting -> Next, Next -> Now
-#   todo done <n>        remove task <n>
-#   todo edit            open Todo.md in $EDITOR
+#   todo                     list Now/Next/Waiting/Later, numbered
+#   todo <text...>           add to Next (the common case)
+#   todo f <text...>         add to Now
+#   todo w <text...>         add to Waiting
+#   todo l <text...>         add to Later
+#   todo in                  list the Inbox, numbered
+#   todo in <n> [f|n|w|l|drop]  triage inbox line n (default Next; drop = delete)
+#   todo up <n>              promote toward Now (Later|Waiting -> Next, Next -> Now)
+#   todo done <n>            mark done: ticks [x] (run `todo tidy` to file it away)
+#   todo tidy                move every [x] item (Focus + Todo) into Archive.md
+#   todo rm <n>              delete task n outright (no archive)
+#   todo edit                open Todo.md in $EDITOR
 #
-# Now stays a pinned, standalone note (Focus.md). Only top-level "- " lines are
-# tasks; headings, prose, [[links]] and comments are preserved untouched.
-# Override locations with TODO_FILE / FOCUS_FILE.
+# Only top-level "- " lines are tasks; a "[x]" line is done-but-not-yet-archived
+# and no longer counts toward the numbering. Overwrite Focus.md freely.
+# Override locations: FOCUS_FILE / TODO_FILE / INBOX_FILE / ARCHIVE_FILE.
 
 set -euo pipefail
 
+ME="${0:A}"   # script path ($0 becomes the function name inside a function)
 VAULT="${OBSIDIAN_VAULT:-$HOME/obsidian/oleenger}"
 TODO_FILE="${TODO_FILE:-$VAULT/Todo.md}"
 FOCUS_FILE="${FOCUS_FILE:-$VAULT/Focus.md}"
+INBOX_FILE="${INBOX_FILE:-$VAULT/Inbox/inbox.md}"
+ARCHIVE_FILE="${ARCHIVE_FILE:-$VAULT/Archive.md}"
 
-count_file() { [[ -f "$1" ]] && awk '/^- / { c++ } END { print c + 0 }' "$1" || print 0; }
-now_count()  { count_file "$FOCUS_FILE"; }
-todo_count() { count_file "$TODO_FILE"; }
+cleanup() {
+  rm -f "$TODO_FILE".tmp.$$ "$FOCUS_FILE".tmp.$$ \
+        "$INBOX_FILE".tmp.$$ "$ARCHIVE_FILE".tmp.$$ 2>/dev/null || true
+}
+trap cleanup EXIT INT TERM
+
+# a live task is a top-level "- " line that is NOT ticked "[x]"
+count_file() { [[ -f "$1" ]] && awk '/^- / && !/^- \[[xX]\]/ { c++ } END { print c + 0 }' "$1" || print 0; }
+now_count()   { count_file "$FOCUS_FILE"; }
+todo_count()  { count_file "$TODO_FILE"; }
+inbox_count() { count_file "$INBOX_FILE"; }
 
 ensure_todo() {
   [[ -f "$TODO_FILE" ]] && return 0
@@ -41,16 +62,29 @@ list() {
   local now out1="" out2=""
   now=$(now_count)
   [[ -f "$FOCUS_FILE" ]] && out1=$(awk '
-    /^- / { n++; t = $0; sub(/^- (\[[ xX]\] )?/, "", t); printf "%2d) [Now] %s\n", n, t }
+    /^- / && !/^- \[[xX]\]/ { n++; t = $0; sub(/^- (\[[ xX]\] )?/, "", t); printf "%2d) [Now] %s\n", n, t }
   ' "$FOCUS_FILE")
   [[ -f "$TODO_FILE" ]] && out2=$(awk -v off="$now" '
     /^##[ \t]+/ { s = $0; sub(/^##[ \t]+/, "", s); sub(/[ \t]+$/, "", s); next }
-    /^- / { n++; t = $0; sub(/^- (\[[ xX]\] )?/, "", t); printf "%2d) [%s] %s\n", n + off, s, t }
+    /^- / && !/^- \[[xX]\]/ { n++; t = $0; sub(/^- (\[[ xX]\] )?/, "", t); printf "%2d) [%s] %s\n", n + off, s, t }
   ' "$TODO_FILE")
   local all="${out1}"
   [[ -n "$out1" && -n "$out2" ]] && all+=$'\n'
   all+="$out2"
   [[ -n "$all" ]] && print -r -- "$all" || print -- "Nothing on the list."
+}
+
+# list Inbox lines, numbered; strips the "<!-- date -->" capture comment
+list_inbox() {
+  local out=""
+  [[ -f "$INBOX_FILE" ]] && out=$(awk '
+    /^- / && !/^- \[[xX]\]/ {
+      n++; t = $0; sub(/^- (\[[ xX]\] )?/, "", t)
+      sub(/[ \t]*<!--.*-->[ \t]*$/, "", t); sub(/[ \t]+$/, "", t)
+      printf "%2d) %s\n", n, t
+    }
+  ' "$INBOX_FILE")
+  [[ -n "$out" ]] && print -r -- "$out" || print -- "Inbox empty."
 }
 
 # append "- [ ] text" after the last task line of <file>
@@ -95,24 +129,70 @@ add_to() {
   mv "$tmp" "$TODO_FILE"
 }
 
-# echo "Section<TAB>text" for the nth task in Todo.md
+# echo "Section<TAB>text" for the nth live task in Todo.md
 todo_nth_info() {
   awk -v k="$1" '
     /^##[ \t]+/ { s = $0; sub(/^##[ \t]+/, "", s); sub(/[ \t]+$/, "", s); next }
-    /^- / { c++; if (c == k) { t = $0; sub(/^- (\[[ xX]\] )?/, "", t); print s "\t" t; exit } }
+    /^- / && !/^- \[[xX]\]/ { c++; if (c == k) { t = $0; sub(/^- (\[[ xX]\] )?/, "", t); print s "\t" t; exit } }
   ' "$TODO_FILE"
 }
 
-# echo the text of the nth task in <file>
+# echo the text of the nth live task in <file> (strips marker + capture comment)
 nth_text() {
-  awk -v k="$2" '/^- / { c++; if (c == k) { t = $0; sub(/^- (\[[ xX]\] )?/, "", t); print t; exit } }' "$1"
+  awk -v k="$2" '
+    /^- / && !/^- \[[xX]\]/ {
+      c++
+      if (c == k) {
+        t = $0; sub(/^- (\[[ xX]\] )?/, "", t)
+        sub(/[ \t]*<!--.*-->[ \t]*$/, "", t); sub(/[ \t]+$/, "", t)
+        print t; exit
+      }
+    }
+  ' "$1"
 }
 
-# delete the nth task line in <file>
+# delete the nth live task line in <file>
 remove_nth() {
   local file="$1" tmp="${1}.tmp.$$"
-  awk -v k="$2" '/^- / { c++; if (c == k) next } { print }' "$file" > "$tmp"
+  awk -v k="$2" '/^- / && !/^- \[[xX]\]/ { c++; if (c == k) next } { print }' "$file" > "$tmp"
   mv "$tmp" "$file"
+}
+
+# tick the nth live task line in <file> as "- [x] ..."
+tick_nth() {
+  local file="$1" tmp="${1}.tmp.$$"
+  awk -v k="$2" '
+    /^- / && !/^- \[[xX]\]/ {
+      c++
+      if (c == k) { rest = $0; sub(/^- (\[ \] )?/, "", rest); print "- [x] " rest; next }
+    }
+    { print }
+  ' "$file" > "$tmp"
+  mv "$tmp" "$file"
+}
+
+# move every "[x]" line from Focus.md + Todo.md into Archive.md under today's date
+tidy() {
+  local f got checked="" tmp
+  for f in "$FOCUS_FILE" "$TODO_FILE"; do
+    [[ -f "$f" ]] || continue
+    got=$(awk '/^- \[[xX]\]/ { print }' "$f")
+    [[ -n "$got" ]] && checked+="${got}"$'\n'
+  done
+  checked="${checked%$'\n'}"
+  if [[ -z "$checked" ]]; then print -- "Nothing to tidy."; return 0; fi
+
+  [[ -f "$ARCHIVE_FILE" ]] || { mkdir -p "${ARCHIVE_FILE:h}"; print -l -- "# Archive" "" > "$ARCHIVE_FILE"; }
+  { print -- "## $(date +%y-%m-%d)"; print -r -- "$checked"; print -- ""; } >> "$ARCHIVE_FILE"
+
+  for f in "$FOCUS_FILE" "$TODO_FILE"; do
+    [[ -f "$f" ]] || continue
+    tmp="${f}.tmp.$$"
+    awk '!/^- \[[xX]\]/ { print }' "$f" > "$tmp"; mv "$tmp" "$f"
+  done
+
+  local n; n=$(print -r -- "$checked" | grep -c '^-')
+  print -- "Archived $n item(s) → ${ARCHIVE_FILE:t}"
 }
 
 require_num() {
@@ -120,6 +200,8 @@ require_num() {
   local total=$(( $(now_count) + $(todo_count) ))
   (( $1 >= 1 && $1 <= total )) || { print -u2 "todo: no task $1"; exit 1; }
 }
+
+show_help() { sed -n '3,26p' "$ME" | sed 's/^# \{0,1\}//'; }
 
 cmd="${1:-list}"
 case "$cmd" in
@@ -142,6 +224,29 @@ case "$cmd" in
     shift; [[ $# -gt 0 ]] || { print -u2 "todo: l needs task text"; exit 1; }
     add_to Later "$@"; list
     ;;
+  in)
+    shift
+    if [[ $# -eq 0 ]]; then list_inbox; exit 0; fi
+    n="$1"; shift
+    [[ "$n" == <-> ]] || { print -u2 "todo: 'in' needs an inbox line number"; exit 1; }
+    ic=$(inbox_count)
+    (( n >= 1 && n <= ic )) || { print -u2 "todo: no inbox line $n"; exit 1; }
+    dest="${1:-n}"
+    case "$dest" in
+      f|n|w|l|drop) ;;
+      *) print -u2 "todo: unknown destination '$dest' (use f|n|w|l|drop)"; exit 1 ;;
+    esac
+    text=$(nth_text "$INBOX_FILE" "$n")
+    remove_nth "$INBOX_FILE" "$n"
+    case "$dest" in
+      drop) print -- "dropped: $text" ;;
+      f)    ensure_focus; append_task "$FOCUS_FILE" "$text"; print -- "→ Now: $text" ;;
+      n)    add_to Next "$text";    print -- "→ Next: $text" ;;
+      w)    add_to Waiting "$text"; print -- "→ Waiting: $text" ;;
+      l)    add_to Later "$text";   print -- "→ Later: $text" ;;
+    esac
+    print --; list
+    ;;
   up)
     shift; n="${1:-}"; require_num "$n" up
     now=$(now_count)
@@ -159,23 +264,37 @@ case "$cmd" in
     fi
     print --; list
     ;;
-  done|rm)
+  done)
     shift; n="${1:-}"; require_num "$n" done
+    now=$(now_count)
+    if (( n <= now )); then
+      text=$(nth_text "$FOCUS_FILE" "$n"); tick_nth "$FOCUS_FILE" "$n"
+    else
+      tn=$(( n - now )); text=$(nth_text "$TODO_FILE" "$tn"); tick_nth "$TODO_FILE" "$tn"
+    fi
+    print -- "done: $text  (run 'todo tidy' to file it away)"; print --; list
+    ;;
+  rm)
+    shift; n="${1:-}"; require_num "$n" rm
     now=$(now_count)
     if (( n <= now )); then
       removed=$(nth_text "$FOCUS_FILE" "$n"); remove_nth "$FOCUS_FILE" "$n"
     else
       tn=$(( n - now )); removed=$(nth_text "$TODO_FILE" "$tn"); remove_nth "$TODO_FILE" "$tn"
     fi
-    print -- "done: $removed"; print --; list
+    print -- "removed: $removed"; print --; list
+    ;;
+  tidy)
+    tidy
     ;;
   edit)
     exec "${EDITOR:-nvim}" "$TODO_FILE"
     ;;
   -h|--help|help)
-    sed -n '3,17p' "$0" | sed 's/^# \{0,1\}//'
+    show_help
     ;;
   *)
+    [[ "$cmd" == -* ]] && { print -u2 "todo: unknown option '$cmd' (see 'todo help')"; exit 1; }
     add_to Next "$@"; list
     ;;
 esac
