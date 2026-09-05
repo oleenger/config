@@ -43,6 +43,10 @@ else
 fi
 unset _zcompdump_fresh
 
+# Tab inserts the first match immediately (repeat Tab to move to the next),
+# instead of cycling/listing all matches.
+setopt MENU_COMPLETE
+
 #Imports
 source $ZSH/imports/powerlevel10k.zsh
 source $ZSH/imports/history.zsh
