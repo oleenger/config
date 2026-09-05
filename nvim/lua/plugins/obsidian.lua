@@ -23,7 +23,13 @@ return {
   -- one home for every Obsidian action; letters mirror the `o` CLI (n/f/o)
   keys = {
     { '<leader>oo', '<cmd>ObsidianFollowLink<CR>', desc = 'Obsidian: follow link under cursor' },
-    { '<leader>on', '<cmd>ObsidianNew<CR>', desc = 'Obsidian: new note' },
+    -- new notes go through the `o n` CLI so there is ONE creation path (fzf-pick
+    -- the folder, typed frontmatter, meetings routed) shared with the terminal
+    { '<leader>on', function()
+      vim.cmd 'botright 12split | enew'
+      vim.fn.termopen('o n', { on_exit = function() vim.cmd 'silent! bdelete!' end })
+      vim.cmd 'startinsert'
+    end, desc = 'Obsidian: new note (o n)' },
     { '<leader>of', vault_find, desc = 'Obsidian: find note' },
     { '<leader>og', vault_grep, desc = 'Obsidian: grep vault' },
     { '<leader>ob', '<cmd>ObsidianBacklinks<CR>', desc = 'Obsidian: backlinks' },

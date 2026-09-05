@@ -85,20 +85,24 @@ vim.keymap.set('n', '<leader>tl', function() open_task(TODO, 'Later') end, { des
 
 -- Capture the current line into a horizon (uppercase = push this line there).
 -- Strips a leading bullet / [ ]|[x] checkbox, then hands it to the `todo` script.
--- If the buffer lives inside the vault, appends a [[backlink]] to the source note.
+-- Two-way linking when inside the vault: the task gets a [[backlink]] to the
+-- source note, and the source line gets a link to where the task now lives
+-- (Todo.md for Next/Waiting/Later, Focus.md for Now). The source line is never
+-- ticked — it's delegated, not done.
 local TODO_BIN = vim.fn.expand '~/.config/scripts/todo'
 local VAULT = vim.fn.expand '~/obsidian/oleenger'
+local TARGET_NOTE = { f = 'Focus', n = 'Todo', w = 'Todo', l = 'Todo' }
 local function capture(horizon, label)
-  local t = vim.api.nvim_get_current_line()
-  t = t:gsub('^%s*[-*+]%s+', ''):gsub('^%[.%]%s+', '')
+  local line = vim.api.nvim_get_current_line()
+  local t = line:gsub('^%s*[-*+]%s+', ''):gsub('^%[.%]%s+', '')
   t = vim.trim(t)
   if t == '' then
     vim.notify('todo: nothing on this line', vim.log.levels.WARN)
     return
   end
-  -- link back to the source note (vault-relative path, no .md), if we're in the vault
   local buf = vim.api.nvim_buf_get_name(0)
-  if buf ~= '' and buf:sub(1, #VAULT) == VAULT then
+  local in_vault = buf ~= '' and buf:sub(1, #VAULT) == VAULT
+  if in_vault then
     local rel = buf:sub(#VAULT + 2):gsub('%.md$', '')
     if rel ~= '' then t = t .. ' [[' .. rel .. ']]' end
   end
@@ -106,6 +110,13 @@ local function capture(horizon, label)
   if vim.v.shell_error ~= 0 then
     vim.notify('todo: failed to add', vim.log.levels.ERROR)
     return
+  end
+  -- forward-link the source line to the task list (idempotent; never ticked)
+  if in_vault then
+    local mark = '[[' .. TARGET_NOTE[horizon] .. ']]'
+    if not line:find(mark, 1, true) then
+      vim.api.nvim_set_current_line(line .. ' ' .. mark)
+    end
   end
   vim.notify('→ ' .. label .. ': ' .. t)
 end

@@ -5,6 +5,8 @@
 #   o i [text...]             capture a line to the Inbox      -> no editor
 #   o r                       AI-triage the Inbox (Copilot)    -> suggestions
 #   o n [title...]            new note, fzf-pick the folder    -> vim (app for meetings)
+#   o a [file]                pull a note's "- [ ]" actions into Next (backlinked)
+#   o w                       weekly review draft (done+meetings+dailies) -> stdout
 #   o f                       find a note and open it          -> vim
 #   o g                       live-grep the vault, open match  -> vim
 #   o t [offset]              today's daily note (+/-N days)   -> Obsidian app
@@ -20,6 +22,7 @@ set -euo pipefail
 setopt extendedglob
 
 SESSION="obsidian"
+SELF="${0:A}"   # script path ($0 is the function name inside a function)
 
 vault_root() { print -r -- "${OBSIDIAN_VAULT:-$HOME/obsidian/oleenger}" }
 
@@ -129,7 +132,7 @@ route_meeting() {
 
 usage() {
   print -u2 -- "usage: o <verb> [args]
-  verbs: i r n f g t v l h    (run 'o h' for the full cheat sheet)"
+  verbs: i r n a w f g t v l h    (run 'o h' for the full cheat sheet)"
 }
 
 # ---- verbs ----------------------------------------------------------------
@@ -309,6 +312,71 @@ verb_help() {
   fi
 }
 
+# o a [file] — pull "- [ ]" action lines out of a note into Todo (Next), each
+# with a [[backlink]] to the note; ticks the source line [x] so the same action
+# is never pulled twice. With no file, fzf-pick one.
+verb_actions() {
+  local vault="$(vault_root)"
+  local file="${1:-}"
+  if [[ -z "$file" ]]; then
+    file=$(fd -e md --type f . "$vault" | fzf --preview 'bat --color=always {}') || true
+    [[ -n "$file" ]] || exit 0
+  fi
+  [[ -f "$file" ]] || { print -u2 "o a: no such file: $file"; exit 1; }
+
+  # vault-relative path without .md, for the backlink
+  local abs="${file:A}" rel
+  if [[ "$abs" == "$vault"/* ]]; then rel="${abs#$vault/}"; else rel="$file"; fi
+  rel="${rel%.md}"
+
+  local -a lines
+  lines=("${(@f)$(awk '/^[ \t]*- \[ \]/ { t=$0; sub(/^[ \t]*- \[ \][ \t]*/, "", t); print t }' "$file")}")
+  local todo="${SELF:h}/todo" t n=0
+  for t in "${lines[@]}"; do
+    [[ -n "$t" ]] || continue
+    "$todo" n "$t [[${rel}]]" >/dev/null
+    (( ++n ))
+  done
+  (( n > 0 )) || { print -- "no open actions in ${rel}."; return 0; }
+
+  # tick the pulled lines in the source so they aren't captured again
+  local tmp="${file}.tmp.$$"
+  awk '/^[ \t]*- \[ \]/ { sub(/- \[ \]/, "- [x]") } { print }' "$file" > "$tmp" && mv "$tmp" "$file"
+
+  print -- "pulled $n action(s) from ${rel} → Next."
+}
+
+# o w — weekly review: this week's done items (Archive), meetings and daily
+# notes, as a markdown draft on stdout (redirect or paste into a status update).
+verb_week() {
+  local vault="$(vault_root)"
+  local since_iso="$(date -v-7d +%Y-%m-%d)"
+  local since_yy="$(date -v-7d +%y-%m-%d)"
+
+  print -- "# Weekly review — $(date +%Y-%m-%d)"
+
+  print -- "\n## Done"
+  local archive="$vault/Archive.md"
+  if [[ -f "$archive" ]]; then
+    awk -v since="$since_yy" '
+      /^## / { keep = ($2 >= since); next }
+      keep && /^- / { print }
+    ' "$archive"
+  fi
+
+  print -- "\n## Meetings"
+  find "$vault/meetings" -name '*.md' -mtime -7 2>/dev/null | sort | while IFS= read -r f; do
+    local rel="${f#$vault/}"; print -- "- [[${rel%.md}]]"
+  done
+
+  print -- "\n## Daily notes"
+  find "$vault/daily" -name '*.md' 2>/dev/null | sort | while IFS= read -r f; do
+    local base="${f:t:r}"
+    [[ "$base" > "$since_iso" || "$base" == "$since_iso" ]] || continue
+    local rel="${f#$vault/}"; print -- "- [[${rel%.md}]]"
+  done
+}
+
 # ---- dispatch -------------------------------------------------------------
 
 verb="${1:-}"
@@ -317,6 +385,8 @@ case "$verb" in
   i)              verb_inbox "$@" ;;
   r)              verb_review "$@" ;;
   n)              verb_new "$@" ;;
+  a)              verb_actions "$@" ;;
+  w)              verb_week "$@" ;;
   f)              verb_find "$@" ;;
   g)              verb_grep "$@" ;;
   t)              verb_today "$@" ;;

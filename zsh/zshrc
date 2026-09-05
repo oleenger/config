@@ -19,6 +19,30 @@ export PATH="$HOME/.local/bin:$PATH"
 #Themes
 export BAT_THEME="Visual Studio Dark+"
 
+#Completion system
+# Initialise it here, explicitly and unconditionally. Previously nothing in this
+# file ran compinit; it only happened as a side effect of google-cloud-sdk's
+# completion.zsh.inc at the very bottom, which is guarded by:
+#     if ! (( $+functions[compdef] )) ; then ... compinit ; fi
+# zinit temporarily defines a `compdef` stub while loading plugins (zinit.zsh:775)
+# and removes it via a refcount on teardown. When that teardown is missed, the stub
+# survives, the guard above sees compdef and skips compinit entirely -> $_comps is
+# empty and Tab silently does nothing. Running it here also puts it before fzf and
+# fast-syntax-highlighting, which rebind/wrap ^I.
+autoload -Uz compinit
+ZSH_COMPDUMP="${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump-${ZSH_VERSION}"
+[[ -d ${ZSH_COMPDUMP:h} ]] || mkdir -p ${ZSH_COMPDUMP:h}
+# Full rebuild (incl. the fpath security scan) at most once a day; fast path
+# otherwise. -i ignores insecure fpath dirs instead of prompting, since p10k's
+# instant prompt swallows that prompt and compinit then aborts silently.
+_zcompdump_fresh=( $ZSH_COMPDUMP(Nmh-24) )
+if (( $#_zcompdump_fresh )); then
+  compinit -C -d $ZSH_COMPDUMP
+else
+  compinit -i -d $ZSH_COMPDUMP
+fi
+unset _zcompdump_fresh
+
 #Imports
 source $ZSH/imports/powerlevel10k.zsh
 source $ZSH/imports/history.zsh
@@ -91,4 +115,3 @@ export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
 source /opt/homebrew/share/google-cloud-sdk/path.zsh.inc
-source /opt/homebrew/share/google-cloud-sdk/completion.zsh.inc
