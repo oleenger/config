@@ -20,9 +20,6 @@ vim.keymap.set('n', '<leader>nh', ':nohl<CR>', { desc = 'Clear search highlights
 -- save file without auto-formatting
 -- vim.keymap.set('n', '<leader>sn', '<cmd>noautocmd w <CR>', opts)
 
--- greatest remap ever
-vim.keymap.set('x', '<leader>p', [["_dP]])
-
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
 -- next greatest remap ever : asbjornHaland
@@ -66,7 +63,11 @@ vim.keymap.set('v', '>', '>gv', opts)
 -- Keep last yanked when pasting
 vim.keymap.set('v', 'p', '"_dP', opts)
 
-vim.keymap.set('n', '<leader>f', vim.lsp.buf.format, { remap = false })
+-- Neovim's built-in commenting, with the existing terminal shortcuts.
+for _, key in ipairs { '<C-_>', '<C-c>', '<C-/>' } do
+  vim.keymap.set('n', key, 'gcc', { remap = true, desc = 'Toggle line comment' })
+  vim.keymap.set('x', key, 'gc', { remap = true, desc = 'Toggle selected comments' })
+end
 
 -- Tasks (managed by the `todo` command): keys mirror the horizons —
 -- f = Now (Focus.md), n/w/l = Next/Waiting/Later (Todo.md, jump to the section).

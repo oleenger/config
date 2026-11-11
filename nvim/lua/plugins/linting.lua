@@ -18,8 +18,5 @@ return {
       end,
     })
 
-    vim.keymap.set('n', '<leader>l', function()
-      vim.diagnostic.config { virtual_text = not vim.diagnostic.config().virtual_text }
-    end, { desc = 'Disable virtual_text' })
   end,
 }

@@ -11,10 +11,6 @@ return {
     event = 'VeryLazy',
   },
   {
-    -- GitHub integration for vim-fugitive
-    -- 'tpope/vim-rhubarb',
-  },
-  {
     -- Hints keybinds
     'folke/which-key.nvim',
     event = 'VeryLazy',
@@ -41,7 +37,7 @@ return {
   },
   {
     -- High-performance color highlighter
-    'norcalli/nvim-colorizer.lua',
+    'catgoose/nvim-colorizer.lua',
     event = 'VeryLazy',
     config = function()
       require('colorizer').setup()
