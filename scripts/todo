@@ -14,8 +14,8 @@
 #   todo f <text...>         add to Now
 #   todo w <text...>         add to Waiting
 #   todo l <text...>         add to Later
-#   todo in                  list the Inbox, numbered
-#   todo in <n> [f|n|w|l|drop]  triage inbox line n (default Next; drop = delete)
+#   todo i                   list the Inbox, numbered
+#   todo i <n> [f|n|w|l|drop]  triage inbox line n (default Next; drop = delete)
 #   todo up <n>              promote toward Now (Later|Waiting -> Next, Next -> Now)
 #   todo done <n>            mark done: ticks [x] (run `todo tidy` to file it away)
 #   todo tidy                move every [x] item (Focus + Todo) into Archive.md
@@ -224,11 +224,11 @@ case "$cmd" in
     shift; [[ $# -gt 0 ]] || { print -u2 "todo: l needs task text"; exit 1; }
     add_to Later "$@"; list
     ;;
-  in)
+  i)
     shift
     if [[ $# -eq 0 ]]; then list_inbox; exit 0; fi
     n="$1"; shift
-    [[ "$n" == <-> ]] || { print -u2 "todo: 'in' needs an inbox line number"; exit 1; }
+    [[ "$n" == <-> ]] || { print -u2 "todo: 'i' needs an inbox line number"; exit 1; }
     ic=$(inbox_count)
     (( n >= 1 && n <= ic )) || { print -u2 "todo: no inbox line $n"; exit 1; }
     dest="${1:-n}"
