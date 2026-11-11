@@ -4,7 +4,8 @@
 #
 #   o i [text...]             capture a line to the Inbox      -> no editor
 #   o r                       AI-triage the Inbox (Copilot)    -> suggestions
-#   o n [title...]            new note, fzf-pick the folder    -> vim (app for meetings)
+#   o n [title...]            new note, fzf-pick the folder    -> vim
+#   o m [title...]            new meeting note (keyword-routed) -> Obsidian app
 #   o a [file]                pull a note's "- [ ]" actions into Next (backlinked)
 #   o w                       weekly review draft (done+meetings+dailies) -> stdout
 #   o f                       find a note and open it          -> vim
@@ -14,9 +15,10 @@
 #   o l <folder> [name]       symlink cwd into the vault
 #   o h                       show the cheat sheet
 #
-# `o n` always fzf-picks the folder. Picking "meetings" routes by keyword into
-# meetings/<bucket>/<yy-mm>/ (o-routes.conf), dates the filename, and opens the
-# Obsidian app; any other folder gets a plain typed note opened in vim.
+# `o n` fzf-picks the folder (meetings excluded) and opens a plain note in vim.
+# `o m` is the meetings path: it keyword-routes the title into
+# meetings/<bucket>/<yy-mm>/ (o-routes.conf; unmatched -> meetings/other/), dates
+# the filename, and opens the Obsidian app.
 
 set -euo pipefail
 setopt extendedglob
@@ -132,7 +134,7 @@ route_meeting() {
 
 usage() {
   print -u2 -- "usage: o <verb> [args]
-  verbs: i r n a w f g t v l h    (run 'o h' for the full cheat sheet)"
+  verbs: i r n m a w f g t v l h    (run 'o h' for the full cheat sheet)"
 }
 
 # ---- verbs ----------------------------------------------------------------
@@ -182,10 +184,9 @@ $(cat -- "$inbox")"
   copilot -p "$prompt" --deny-tool write --deny-tool shell "${model[@]}"
 }
 
-# o n <title...> — new note: fzf-pick the folder, then create + open.
-# Picking "meetings" applies keyword routing (bucket/yy-mm), a dated filename and
-# meeting frontmatter, and opens the Obsidian app (for pasting images). Every
-# other folder gets a plain typed note opened in vim.
+# o n <title...> — new note: fzf-pick the folder, then create + open in vim.
+# Meetings are excluded here — use `o m` (they need keyword routing, not a flat
+# meetings/ note). Bare `o n` prompts for the title.
 verb_new() {
   local vault="$(vault_root)"
 
@@ -199,20 +200,32 @@ verb_new() {
   [[ -n "$slug" ]] || { print -u2 "o n: title reduces to an empty slug"; exit 1; }
 
   local folderpath
-  folderpath=$(find "$vault" -mindepth 1 -maxdepth 1 -type d ! -name '.*' | sort | fzf --prompt 'folder> ') || true
+  folderpath=$(find "$vault" -mindepth 1 -maxdepth 1 -type d ! -name '.*' ! -name meetings | sort | fzf --prompt 'folder> ') || true
   [[ -n "$folderpath" ]] || exit 0
   local folder="${folderpath:t}"
 
-  typeset -A TYPES=(meetings meeting Inbox note projects project cheat-sheets reference)
+  typeset -A TYPES=(Inbox note projects project cheat-sheets reference)
   local ntype="${TYPES[$folder]:-note}"
 
-  if [[ "$folder" == meetings ]]; then
-    app_open "$(route_meeting "$slug")/${slug}-$(date +%d%m%y).md" "$(frontmatter meeting full)"
-  else
-    local file="$folderpath/$slug.md"
-    [[ -e "$file" ]] || frontmatter "$ntype" > "$file"
-    session_open "$file"
+  local file="$folderpath/$slug.md"
+  [[ -e "$file" ]] || frontmatter "$ntype" > "$file"
+  session_open "$file"
+}
+
+# o m <title...> — new meeting note. Keyword-routes the title into
+# meetings/<bucket>/<yy-mm>/ (unmatched -> meetings/other/), dates the filename,
+# and opens the Obsidian app (for pasting images). Bare `o m` prompts.
+verb_meeting() {
+  local title="$*"
+  if [[ -z "$title" ]]; then
+    IFS= read -r "title?meeting> " || return 0
   fi
+  [[ -n "$title" ]] || exit 0
+
+  local slug; slug="$(slugify "$title")"
+  [[ -n "$slug" ]] || { print -u2 "o m: title reduces to an empty slug"; exit 1; }
+
+  app_open "$(route_meeting "$slug")/${slug}-$(date +%d%m%y).md" "$(frontmatter meeting full)"
 }
 
 # o f — fuzzy-find a note (bat preview pane) and open it in vim.
@@ -385,6 +398,7 @@ case "$verb" in
   i)              verb_inbox "$@" ;;
   r)              verb_review "$@" ;;
   n)              verb_new "$@" ;;
+  m)              verb_meeting "$@" ;;
   a)              verb_actions "$@" ;;
   w)              verb_week "$@" ;;
   f)              verb_find "$@" ;;
