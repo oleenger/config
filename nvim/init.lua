@@ -2,9 +2,9 @@
 vim.loader.enable() -- Enable Lua bytecode cache for faster startup
 
 require 'core.options' -- Load general options
-require 'core.snippets' -- Custom code snippetsp
+require 'core.snippets' -- Diagnostics and highlight helpers
 require 'core.keymaps' -- Load general keymaps
-require 'core.lsp' -- Load general keymaps
+require 'core.lsp' -- LSP keymaps and diagnostic signs
 
 -- Set up the Lazy plugin manager
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -24,41 +24,25 @@ require('lazy').setup({
   require 'plugins.colorscheme',
   require 'plugins.mason',
   require 'plugins.oil',
-  -- require 'plugins.hop',
-  -- require 'plugins.flash',
   require 'plugins.lualine',
-  require 'plugins.dim',
   require 'plugins.treesitter',
   require 'plugins.telescope',
   require 'plugins.lsp',
   require 'plugins.trouble',
   require 'plugins.autocompletion',
   require 'plugins.render-markdown',
-  -- require 'plugins.gitsigns',
   require 'plugins.indent-blankline',
   require 'plugins.misc',
-  require 'plugins.comment',
-  require 'plugins.dressing',
   require 'plugins.linting',
   require 'plugins.lazygit',
-  -- require 'plugins.opencode',
   require 'plugins.tiny-diagnostics',
   require 'plugins.conform',
   require 'plugins.vim-maximizer',
   require 'plugins.harpoon',
-  -- require 'plugins.substitute',
-  -- require 'plugins.aerial',
   require 'plugins.markdown-preview',
-  -----DISABLED
-  -- require 'plugins.blink-cmp',
-  -- require 'plugins.nvim-metals',
-  -- require 'plugins.neotree',
   require 'plugins.obsidian',
-  -- require 'plugins.telescope-file-browser',
-  -- require 'plugins.fugi',
-  -- require 'plugins.bufferline',
-  -- require 'plugins.none-ls',
 }, {
+  rocks = { enabled = false },
   performance = {
     rtp = {
       disabled_plugins = {

@@ -1,7 +1,6 @@
-local data = assert(vim.fn.stdpath "data") --[[@as string]]
-
 require('telescope').setup {
   defaults = {
+    wrap_results = true,
     mappings = {
       i = {
         ['<C-k>'] = require('telescope.actions').move_selection_previous, -- move to prev result
@@ -12,18 +11,17 @@ require('telescope').setup {
   },
   pickers = {
     find_files = {
-      file_ignore_patterns = { 'node_modules', '.git', '.venv' },
+      file_ignore_patterns = { 'node_modules/', '%.git/', '%.venv/' },
       hidden = true,
     },
-  },
-  live_grep = {
-    file_ignore_patterns = { 'node_modules', '.git', '.venv' },
-    additional_args = function(_)
-      return { '--hidden' }
-    end,
+    live_grep = {
+      file_ignore_patterns = { 'node_modules/', '%.git/', '%.venv/' },
+      additional_args = function()
+        return { '--hidden' }
+      end,
+    },
   },
   extensions = {
-    wrap_results = true,
     fzf = {},
 
     ['ui-select'] = { require('telescope.themes').get_dropdown() },
@@ -37,4 +35,3 @@ vim.api.nvim_set_hl(0, 'TelescopeNormal', { bg='#333333' })
 -- Enable Telescope extensions if they are installed
 pcall(require('telescope').load_extension, 'fzf')
 pcall(require('telescope').load_extension, 'ui-select')
-pcall(require("telescope").load_extension, "smart_history")

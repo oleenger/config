@@ -14,11 +14,6 @@ return {
     exclude = {
       filetypes = {
         'help',
-        'startify',
-        'dashboard',
-        'packer',
-        'neogitstatus',
-        'NvimTree',
         'Trouble',
       },
     },
