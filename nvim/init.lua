@@ -24,6 +24,7 @@ require('lazy').setup({
   require 'plugins.colorscheme',
   require 'plugins.mason',
   require 'plugins.oil',
+  require 'plugins.nvim-tree',
   require 'plugins.lualine',
   require 'plugins.treesitter',
   require 'plugins.telescope',

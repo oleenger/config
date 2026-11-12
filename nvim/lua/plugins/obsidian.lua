@@ -38,6 +38,7 @@ return {
   },
 
   opts = {
+    ui = { enable = false }, -- render-markdown owns Markdown rendering and concealment
     workspaces = {
       {
         name = 'vault',
