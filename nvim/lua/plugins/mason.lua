@@ -3,6 +3,7 @@ return {
     'williamboman/mason-lspconfig.nvim',
     event = { 'BufReadPre', 'BufNewFile' },
     opts = {
+      automatic_enable = { exclude = { 'vale_ls' } }, -- English prose rules are noisy in mixed-language notes
       -- list of servers for mason to install
       ensure_installed = {
         'ts_ls',
