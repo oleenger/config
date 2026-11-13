@@ -1,3 +1,21 @@
+vim.lsp.config('tailwindcss', {
+  filetypes = {
+    'html',
+    'css',
+    'scss',
+    'sass',
+    'less',
+    'javascript',
+    'javascriptreact',
+    'typescript',
+    'typescriptreact',
+    'vue',
+    'svelte',
+    'astro',
+    'htmldjango',
+  },
+})
+
 local keymap = vim.keymap -- for conciseness
 vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('UserLspConfig', {}),
