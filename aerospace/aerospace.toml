@@ -111,7 +111,7 @@ B = "main"
 
 [[on-window-detected]]
 if.app-id = 'com.microsoft.Outlook'
-run = "move-node-to-workspace O"
+run = ['layout tiling', 'move-node-to-workspace O']
 
 [[on-window-detected]]
 if.app-id = 'com.microsoft.teams2'

@@ -157,8 +157,8 @@ verb_inbox() {
 }
 
 # o r — AI-triage the Inbox via the GitHub Copilot CLI (suggest-only).
-# Prints Do/Link/Drop suggestions; never edits the vault. Override the model
-# with $O_COPILOT_MODEL (a copilot CLI model name, e.g. claude-sonnet-4.5).
+# Prints Do/Link/Drop suggestions; never edits the vault. Model defaults to
+# gpt-6.1-sol; override with $O_COPILOT_MODEL (a copilot CLI model name).
 verb_review() {
   if ! command -v copilot >/dev/null 2>&1; then
     print -u2 "o r: GitHub Copilot CLI ('copilot') not found on PATH"; exit 1
@@ -177,8 +177,7 @@ Only print the list. Do not edit, move, or create any files.
 Inbox:
 $(cat -- "$inbox")"
 
-  local model=()
-  [[ -n "${O_COPILOT_MODEL:-}" ]] && model=(--model "$O_COPILOT_MODEL")
+  local model=(--model "${O_COPILOT_MODEL:-gpt-6.1-sol}")
 
   # suggest-only: deny the file-writing and shell tools so it can only answer
   copilot -p "$prompt" --deny-tool write --deny-tool shell "${model[@]}"
