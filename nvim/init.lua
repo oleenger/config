@@ -19,6 +19,9 @@ vim.opt.rtp:prepend(lazypath)
 
 vim.g.python3_host_prog = '/opt/homebrew/bin/python3'
 
+-- Markdown writing page: 'dark' or 'light'. Read once by lua/notes; restart to change.
+vim.g.notes_theme = 'dark'
+
 -- Set up plugins
 require('lazy').setup({
   require 'plugins.colorscheme',
@@ -42,6 +45,7 @@ require('lazy').setup({
   require 'plugins.harpoon',
   require 'plugins.markdown-preview',
   require 'plugins.obsidian',
+  require 'plugins.no-neck-pain',
 }, {
   rocks = { enabled = false },
   performance = {
@@ -58,6 +62,9 @@ require('lazy').setup({
     },
   },
 })
+
+-- Obsidian-style page for Markdown windows (palette, headings, centering)
+require('notes').setup()
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et

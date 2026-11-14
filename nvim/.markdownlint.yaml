@@ -1,0 +1,4 @@
+# Base markdownlint config for Neovim (nvim-lint, see lua/plugins/linting.lua).
+# Notes are soft-wrapped prose, so line length is not a problem.
+# A project's own .markdownlint* config still applies on top of this.
+MD013: false
